@@ -6,7 +6,7 @@ const port = process.env.PORT || 8080;
 // Gzip
 app.use(compression());
 // Serve static files from the dist directory
-app.use(express.static(__dirname + '/dist/fadmits'));
+app.use(express.static(__dirname + '/build'));
 // Start the app by listening on the default Heroku port
 app.listen(port);
 // Return index.html for all GET requests for PathLocationStrategy
