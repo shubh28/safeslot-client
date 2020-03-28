@@ -29,7 +29,7 @@ export default class LoginForm extends PureComponent {
 			alert("Please enter email and password");
 		}else {
 			// make user sign up
-			axios.post("http://localhost:3000/api/users/login", {email, password})
+			axios.post("https://safeslot-backend.herokuapp.com/api/users/login", {email, password})
 				.then(res => {
 					saveState('userAuthenticationDetails', res.data);
 					this.props.history.push("/");

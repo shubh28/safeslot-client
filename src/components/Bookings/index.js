@@ -25,7 +25,7 @@ export default class Bookings extends Component {
 		}
 		// const filter = {"where": {user_id: userId}, "include": "stores"};
 		const filter = {"include": "stores"};
-		axios.get(`http://localhost:3000/api/bookings?filter=${JSON.stringify(filter)}`)
+		axios.get(`https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(filter)}`)
 			.then(res => {
 				this.setState({bookings: res.data})
 			})

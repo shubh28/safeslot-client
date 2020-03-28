@@ -23,7 +23,7 @@ export default class Stores extends Component {
 	componentDidMount() {
 		const {selectedLocation} = this.props;
 		const location = selectedLocation && selectedLocation.split(',')[0];
-		axios.get(`http://localhost:3000/api/stores/location?location=${location}`)
+		axios.get(`https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}`)
 			.then(res => {
 				this.setState({stores: res.data})
 			})
@@ -40,7 +40,7 @@ export default class Stores extends Component {
 			});			
 		} else {
 			const filter = {"where": {storesId}, "include": "slots"};
-			axios.get(`http://localhost:3000/api/stores_slots_counts?filter=${JSON.stringify(filter)}`)
+			axios.get(`https://safeslot-backend.herokuapp.com/api/stores_slots_counts?filter=${JSON.stringify(filter)}`)
 				.then(res => {
 					this.setState({
 						openSlots: true,
@@ -61,7 +61,7 @@ export default class Stores extends Component {
 		if (!isLoggedIn) {
 			history.push("/login");
 		} else{
-			axios.post("http://localhost:3000/api/bookings", {
+			axios.post("https://safeslot-backend.herokuapp.com/api/bookings", {
 				store_id: selectedStore,
 				slot_id: selectedSlot,
 				user_id: userId
