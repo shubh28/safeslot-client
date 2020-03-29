@@ -42,6 +42,11 @@ export default class Bookings extends Component {
 		}
 	}
 
+	logout = () => {
+		localStorage.clear();
+		this.props.history.push("/");
+	} 
+
 	render() {
 		return(
 			<div>
@@ -54,6 +59,7 @@ export default class Bookings extends Component {
 						</Link>
 					</div>
 					<h2 className="text-center">Bookings</h2>
+					<a href="#" className="logout" onClick={this.logout}>Logout</a>
 				</div>
 				<Container>
 					<div className="booking-wrapper">

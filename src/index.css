@@ -45,6 +45,11 @@ html, #root {
   color: #fff;
   padding: .5rem;
 }
+.bookings .logout {
+  color: #fff;
+  position: absolute;
+  right: 1rem;
+}
 .booking-header a {
   /*background-color: #17a2b8;*/
   color: #fff;

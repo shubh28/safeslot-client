@@ -75,13 +75,13 @@ export default class Home extends Component {
 						</h2>
 						<div className="hero-sub-text">
 							<Typist avgTypingDelay={100} startDelay={2000}>
-					        	Stuck in lockdown?
+					        	Safe Slot
 					        	<Typist.Backspace count={18} delay={2000} />
 					        	Running out off food and essentials?
 					        	<Typist.Backspace count={36} delay={2000} />
 					        	Want to skip queues and maintain isolation?
 					      	</Typist>
-					      	<div className="mt1">Book your slots now in your nearest stores</div>
+					      	<div className="mt1">Getting essentials safely during crisis</div>
 						</div>
 						<div className="book-now-btn">
 							<Button outline color="primary" onClick={scrollToBottom}>Book Now</Button>	
