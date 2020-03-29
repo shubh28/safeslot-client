@@ -72,6 +72,7 @@ html, #root {
 .hero-text {
   padding: 4px 18px;
   font-size: 3.5rem;
+  text-align: center;
 }
 .cities {
   margin: 1rem 0;
