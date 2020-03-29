@@ -71,11 +71,11 @@ export default class Home extends Component {
 							
 						</div>
 						<h2 className="hero-text">
-							Stay Home. Stay Safe! 
+							Safe Slot
 						</h2>
 						<div className="hero-sub-text">
 							<Typist avgTypingDelay={100} startDelay={2000}>
-					        	Safe Slot
+					        	Stuck in lockdown?
 					        	<Typist.Backspace count={18} delay={2000} />
 					        	Running out off food and essentials?
 					        	<Typist.Backspace count={36} delay={2000} />
