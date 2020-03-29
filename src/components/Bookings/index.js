@@ -35,10 +35,10 @@ export default class Bookings extends Component {
 	}
 
 	viewBooking = (booking) => {
-		if (booking) {
+		if (booking.id) {
 			this.setState({openModal: true, selectedbooking: booking})
 		} else {
-			this.setState({openModal: false})
+			this.setState({openModal: false, selectedbooking: {}})
 		}
 	}
 
