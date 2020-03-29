@@ -48,6 +48,7 @@ export default class Bookings extends Component {
 	} 
 
 	render() {
+		 const {selectedbooking} = this.state;
 		return(
 			<div>
 				<div className="bookings">
@@ -76,12 +77,12 @@ export default class Bookings extends Component {
 											    <CardBody>
 											    	<CardTitle>
 											    		<h5>Booking Id: {booking.id}</h5>
-											    		<h6><strong>Booking Date:</strong> {booking.booking_date}</h6> 
+											    		<h6><strong>Booking Date:</strong> {new Date(booking.booking_date).toDateString()}</h6> 
 											    		<h6><strong>Your Slot:</strong> {booking.slot_id}</h6> 
 											    	</CardTitle>
 											    	{
 											    		booking.stores &&
-											    			<CardSubtitle>{booking.stores.address}, {booking.stores.locality}, {booking.stores.city}</CardSubtitle>
+											    			<CardSubtitle>{booking.stores.locality}, {booking.stores.city}</CardSubtitle>
 
 											    	}
 											      <Button outline color="info" onClick={() => this.viewBooking(booking)}>View Details</Button>
@@ -98,14 +99,18 @@ export default class Bookings extends Component {
 					<ModalHeader toggle={this.viewBooking}>Your Booking Details</ModalHeader>
 					<ModalBody>
 						<h5>Your booking is &nbsp;
-						
 						<Badge 
-							color={this.state.selectedbooking.status === "CONFIRMED" ? 'success': 'danger'}
+							color={selectedbooking.status === "CONFIRMED" ? 'success': 'danger'}
 						>
-							{this.state.selectedbooking.status}
+							{selectedbooking.status}
 						</Badge>
-						Please take screen shot of this screen and show at the store.
+						
 						</h5>
+						<p>Your visiting slot is {selectedbooking.slot_id}</p>
+						<p><strong>Booking Id:</strong>{selectedbooking.id}</p>
+						<p><strong>Store Name:</strong>{selectedbooking.stores && selectedbooking.stores.name}</p>
+						{selectedbooking.stores && <p><strong>Address:</strong> {selectedbooking.stores.address}, {selectedbooking.stores.locality}, {selectedbooking.stores.city}</p>}
+						<p>Please take screen shot of this screen and show at the store.</p>
 			        </ModalBody>
 			        <ModalFooter>
 			        	<Button color="info" outline onClick={this.viewBooking}>Close</Button>
