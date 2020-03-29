@@ -116,6 +116,7 @@ export default class Home extends Component {
 					<div className="cities">
 						<p>Popular Cities: {' '}</p>
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Delhi")}>Delhi</Button>{' '}
+						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Ghaziabad")}>Ghaziabad</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Gurugram")}>Gurugram</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Bangalore")}>Bangalore</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Noida")}>Noida</Button>{' '}
