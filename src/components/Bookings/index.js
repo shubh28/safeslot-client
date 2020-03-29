@@ -87,25 +87,24 @@ export default class Bookings extends Component {
 							</Col>
 						</Row>
 					</div>
-				</Container>
-				{
-					this.state.booking &&
-						<Modal isOpen={this.state.openModal} toggle={this.viewBooking}>
-							<ModalHeader toggle={this.viewBooking}>Your Booking Details</ModalHeader>
-							<ModalBody>
-								<h5>Your booking is &nbsp;
-									{
-										this.state.booking.status === "CONFIRMED" ? 
-										<Badge color="success">this.state.booking.status</Badge>:
-										<Badge color="danger">this.state.booking.status</Badge> 
-									}
-								</h5>
-					        </ModalBody>
-					        <ModalFooter>
-					        	<Button color="info" outline onClick={this.viewBooking}>Close</Button>
-					        </ModalFooter>
-						</Modal>
-				}
+				</Container>				
+				<Modal isOpen={this.state.openModal} toggle={this.viewBooking}>
+					<ModalHeader toggle={this.viewBooking}>Your Booking Details</ModalHeader>
+					<ModalBody>
+						<h5>Your booking is &nbsp;
+						
+						<Badge 
+							color={this.state.selectedbooking.status === "CONFIRMED" ? 'success': 'danger'}
+						>
+							{this.state.selectedbooking.status}
+						</Badge>
+						Please take screen shot of this screen and show at the store.
+						</h5>
+			        </ModalBody>
+			        <ModalFooter>
+			        	<Button color="info" outline onClick={this.viewBooking}>Close</Button>
+			        </ModalFooter>
+				</Modal>
 			</div>
 		)
 	}

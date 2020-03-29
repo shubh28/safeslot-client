@@ -56,7 +56,10 @@ html, #root {
   left: 1rem;
 }
 .booking-wrapper {
-  margin-top: 2rem;
+  margin: 2rem 0 4rem 0;
+}
+.booking-wrapper .card {
+  margin-bottom: 1rem; 
 }
 .wrapper {
   padding-bottom: 4rem;

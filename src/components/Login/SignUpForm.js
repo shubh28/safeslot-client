@@ -1,5 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Form, FormGroup, Input, Button} from 'reactstrap';
+import axios from 'axios';
+
+import {saveState, loadState} from '../../helpers/LocalStorage';
 
 export default class SignUpForm extends PureComponent {
 
@@ -20,6 +23,13 @@ export default class SignUpForm extends PureComponent {
 			alert("All fields are mandatory. Please try again");
 		}else {
 			// make user sign up
+			axios.post("https://safeslot-backend.herokuapp.com/api/users", {email, password, name, phone})
+				.then(res => {
+					this.props.toggleLogin();
+				})
+				.catch(err => {
+					alert("Error in signing you up");
+				})
 		}
 	}
 
@@ -46,7 +56,7 @@ export default class SignUpForm extends PureComponent {
 					<Input type="password" value={password} onChange={this.handleChange} name="password" placeholder="Enter Password" />
 				</FormGroup>
 				<p>Alrady have account? <a href="#" onClick={this.props.toggleLogin}>Login</a></p>
-				<Button color="info">SignUp</Button>
+				<Button type="submit" color="info" onClick={this.onLoginClick}>SignUp</Button>
 			</Form>
 		);
 	}

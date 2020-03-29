@@ -11,6 +11,6 @@ app.use(express.static(__dirname + '/build'));
 app.listen(port);
 // Return index.html for all GET requests for PathLocationStrategy
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/dist/fadmits/index.html'));
+  res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 console.log(`Server listening on ${port}`);
