@@ -23,8 +23,8 @@ export default class Bookings extends Component {
 			this.props.history.push('/');
 			return;
 		}
-		// const filter = {"where": {user_id: userId}, "include": "stores"};
-		const filter = {"include": "stores"};
+		const filter = {"where": {user_id: userId}, "include": "stores"};
+		// const filter = {"include": "stores"};
 		axios.get(`https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(filter)}`)
 			.then(res => {
 				this.setState({bookings: res.data})
