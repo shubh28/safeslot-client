@@ -3,6 +3,7 @@ import Typist from 'react-typist';
 import {Link} from "react-router-dom";
 import { Button, Input, DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import axios from 'axios';
+import Map from './../Map'
 
 import Stores from '../Stores';
 import {loadState} from "../../helpers/LocalStorage";
@@ -122,6 +123,7 @@ export default class Home extends Component {
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Noida")}>Noida</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Mumbai")}>Mumbai</Button>{' '}
 					</div>
+					<Map />
 					{
 						this.state.selectedLocation && 
 							<Stores selectedLocation={this.state.selectedLocation} history={this.props.history} isLoggedIn={isLoggedIn} />
