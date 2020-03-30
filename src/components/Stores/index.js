@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import {loadState} from "../../helpers/LocalStorage";
 
+import Map from './../Map'
 export default class Stores extends Component {
 	
 
@@ -84,51 +85,58 @@ export default class Stores extends Component {
 	render() {
 
 		return (
-			<Row>
-				<Col lg="4">
-					{
-						this.state.stores.map(store => {
-							return (
-								<Card key={store.id}>
-								    <CardBody>
-								    	<CardTitle>
-								    		<h3>{store.name}</h3>
-								    	</CardTitle>
-								      <CardSubtitle>{store.address}, {store.locality}, {store.city}</CardSubtitle>
-								      <Button outline color="info" onClick={() => this.toggleModal(store.id)}>Book Slot</Button>
-								    </CardBody>
-								</Card>
-							);
-						})
-					}
-				</Col>
-				<Modal isOpen={this.state.openSlots} toggle={this.toggleModal}>
-					<ModalHeader toggle={this.toggleModal}>Select your slot</ModalHeader>
-					<ModalBody>
+			<>
+				<Row style={{marginBottom: '1rem'}}>
+					<Col lg="4">
+						<Map stores={this.state.stores} />
+					</Col>
+				</Row>
+				<Row>				
+					<Col lg="4">
 						{
-							this.state.slots.map(slot => {
+							this.state.stores.map(store => {
 								return (
-									<Button 
-										key={slot.id}
-						          		color="info" 
-						          		outline={slot.slots && this.state.selectedSlot !==  `${slot.slots.start_time} - ${slot.slots.end_time}`} 
-						          		size="sm" 
-						          		onClick={() => {this.selectSlot(slot.slots && `${slot.slots.start_time} - ${slot.slots.end_time}`)}}
-						          	>
-						          		{slot.slots && `${slot.slots.start_time} - ${slot.slots.end_time}`}
-						          	</Button>									
+									<Card key={store.id}>
+										<CardBody>
+											<CardTitle>
+												<h3>{store.name}</h3>
+											</CardTitle>
+										<CardSubtitle>{store.address}, {store.locality}, {store.city}</CardSubtitle>
+										<Button outline color="info" onClick={() => this.toggleModal(store.id)}>Book Slot</Button>
+										</CardBody>
+									</Card>
 								);
 							})
 						}
-			        </ModalBody>
-			        <ModalFooter>
-			        	<Button color="info" onClick={this.makeBooking} disabled={this.state.selectedSlot === ''}>
-			        		Book Now
-			        	</Button>{' '}
-			        	<Button color="info" outline onClick={this.toggleModal}>Cancel</Button>
-			        </ModalFooter>
-				</Modal>
-			</Row>
+					</Col>
+					<Modal isOpen={this.state.openSlots} toggle={this.toggleModal}>
+						<ModalHeader toggle={this.toggleModal}>Select your slot</ModalHeader>
+						<ModalBody>
+							{
+								this.state.slots.map(slot => {
+									return (
+										<Button 
+											key={slot.id}
+											color="info" 
+											outline={slot.slots && this.state.selectedSlot !==  `${slot.slots.start_time} - ${slot.slots.end_time}`} 
+											size="sm" 
+											onClick={() => {this.selectSlot(slot.slots && `${slot.slots.start_time} - ${slot.slots.end_time}`)}}
+										>
+											{slot.slots && `${slot.slots.start_time} - ${slot.slots.end_time}`}
+										</Button>									
+									);
+								})
+							}
+						</ModalBody>
+						<ModalFooter>
+							<Button color="info" onClick={this.makeBooking} disabled={this.state.selectedSlot === ''}>
+								Book Now
+							</Button>{' '}
+							<Button color="info" outline onClick={this.toggleModal}>Cancel</Button>
+						</ModalFooter>
+					</Modal>
+				</Row>
+			</>
 		);
 	}
 }

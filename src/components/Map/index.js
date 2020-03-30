@@ -3,35 +3,7 @@ import ReactMapGL, { Marker, Source, Layer, Popup } from "react-map-gl";
 import { Button } from "reactstrap";
 import location from "./../../assets/location.png";
 
-const STORES = [
-  {
-    id: "A",
-    name: "Store A",
-    address: "Address of Store A",
-    locality: "Location of Store A",
-    city: "CityA",
-    latitude: 28.6536582,
-    longitude: 77.4330673
-  },
-  {
-    id: "B",
-    name: "Store B",
-    address: "Address of Store B",
-    locality: "Location of Store B",
-    city: "CityB",
-    latitude: 28.6836404,
-    longitude: 77.4394188
-  },
-  {
-    id: "C",
-    name: "Store C",
-    address: "Address of Store C",
-    locality: "Location of Store C",
-    city: "CityC",
-    latitude: 28.6705283,
-    longitude: 77.4571214
-  }
-];
+
 
 class Markers extends PureComponent {
   render() {
@@ -55,9 +27,9 @@ class Markers extends PureComponent {
   }
 }
 
-const Map = () => {
+const Map = ({stores}) => {
   const [viewport, setViewPort] = useState({
-    width: "95%",
+    width: "100%",
     height: 400,
     latitude: 28.6705283,
     longitude: 77.4394188,
@@ -73,11 +45,7 @@ const Map = () => {
       setSelectedStore(store);
     }
   };
-  const geolocateStyle = {
-    float: "left",
-    margin: "50px",
-    padding: "10px"
-  };
+  
   return (
     <div style={{ margin: "0 auto" }}>
       <ReactMapGL
@@ -92,7 +60,7 @@ const Map = () => {
         <Source type="geojson">
           <Layer />
         </Source>
-        <Markers data={STORES} onClick={onMarkerClick} />
+        <Markers data={stores} onClick={onMarkerClick} />
         {selectedStore && (
           <Popup
             tipSize={5}
@@ -103,6 +71,7 @@ const Map = () => {
             onClose={() => setSelectedStore(undefined)}
             style={{ maxWidth: "200px", padding: "10px" }}
             offsetLeft={17}
+            offsetTop={20}
           >
             <div>
               <strong>{selectedStore.name}</strong>
