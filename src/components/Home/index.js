@@ -4,9 +4,9 @@ import {Link} from "react-router-dom";
 import { Button, Input, DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import axios from 'axios';
 
-import Stores from '../Stores';
+import Stores from '../Stores/_index';
 import {loadState} from "../../helpers/LocalStorage";
-
+import Map from './../Map';
 const scrollToBottom = () => {
 	window.scrollBy(0, window.innerHeight / 2);
 }
@@ -59,8 +59,8 @@ export default class Home extends Component {
 
 		return(
 			<div className="wrapper">
-				<div className="top-fold">
-					<div className="overlay">
+				<div style={{marginBottom:'100px'}}>
+					{/* <div className="overlay">
 						<div className="login-btn">
 							<Button color="link">Join Us!</Button>
 							{
@@ -121,7 +121,8 @@ export default class Home extends Component {
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Bangalore")}>Bangalore</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Noida")}>Noida</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Mumbai")}>Mumbai</Button>{' '}
-					</div>
+					</div> */}
+							<Map/>
 
 					{
 						this.state.selectedLocation && 

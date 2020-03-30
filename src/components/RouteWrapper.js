@@ -15,6 +15,7 @@ import reducers from "../reducers";
 import {loadState, saveState} from "../helpers/LocalStorage";
 
 import fetchMiddleware from '../helpers/fetchMiddleware';
+import Stores from './Stores';
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
@@ -57,6 +58,7 @@ export default class RouteWrapper extends Component{
               <Route exact path="/" component={Home}/>
               <Route exact path="/login" component={Login}/>
                 <Route exact path="/bookings" component={Bookings}/>
+                <Route exact path="/stores" component={Stores}/>
               <Route render={() => (<Redirect to="/" />)}/>
             </Switch>
             <div className="footer">
