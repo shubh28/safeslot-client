@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Row, Col, Card, CardBody, CardSubtitle, CardTitle, Button, ModalBody,Modal, ModalHeader, ModalFooter, Badge} from 'reactstrap';
+import {Container, Row, Col, Card, CardBody, CardSubtitle, CardTitle, Button, ModalBody,Modal, ModalHeader, ModalFooter, Badge, Input} from 'reactstrap';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
@@ -12,33 +12,47 @@ export default class Bookings extends Component {
 		super(props);
 		this.state = {
 			bookings: [],
-			openModal: false,
-			selectedbooking: {}
+			viewBooking: false,
+			selectedbooking: {},
+			addDetails: false,
+			orderDetails: ''
 		}
 	}
 	
 	componentDidMount() {
+		this.getBookings();
+	}
+
+	getBookings = () => {
 		const userId = loadState('userAuthenticationDetails') && loadState('userAuthenticationDetails').userId;
 		if (!userId) {
 			this.props.history.push('/');
 			return;
 		}
 		const filter = {"where": {user_id: userId}, "include": "stores"};
-		// const filter = {"include": "stores"};
 		axios.get(`https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(filter)}`)
 			.then(res => {
 				this.setState({bookings: res.data})
 			})
 			.catch(err => {
 
-			}) 
+			});
 	}
 
 	viewBooking = (booking) => {
 		if (booking.id) {
-			this.setState({openModal: true, selectedbooking: booking})
+			this.setState({viewBooking: true, selectedbooking: booking})
 		} else {
-			this.setState({openModal: false, selectedbooking: {}})
+			this.setState({viewBooking: false, selectedbooking: {}})
+		}
+	}
+
+	toggleAddDetails = (booking) => {
+		console.log(booking);
+		if (booking.id) {
+			this.setState({addDetails: true, selectedbooking: booking});
+		} else {
+			this.setState({addDetails: false, selectedbooking: {}});
 		}
 	}
 
@@ -46,6 +60,22 @@ export default class Bookings extends Component {
 		localStorage.clear();
 		this.props.history.push("/");
 	} 
+
+	handleOrderDetails = (e) => {
+		this.setState({orderDetails: e.target.value});
+	}
+
+	addOrderDetails = () => {
+		axios.patch(`https://safeslot-backend.herokuapp.com/api/bookings/${this.state.selectedbooking.id}`, 
+			{order_details: this.state.orderDetails})
+			.then((res) => {
+				this.getBookings();
+				this.setState({addDetails: false, selectedbooking: {}});
+			})
+			.catch(err => {
+
+			})
+	}
 
 	render() {
 		 const {selectedbooking} = this.state;
@@ -86,6 +116,7 @@ export default class Bookings extends Component {
 
 											    	}
 											      <Button outline color="info" onClick={() => this.viewBooking(booking)}>View Details</Button>
+											      <Button outline color="info" onClick={() => this.toggleAddDetails(booking)}>Add Order Details</Button>
 											    </CardBody>
 											</Card>
 										);
@@ -95,7 +126,7 @@ export default class Bookings extends Component {
 						</Row>
 					</div>
 				</Container>				
-				<Modal isOpen={this.state.openModal} toggle={this.viewBooking}>
+				<Modal isOpen={this.state.viewBooking} toggle={this.viewBooking}>
 					<ModalHeader toggle={this.viewBooking}>Your Booking Details</ModalHeader>
 					<ModalBody>
 						<h5>Your booking is &nbsp;
@@ -114,6 +145,24 @@ export default class Bookings extends Component {
 			        </ModalBody>
 			        <ModalFooter>
 			        	<Button color="info" outline onClick={this.viewBooking}>Close</Button>
+			        </ModalFooter>
+				</Modal>
+				<Modal isOpen={this.state.addDetails} toggle={this.toggleAddDetails}>
+					<ModalHeader toggle={this.toggleAddDetails}>Order Details</ModalHeader>
+					<ModalBody>
+						<p>Please add your order details. Please add your items and quantity of the item you want to purchase. We will get your order prepared while you go to pick it.</p>
+						<Input 
+							type="textarea" 
+							name="order_details" 
+							rows="8" 
+							value={this.state.orderDetails || this.state.selectedbooking.order_details} 
+							onChange={this.handleOrderDetails} 
+						/>
+						<p>*All items are subject to availabilty</p>
+			        </ModalBody>
+			        <ModalFooter>
+			        	<Button color="info" outline onClick={this.addOrderDetails}>Add</Button>
+			        	<Button color="info" outline onClick={this.toggleAddDetails}>Close</Button>
 			        </ModalFooter>
 				</Modal>
 			</div>
