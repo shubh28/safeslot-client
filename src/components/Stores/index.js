@@ -20,16 +20,18 @@ export default class Stores extends Component {
 		}
 	}
 
+	componentDidUpdate(prevProps) {
+		if (prevProps.selectedLocation !== this.props.selectedLocation) {
+			const {selectedLocation} = this.props;
+			const location = selectedLocation && selectedLocation.split(',')[0];
+			this.getStoreData(location);
+		}
+	}
+
 	componentDidMount() {
 		const {selectedLocation} = this.props;
 		const location = selectedLocation && selectedLocation.split(',')[0];
-		axios.get(`https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}`)
-			.then(res => {
-				this.setState({stores: res.data})
-			})
-			.catch(err=> {
-				alert("Some error while fetching stores");
-			})
+		this.getStoreData(location);
 	}
 
 	toggleModal = (storesId) => {
@@ -53,6 +55,17 @@ export default class Stores extends Component {
 				})			
 		}
 	}
+
+	getStoreData = (location) => {
+		axios.get(`https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}`)
+			.then(res => {
+				this.setState({stores: res.data})
+			})
+			.catch(err=> {
+				alert("Some error while fetching stores");
+			})
+	}
+
 
 	makeBooking = () => {
 		const {isLoggedIn, history} = this.props;
