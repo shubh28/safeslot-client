@@ -1,9 +1,8 @@
-import React, { PureComponent, useState } from "react";
+import React, { useState } from "react";
 import ReactMapGL, {
   Marker,
   Source,
   Layer,
-  Popup,
   GeolocateControl
 } from "react-map-gl";
 import { Button } from "reactstrap";
@@ -12,29 +11,7 @@ import Geocoder from "react-map-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import styled from "styled-components";
-import {Link} from 'react-router-dom'
-
-// class Markers extends PureComponent {
-//   render() {
-//     const { data, onClick } = this.props;
-//     return data.map(store => (
-//       <>
-//         <Marker
-//           key={store.id}
-//           longitude={store.longitude}
-//           latitude={store.latitude}
-//         >
-//           <img
-//             src={location}
-//             alt="mark"
-//             height="50px"
-//             onClick={() => onClick(store)}
-//           />
-//         </Marker>
-//       </>
-//     ));
-//   }
-// }
+import { Link } from "react-router-dom";
 
 const Controls = styled.div`
   display: grid;
@@ -51,7 +28,6 @@ const Map = () => {
     zoom: 12
   });
 
-  const [selectedLocation, setSelectedLocation] = useState();
   const mapRef = React.useRef();
   const geoCoderContainerRef = React.useRef();
   const _onViewportChange = viewport => {
@@ -71,7 +47,7 @@ const Map = () => {
   };
 
   return (
-    <div style={{ margin: "0 auto 40px auto" }}>
+    <div style={{ margin: "0 auto" }}>
       <ReactMapGL
         ref={mapRef}
         {...viewport}
@@ -130,12 +106,6 @@ const Map = () => {
           to={`/stores?lat=${viewport.latitude}&long=${viewport.longitude}`}
         >
           <Button
-            onClick={() =>
-              setSelectedLocation({
-                lat: viewport.latitude,
-                long: viewport.longitude
-              })
-            }
             style={{
               position: "absolute",
               left: "50%",
@@ -147,37 +117,7 @@ const Map = () => {
             Locate Stores{" "}
           </Button>
         </Link>
-        {/* <Markers data={stores} onClick={onMarkerClick} />
-        {selectedStore && (
-          <Popup
-            tipSize={5}
-            anchor="top"
-            longitude={selectedStore.longitude}
-            latitude={selectedStore.latitude}
-            closeOnClick={false}
-            onClose={() => setSelectedStore(undefined)}
-            style={{ maxWidth: "200px", padding: "10px" }}
-            offsetLeft={17}
-            offsetTop={20}
-          >
-            <div>
-              <strong>{selectedStore.name}</strong>
-              <p>{selectedStore.address}</p>
-              <Button outline color="info" onClick={() => this.toggleModal()}>
-                Book Slot
-              </Button>
-            </div>
-          </Popup>
-        )} */}
       </ReactMapGL>
-
-      
-      {/* {selectedLocation && (
-        <div>
-          {" "}
-          {`lat: ${selectedLocation.latitude} long: ${selectedLocation.longitude}`}{" "}
-        </div>
-      )} */}
     </div>
   );
 };
