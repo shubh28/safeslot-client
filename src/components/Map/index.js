@@ -12,6 +12,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useCurrentLocationContext } from "../../contexts/current-location-context";
 
 const Controls = styled.div`
   display: grid;
@@ -19,12 +20,17 @@ const Controls = styled.div`
   grid-gap: 5%;
   margin: 20px 10px;
 `;
+
 const Map = () => {
+  const {
+    currentLocation: { latitude: initialLat, longitude: initialLng },
+    setCurrentLocation
+  } = useCurrentLocationContext();
   const [viewport, setViewPort] = useState({
     width: "100vw",
     height: "90vh",
-    latitude: 28.69999999999997,
-    longitude: 77.19999999999999,
+    latitude: initialLat,
+    longitude: initialLng,
     zoom: 12
   });
 
@@ -102,9 +108,7 @@ const Map = () => {
           />
         </Marker>
 
-        <Link
-          to={`/stores?lat=${viewport.latitude}&long=${viewport.longitude}`}
-        >
+        <Link to={`/stores?lat=${viewport.latitude}&lng=${viewport.longitude}`}>
           <Button
             style={{
               position: "absolute",
@@ -112,6 +116,12 @@ const Map = () => {
               bottom: 30,
               transform: "translateX(-50%)"
             }}
+            onClick={() =>
+              setCurrentLocation({
+                latitude: viewport.latitude,
+                longitude: viewport.longitude
+              })
+            }
           >
             {" "}
             Locate Stores{" "}
