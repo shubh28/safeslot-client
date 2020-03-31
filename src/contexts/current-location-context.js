@@ -4,8 +4,8 @@ const CurrentLocationContext = createContext();
 
 function CurrentLocationProvider({ children }) {
   const [currentLocation, setCurrentLocation] = useState({
-    latitude: 28.69999999999997,
-    longitude: 77.19999999999999
+    latitude: 28.63298099999998,
+    longitude: 77.21928800000002
   });
 
   return (
