@@ -28,7 +28,7 @@ const Map = () => {
   } = useCurrentLocationContext();
   const [viewport, setViewPort] = useState({
     width: "100vw",
-    height: "90vh",
+    height: "100vh",
     latitude: initialLat,
     longitude: initialLng,
     zoom: 12

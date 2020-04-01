@@ -3,14 +3,7 @@ import {
   Card,
   CardBody,
   CardTitle,
-  CardSubtitle,
   Button,
-  Row,
-  Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Container as DefaultContainer
 } from "reactstrap";
 import axios from "axios";
@@ -21,6 +14,7 @@ import styled from "styled-components";
 import { ReactComponent as Back } from "../../assets/back.svg";
 import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
 import { loadState } from "../../helpers/LocalStorage";
+import SelectSlotModal from "./SlotsModal";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -31,12 +25,13 @@ function Stores() {
   const lng = query.get("lng");
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
-  const [storeSlots, setStoreSlots] = useState({
-    openSlots: false,
-    slots: [],
-    selectedStore: "",
-    selectedSlot: ""
-  });
+  const [selectedStore, setSelectedStore] = useState();
+  // const [storeSlots, setStoreSlots] = useState({
+  //   openSlots: false,
+  //   slots: [],
+  //   selectedStore: "",
+  //   selectedSlot: ""
+  // });
   useEffect(() => {
     setLoading(true);
     axios
@@ -52,52 +47,39 @@ function Stores() {
       });
   }, [lat, lng]);
 
-  function toggleModal(storesId) {
-    if (storeSlots.openSlots) {
-      setStoreSlots({ ...storeSlots, ...{ openSlots: !storeSlots.openSlots } });
-    } else {
-      const filter = { where: { storesId }, include: "slots" };
-      axios
-        .get(`${API_URL}stores_slots_counts?filter=${JSON.stringify(filter)}`)
-        .then(res => {
-          setStoreSlots({
-            openSlots: true,
-            slots: res.data,
-            selectedStore: storesId
-          });
-        })
-        .catch(err => {
-          alert("Some error while fetching stores");
-        });
-    }
-  }
+  // function onModalLoad(storesId) {
+  //   if (storeSlots.openSlots) {
+  //     setStoreSlots({ ...storeSlots, ...{ openSlots: !storeSlots.openSlots } });
+  //   } else {
+  //   }
+  // }
 
-  function makeBooking() {
-    const { isLoggedIn, history } = this.props;
-    const { selectedStore, selectedSlot } = this.state;
-    const userId =
-      loadState("userAuthenticationDetails") &&
-      loadState("userAuthenticationDetails").userId;
-    if (!isLoggedIn) {
-      history.push("/login");
-    } else {
-      axios
-        .post("https://safeslot-backend.herokuapp.com/api/bookings", {
-          store_id: selectedStore,
-          slot_id: selectedSlot,
-          user_id: userId
-        })
-        .then(res => {
-          history.push("/bookings");
-        })
-        .catch(err => {
-          alert("Error while making booking");
-        });
-    }
-  }
-  function selectSlot(slot) {
-    setStoreSlots({ ...storeSlots, selectedSlot: slot });
-  }
+  // function makeBooking() {
+  //   const { isLoggedIn, history } = this.props;
+  //   const { selectedStore, selectedSlot } = this.state;
+  //   const userId =
+  //     loadState("userAuthenticationDetails") &&
+  //     loadState("userAuthenticationDetails").userId;
+  //   if (!isLoggedIn) {
+  //     history.push("/login");
+  //   } else {
+  //     axios
+  //       .post("https://safeslot-backend.herokuapp.com/api/bookings", {
+  //         store_id: selectedStore,
+  //         slot_id: selectedSlot,
+  //         user_id: userId
+  //       })
+  //       .then(res => {
+  //         history.push("/bookings");
+  //       })
+  //       .catch(err => {
+  //         alert("Error while making booking");
+  //       });
+  //   }
+  // }
+  // function selectSlot(slot) {
+  //   setStoreSlots({ ...storeSlots, selectedSlot: slot });
+  // }
   const Header = styled.div`
     display: grid;
     grid-template-columns: 50px 1fr;
@@ -180,7 +162,10 @@ function Stores() {
                       <Button
                         outline
                         color="info"
-                        onClick={() => toggleModal(store.id)}
+                        onClick={() => {
+                          setSelectedStore(store);
+                          console.log(store);
+                        }}
                       >
                         Book Slot
                       </Button>
@@ -203,46 +188,12 @@ function Stores() {
         </div>
       </Container>
 
-      <Modal isOpen={storeSlots.openSlots} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}>Select your slot</ModalHeader>
-        <ModalBody>
-          {storeSlots.slots.map(slot => {
-            return (
-              <Button
-                key={slot.id}
-                color="info"
-                outline={
-                  slot.slots &&
-                  storeSlots.selectedSlot !==
-                    `${slot.slots.start_time} - ${slot.slots.end_time}`
-                }
-                size="sm"
-                onClick={() => {
-                  selectSlot(
-                    slot.slots &&
-                      `${slot.slots.start_time} - ${slot.slots.end_time}`
-                  );
-                }}
-              >
-                {slot.slots &&
-                  `${slot.slots.start_time} - ${slot.slots.end_time}`}
-              </Button>
-            );
-          })}
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="info"
-            onClick={makeBooking}
-            disabled={storeSlots.selectedSlot === ""}
-          >
-            Book Now
-          </Button>{" "}
-          <Button color="info" outline onClick={toggleModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+      {selectedStore ? (
+        <SelectSlotModal
+          selectedStore={selectedStore}
+          onCloseModal={() => setSelectedStore(undefined)}
+        />
+      ) : null}
     </>
   );
 }

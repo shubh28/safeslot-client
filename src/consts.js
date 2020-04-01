@@ -1,6 +1,7 @@
 // Types for action types
 // export const API_URL = "http://theanswerme.com:8000/api/v1";
-export const API_URL = "https://safeslot-backend.herokuapp.com/api/";
+// export const API_URL = "https://safeslot-backend.herokuapp.com/api/";
+export const API_URL = "http://localhost:3001/api/";
 
 export const SIGN_IN_INIT = "SIGN_IN_INIT";
 export const SIGN_IN_SUCCESS = "SIGIN_IN_SUCCESS";
