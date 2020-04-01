@@ -3,15 +3,14 @@ import axios from "axios";
 import { API_URL } from "./../../../consts";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
+import { loadState } from "../../../helpers/LocalStorage";
+
 function SelectSlotModal({ selectedStore: { id: storeId }, onCloseModal }) {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(undefined);
-  const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    setDisplayModal(!!storeId);
-
     setLoadingSlots(true);
     const filter = { where: { storesId: storeId }, include: "slots" };
     axios
@@ -25,6 +24,29 @@ function SelectSlotModal({ selectedStore: { id: storeId }, onCloseModal }) {
       .finally(() => setLoadingSlots(false));
   }, [storeId]);
 
+  function makeBooking() {
+    const { isLoggedIn, history } = this.props;
+    const { selectedStore, selectedSlot } = this.state;
+    const userId =
+      loadState("userAuthenticationDetails") &&
+      loadState("userAuthenticationDetails").userId;
+    if (!isLoggedIn) {
+      history.push("/login");
+    } else {
+      axios
+        .post(`${API_URL}bookings`, {
+          store_id: selectedStore,
+          slot_id: selectedSlot,
+          user_id: userId
+        })
+        .then(res => {
+          history.push("/bookings");
+        })
+        .catch(err => {
+          alert("Error while making booking");
+        });
+    }
+  }
   return (
     <Modal isOpen={!!storeId} toggle={onCloseModal}>
       <ModalHeader toggle={onCloseModal}>Select your slot</ModalHeader>
@@ -60,13 +82,9 @@ function SelectSlotModal({ selectedStore: { id: storeId }, onCloseModal }) {
         )}
       </ModalBody>
       <ModalFooter>
-        {/*  <Button
-          color="info"
-          onClick={makeBooking}
-          disabled={storeSlots.selectedSlot === ""}
-        >
+        {/* <Button color="info" onClick={makeBooking} disabled={!selectedSlot}>
           Book Now
-        </Button>{" "}*/}
+        </Button>{" "} */}
         <Button color="info" outline onClick={onCloseModal}>
           Cancel
         </Button>
