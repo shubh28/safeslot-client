@@ -20,7 +20,7 @@ import { API_URL } from "../../consts";
 import styled from "styled-components";
 import { ReactComponent as Back } from "../../assets/back.svg";
 import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
-import {loadState} from "../../helpers/LocalStorage";
+import { loadState } from "../../helpers/LocalStorage";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -34,8 +34,8 @@ function Stores() {
   const [storeSlots, setStoreSlots] = useState({
     openSlots: false,
     slots: [],
-    selectedStore: '',
-    selectedSlot:''
+    selectedStore: "",
+    selectedSlot: ""
   });
   useEffect(() => {
     setLoading(true);
@@ -72,32 +72,32 @@ function Stores() {
     }
   }
 
-
-  function makeBooking(){
-		const {isLoggedIn, history} = this.props;
-		const {selectedStore, selectedSlot} = this.state;
-		const userId = loadState('userAuthenticationDetails') && loadState('userAuthenticationDetails').userId;
-		if (!isLoggedIn) {
-			history.push("/login");
-		} else{
-			axios.post("https://safeslot-backend.herokuapp.com/api/bookings", {
-				store_id: selectedStore,
-				slot_id: selectedSlot,
-				user_id: userId
-			})
-			.then(res => {
-				history.push('/bookings');
-			})
-			.catch(err=> {
-				alert("Error while making booking");
-			})
-		}
-	}
+  function makeBooking() {
+    const { isLoggedIn, history } = this.props;
+    const { selectedStore, selectedSlot } = this.state;
+    const userId =
+      loadState("userAuthenticationDetails") &&
+      loadState("userAuthenticationDetails").userId;
+    if (!isLoggedIn) {
+      history.push("/login");
+    } else {
+      axios
+        .post("https://safeslot-backend.herokuapp.com/api/bookings", {
+          store_id: selectedStore,
+          slot_id: selectedSlot,
+          user_id: userId
+        })
+        .then(res => {
+          history.push("/bookings");
+        })
+        .catch(err => {
+          alert("Error while making booking");
+        });
+    }
+  }
   function selectSlot(slot) {
-		setStoreSlots({...storeSlots,
-			selectedSlot: slot
-		});
-	}
+    setStoreSlots({ ...storeSlots, selectedSlot: slot });
+  }
   const Header = styled.div`
     display: grid;
     grid-template-columns: 50px 1fr;

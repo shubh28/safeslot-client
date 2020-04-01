@@ -72,16 +72,13 @@ export default class RouteWrapper extends Component {
                 <Route render={() => <Redirect to="/" />} />
               </CurrentLocationProvider>
             </Switch>
-            <div className="footer">
-              CREATED BY
-              <a href="https://www.linkedin.com/in/shubhamjain94/">
-                Shubham Jain
-              </a>
-              <a href="https://www.linkedin.com/in/shubhamjain94/">
-                Akshay Nagpal
-              </a>
-              <img className="donate" src={donate} />
+            {/*<div className="footer">
+                CREATED BY
+                <a href="https://www.linkedin.com/in/shubhamjain94/">Shubham Jain</a>
+                <a href="https://www.linkedin.com/in/shubhamjain94/">Akshay Nagpal</a>
+                <img className="donate" src={donate}/>
             </div>
+          */}
           </div>
         </Router>
       </Provider>
