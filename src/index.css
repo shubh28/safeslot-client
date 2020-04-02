@@ -201,3 +201,11 @@ a:hover {
   top: 0;
   right: 0;
 }
+.slot-listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.list-group-item {
+  padding: .25rem;
+}

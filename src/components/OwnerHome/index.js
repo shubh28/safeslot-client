@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import {Container, Row, Col, Card, CardBody, CardSubtitle, CardTitle, Button, ModalBody,Modal, ModalHeader, ModalFooter, Badge, Input} from 'reactstrap';
+import {Container, Row, Col, Card, CardBody, CardSubtitle, CardTitle, Button, ModalBody,Modal, ModalHeader, ModalFooter, Badge} from 'reactstrap';
 import axios from 'axios';
 
 import {saveState, loadState} from '../../helpers/LocalStorage';
+import AddSlots from '../AddSlots';
 
 export default class OwnerHome extends Component {
 	
@@ -12,8 +13,13 @@ export default class OwnerHome extends Component {
 			user: {},
 			bookings: [],
 			viewDetails: false,
-			selectedbooking: {}
+			selectedbooking: {},
+			addSlots: false
 		}
+	}
+
+	toggleAddSlots = () => {
+		this.setState({addSlots: !this.state.addSlots})
 	}
 
 	componentDidMount() {
@@ -72,6 +78,10 @@ export default class OwnerHome extends Component {
 						<h5>{user.phone}</h5>
 						<h6>{store.address}</h6>
 						<h6>{store.locality}</h6>
+						<Button color="info" onClick={this.toggleAddSlots}>Edit Slots</Button>
+						{
+							this.state.addSlots && <AddSlots openModal={this.state.addSlots} user={this.state.user} toggleAddSlots={this.toggleAddSlots} />
+						}
 						{
 							this.state.bookings.length === 0 &&
 								<h3 className="text-center">No Bookings Found</h3>
@@ -105,15 +115,8 @@ export default class OwnerHome extends Component {
 					<Modal isOpen={this.state.viewDetails} toggle={this.toggleViewDetails}>
 						<ModalHeader toggle={this.toggleViewDetails}>Order Details</ModalHeader>
 						<ModalBody>
-							<p>Please add your order details. Please add your items and quantity of the item you want to purchase. We will get your order prepared while you go to pick it.</p>
-							<Input 
-								type="textarea" 
-								name="order_details" 
-								rows="8" 
-								value={this.state.orderDetails || this.state.selectedbooking.order_details} 
-								onChange={this.handleOrderDetails} 
-							/>
-							<p>*All items are subject to availabilty</p>
+							<p>Please prepare following order for the user to come and pickup.</p>
+							<p>{this.state.selectedbooking.order_details}</p>
 				        </ModalBody>
 				        <ModalFooter>
 				        	<Button color="info" outline onClick={this.addOrderDetails}>Add</Button>
