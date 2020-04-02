@@ -14,7 +14,7 @@ import styled from "styled-components";
 import { ReactComponent as Back } from "../../assets/back.svg";
 import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
 import { loadState } from "../../helpers/LocalStorage";
-import SelectSlotModal from "./SlotsModal";
+import Slots from "./Slots";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -34,10 +34,21 @@ function Stores() {
   // });
   useEffect(() => {
     setLoading(true);
+
     axios
       .get(`${API_URL}stores/location?lat=${lat}&lng=${lng}`)
       .then(res => {
-        setStores(res.data);
+        const stores = res.data.map(store => {
+          const { stores_slots_count, ...others } = store;
+          const slots = stores_slots_count.map(store_slot => store_slot.slots);
+          return {
+            ...others,
+            slots
+          };
+        });
+        console.log({ data: stores });
+
+        setStores(stores);
       })
       .catch(err => {
         alert("Some error while fetching stores");
@@ -159,6 +170,7 @@ function Stores() {
                             : ""}
                         </div>
                       </HeaderDataContainer>
+                      <Slots availableSlots={store.slots} />
                       <Button
                         outline
                         color="info"
@@ -187,13 +199,6 @@ function Stores() {
           )}
         </div>
       </Container>
-
-      {selectedStore ? (
-        <SelectSlotModal
-          selectedStore={selectedStore}
-          onCloseModal={() => setSelectedStore(undefined)}
-        />
-      ) : null}
     </>
   );
 }
