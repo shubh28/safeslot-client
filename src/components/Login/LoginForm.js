@@ -28,12 +28,20 @@ export default class LoginForm extends PureComponent {
 		if (email==='' || password === '') {
 			alert("Please enter email and password");
 		}else {
-			// make user sign up
 			axios.post("https://safeslot-backend.herokuapp.com/api/users/login", {email, password})
 				.then(res => {
 					saveState('userAuthenticationDetails', res.data);
-					this.props.history.push("/");
-					console.log("User info");
+					axios.get(`https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`)
+						.then(response => {
+							saveState('userInfo', response.data);
+							if (!response.data.isStoreOwner) {
+								this.props.history.push("/");
+							} else if (response.data.isStoreOwner && !response.data.storeId) {
+								this.props.history.push("/onboard");
+							} else {
+								this.props.history.push("/owner");
+							}
+						});
 				})
 				.catch(err => {
 					alert("Error in logging user");

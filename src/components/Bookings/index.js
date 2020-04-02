@@ -35,7 +35,7 @@ export default class Bookings extends Component {
 				this.setState({bookings: res.data})
 			})
 			.catch(err => {
-
+				alert("Some error occurred");
 			});
 	}
 
@@ -48,7 +48,6 @@ export default class Bookings extends Component {
 	}
 
 	toggleAddDetails = (booking) => {
-		console.log(booking);
 		if (booking.id) {
 			this.setState({addDetails: true, selectedbooking: booking});
 		} else {

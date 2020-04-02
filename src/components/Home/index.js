@@ -62,7 +62,7 @@ export default class Home extends Component {
 				<div className="top-fold">
 					<div className="overlay">
 						<div className="login-btn">
-							<Button color="link">Join Us!</Button>
+							<Button color="link">Contact Us</Button>
 							{
 								isLoggedIn?
 									<Button tag={Link} to="/bookings" outline color="primary">My Bookings</Button>:
