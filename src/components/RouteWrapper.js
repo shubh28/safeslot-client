@@ -20,6 +20,7 @@ import { loadState, saveState } from "../helpers/LocalStorage";
 import fetchMiddleware from "../helpers/fetchMiddleware";
 import Stores from "./Stores";
 import { CurrentLocationProvider } from "../contexts/current-location-context";
+import { CurrentUserProvider } from "../contexts/current-user-context";
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
@@ -63,11 +64,13 @@ export default class RouteWrapper extends Component {
           <div>
             <Switch>
               <CurrentLocationProvider>
-                <Route exact path="/" component={Home} />
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/bookings" component={Bookings} />
-                <Route exact path="/stores" component={Stores} />
-                <Route render={() => <Redirect to="/" />} />
+                <CurrentUserProvider>
+                  <Route exact path="/" component={Home} />
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/bookings" component={Bookings} />
+                  <Route exact path="/stores" component={Stores} />
+                  <Route render={() => <Redirect to="/" />} />
+                </CurrentUserProvider>
               </CurrentLocationProvider>
             </Switch>
             {/*<div className="footer">
