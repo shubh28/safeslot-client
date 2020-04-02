@@ -24,12 +24,7 @@ function Stores() {
   const lng = query.get("lng");
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
-  // const [storeSlots, setStoreSlots] = useState({
-  //   openSlots: false,
-  //   slots: [],
-  //   selectedStore: "",
-  //   selectedSlot: ""
-  // });
+
   useEffect(() => {
     setLoading(true);
 
@@ -56,42 +51,9 @@ function Stores() {
       });
   }, [lat, lng]);
 
-  // function onModalLoad(storesId) {
-  //   if (storeSlots.openSlots) {
-  //     setStoreSlots({ ...storeSlots, ...{ openSlots: !storeSlots.openSlots } });
-  //   } else {
-  //   }
-  // }
-
-  // function makeBooking() {
-  //   const { isLoggedIn, history } = this.props;
-  //   const { selectedStore, selectedSlot } = this.state;
-  //   const userId =
-  //     loadState("userAuthenticationDetails") &&
-  //     loadState("userAuthenticationDetails").userId;
-  //   if (!isLoggedIn) {
-  //     history.push("/login");
-  //   } else {
-  //     axios
-  //       .post("https://safeslot-backend.herokuapp.com/api/bookings", {
-  //         store_id: selectedStore,
-  //         slot_id: selectedSlot,
-  //         user_id: userId
-  //       })
-  //       .then(res => {
-  //         history.push("/bookings");
-  //       })
-  //       .catch(err => {
-  //         alert("Error while making booking");
-  //       });
-  //   }
-  // }
-  // function selectSlot(slot) {
-  //   setStoreSlots({ ...storeSlots, selectedSlot: slot });
-  // }
   const Header = styled.div`
     display: grid;
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: 36px 1fr;
     grid-gap: 10px;
     background-color: #000000;
     svg {
@@ -168,7 +130,7 @@ function Stores() {
                             : ""}
                         </div>
                       </HeaderDataContainer>
-                      <Slots availableSlots={store.slots} />
+                      <Slots availableSlots={store.slots} storeId={store.id} />
                       {/* <Button
                         outline
                         color="info"

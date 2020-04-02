@@ -17,8 +17,9 @@ import { useCurrentLocationContext } from "../../contexts/current-location-conte
 const Controls = styled.div`
   display: grid;
   grid-template-columns: 50px 1fr;
-  grid-gap: 5%;
-  margin: 20px 10px;
+  grid-gap: 10px;
+  margin: 20px auto;
+  width: 90%;
 `;
 
 const Map = () => {
@@ -27,7 +28,7 @@ const Map = () => {
     setCurrentLocation
   } = useCurrentLocationContext();
   const [viewport, setViewPort] = useState({
-    width: "100vw",
+    width: "450px",
     height: "100vh",
     latitude: initialLat,
     longitude: initialLng,
@@ -74,7 +75,7 @@ const Map = () => {
           <div
             ref={geoCoderContainerRef}
             style={{
-              height: 50
+              height: "50px"
             }}
           />
         </Controls>

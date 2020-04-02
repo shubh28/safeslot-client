@@ -5,6 +5,7 @@ import { API_URL } from "../../../consts";
 import { Button } from "reactstrap";
 
 import { loadState } from "../../../helpers/LocalStorage";
+import { useHistory } from "react-router-dom";
 
 const SlotWrapper = styled.div`
   overflow-x: auto;
@@ -18,60 +19,34 @@ const SlotButton = styled(Button)`
   padding: 0.175rem 0.8rem;
 `;
 
-function Slots({ availableSlots }) {
-  //   const [availableSlots, setAvailableSlots] = useState([]);
-  //   const [loadingSlots, setLoadingSlots] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState(undefined);
-
-  //   useEffect(() => {
-  //     setLoadingSlots(true);
-  //     const filter = { where: { storesId: storeId }, include: "slots" };
-  //     axios
-  //       .get(`${API_URL}stores_slots_counts?filter=${JSON.stringify(filter)}`)
-  //       .then(res => {
-  //         setAvailableSlots(res.data);
-  //       })
-  //       .catch(err => {
-  //         alert("Some error while fetching stores");
-  //       })
-  //       .finally(() => setLoadingSlots(false));
-  //   }, [storeId]);
-
-  function makeBooking() {
-    const { isLoggedIn, history } = this.props;
-    const { selectedStore, selectedSlot } = this.state;
-    const userId =
-      loadState("userAuthenticationDetails") &&
-      loadState("userAuthenticationDetails").userId;
-    if (!isLoggedIn) {
-      history.push("/login");
-    } else {
+function Slots({ availableSlots, storeId }) {
+  const history = useHistory();
+  function makeBooking(slotId) {
+    const tokenObj = loadState("userAuthenticationDetails");
+    const token = tokenObj && tokenObj.id;
+    const userId = tokenObj && tokenObj.userId;
+    if (token && userId) {
       axios
         .post(`${API_URL}bookings`, {
-          store_id: selectedStore,
-          slot_id: selectedSlot,
+          store_id: storeId,
+          slot_id: slotId,
           user_id: userId
         })
         .then(res => {
+          console.log("makeBooking successful");
           history.push("/bookings");
         })
         .catch(err => {
           alert("Error while making booking");
         });
+    } else {
+      history.push("/login");
     }
   }
 
   return (
-    // <Modal isOpen={!!storeId} toggle={onCloseModal}>
-    //   <ModalHeader toggle={onCloseModal}>Select your slot</ModalHeader>
-    //   <ModalBody>
-
     <SlotWrapper>
-      {//   loadingSlots ? (
-      //     <div>Loading slots...</div>
-      //   ) :
-
-      availableSlots.length ? (
+      {availableSlots.length ? (
         availableSlots.map(slot => {
           return (
             <>
@@ -79,18 +54,11 @@ function Slots({ availableSlots }) {
                 <SlotButton
                   key={slot.id}
                   color="info"
-                  outline={
-                    slot &&
-                    availableSlots.selectedSlot !==
-                      `${slot.start_time} - ${slot.end_time}`
-                  }
+                  outline
                   size="sm"
-                  onClick={() => {
-                    slot &&
-                      setSelectedSlot(`${slot.start_time} - ${slot.end_time}`);
-                  }}
+                  onClick={() => makeBooking(slot.id)}
                 >
-                  {slot && `${slot.start_time} - ${slot.end_time}`}
+                  {`${slot.start_time} - ${slot.end_time}`}
                 </SlotButton>
               )}
             </>
@@ -99,16 +67,6 @@ function Slots({ availableSlots }) {
       ) : (
         <div>No slots found</div>
       )}
-      {/* </ModalBody>
-      <ModalFooter>
-         <Button color="info" onClick={makeBooking} disabled={!selectedSlot}>
-          Book Now
-        </Button>{" "} }
-        <Button color="info" outline onClick={onCloseModal}>
-          Cancel
-        </Button>
-      </ModalFooter>
-    </Modal> */}
     </SlotWrapper>
   );
 }
