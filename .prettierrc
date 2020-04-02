@@ -2,5 +2,8 @@
     "arrowParens": "avoid",
     "endOfLine": "auto",
     "printWidth": 80,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "singleQuote": true,
+	"tabWidth": 2,
+	"useTabs" : false
 }

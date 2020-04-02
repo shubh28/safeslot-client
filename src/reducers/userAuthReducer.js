@@ -1,4 +1,4 @@
-import {SIGN_IN_INIT, SIGN_IN_SUCCESS, SIGN_IN_ERROR} from "../consts";
+import { SIGN_IN_INIT, SIGN_IN_SUCCESS, SIGN_IN_ERROR } from '../consts';
 import initState from './initialState';
 
 export default function (state = initState.userAuthenticationDetails, action) {
@@ -6,19 +6,19 @@ export default function (state = initState.userAuthenticationDetails, action) {
     case SIGN_IN_INIT:
       return {
         isFetching: true,
-        data: {...state.data, isLoggedIn: false},
+        data: { ...state.data, isLoggedIn: false },
         error: {}
       };
     case SIGN_IN_SUCCESS:
       return {
         isFetching: false,
-        data: {...action.data, isLoggedIn: true},
+        data: { ...action.data, isLoggedIn: true },
         error: {}
       };
     case SIGN_IN_ERROR:
       return {
         isFetching: false,
-        data: {...state.data, isLoggedIn: false},
+        data: { ...state.data, isLoggedIn: false },
         error: action.data
       };
     default:
