@@ -14,8 +14,6 @@ import Home from "../components/Home";
 import Login from "../components/Login";
 import Bookings from "../components/Bookings";
 
-import donate from "../assets/donate.png";
-
 import reducers from "../reducers";
 import { loadState, saveState } from "../helpers/LocalStorage";
 

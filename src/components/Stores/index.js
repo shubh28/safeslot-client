@@ -13,7 +13,6 @@ import { API_URL } from "../../consts";
 import styled from "styled-components";
 import { ReactComponent as Back } from "../../assets/back.svg";
 import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
-import { loadState } from "../../helpers/LocalStorage";
 import Slots from "./Slots";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -25,7 +24,6 @@ function Stores() {
   const lng = query.get("lng");
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectedStore, setSelectedStore] = useState();
   // const [storeSlots, setStoreSlots] = useState({
   //   openSlots: false,
   //   slots: [],
@@ -171,7 +169,7 @@ function Stores() {
                         </div>
                       </HeaderDataContainer>
                       <Slots availableSlots={store.slots} />
-                      <Button
+                      {/* <Button
                         outline
                         color="info"
                         onClick={() => {
@@ -180,7 +178,7 @@ function Stores() {
                         }}
                       >
                         Book Slot
-                      </Button>
+                      </Button> */}
                     </CardBody>
                   </Card>
                 );

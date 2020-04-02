@@ -1,66 +1,65 @@
-import React, {Component} from 'react';
-import Typist from 'react-typist';
-import {Link} from "react-router-dom";
-import { Button, Input, DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
-import Stores from '../Stores/_index';
-import {loadState} from "../../helpers/LocalStorage";
-import Map from './../Map';
+import Stores from "../Stores/_index";
+import { loadState } from "../../helpers/LocalStorage";
+import Map from "./../Map";
 const scrollToBottom = () => {
-	window.scrollBy(0, window.innerHeight / 2);
-}
+  window.scrollBy(0, window.innerHeight / 2);
+};
 
 export default class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      locations: [],
+      selectedLocation: "",
+      isLoggedIn: false,
+      term: ""
+    };
+  }
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			locations: [],
-			selectedLocation: '',
-			isLoggedIn: false,
-			term: ''
-		}
-	}
+  componentDidMount() {
+    const token =
+      loadState("userAuthenticationDetails") &&
+      loadState("userAuthenticationDetails").id;
+    if (token) {
+      this.setState({ isLoggedIn: true });
+    }
+  }
 
-	componentDidMount() {
-		const token = loadState('userAuthenticationDetails') && loadState('userAuthenticationDetails').id;
-		if (token) {
-			this.setState({isLoggedIn: true});
-		}
-	}
+  searchLocality = e => {
+    this.setState({ term: e.target.value });
+    if (e.target.value.length > 3) {
+      axios
+        .get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.target.value}.json?access_token=pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ&cachebuster=1585165720796&autocomplete=true&limit=8`
+        )
+        .then(res => {
+          this.setState({ locations: (res.data && res.data.features) || [] });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
 
-	searchLocality = (e) => {
-		this.setState({term: e.target.value});
-		if (e.target.value.length > 3) {
-			axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.target.value}.json?access_token=pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ&cachebuster=1585165720796&autocomplete=true&limit=8`)
-				.then(res => {
-					this.setState({locations: res.data && res.data.features || []})
-				})
-				.catch(err => {
-					console.log(err);
-				})
+  handlePlaceSelect(place) {
+    scrollToBottom();
+    this.setState({
+      selectedLocation: place,
+      locations: [],
+      term: place
+    });
+  }
 
-		}
-	}
+  render() {
+    const { isLoggedIn } = this.state;
 
-	handlePlaceSelect(place) {
-		scrollToBottom();
-		this.setState({
-			selectedLocation: place,
-			locations: [],
-			term: place
-		})
-	}
-
-	render() {
-
-		const {isLoggedIn} = this.state;
-
-		return(
-			<div className="wrapper">
-				<div style={{marginBottom:'100px'}}>
-					{/* <div className="overlay">
+    return (
+      <div className="wrapper">
+        <div style={{ marginBottom: "100px" }}>
+          {/* <div className="overlay">
 						<div className="login-btn">
 							<Button color="link">Join Us!</Button>
 							{
@@ -122,14 +121,17 @@ export default class Home extends Component {
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Noida")}>Noida</Button>{' '}
 						<Button outline color="info" size="sm" onClick={() => this.handlePlaceSelect("Mumbai")}>Mumbai</Button>{' '}
 					</div> */}
-							<Map/>
+          <Map />
 
-					{
-						this.state.selectedLocation && 
-							<Stores selectedLocation={this.state.selectedLocation} history={this.props.history} isLoggedIn={isLoggedIn} />
-					}
-				</div>
-			</div>
-		);
-	}
+          {this.state.selectedLocation && (
+            <Stores
+              selectedLocation={this.state.selectedLocation}
+              history={this.props.history}
+              isLoggedIn={isLoggedIn}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
 }
