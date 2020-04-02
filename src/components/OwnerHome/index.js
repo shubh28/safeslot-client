@@ -60,7 +60,11 @@ export default class OwnerHome extends Component {
 		}
 	}
 
-	viewBooking
+	logout = () => {
+		localStorage.clear();
+		this.props.history.push("/");
+	} 
+
 
 	render() {
 
@@ -119,7 +123,6 @@ export default class OwnerHome extends Component {
 							<p>{this.state.selectedbooking.order_details}</p>
 				        </ModalBody>
 				        <ModalFooter>
-				        	<Button color="info" outline onClick={this.addOrderDetails}>Add</Button>
 				        	<Button color="info" outline onClick={this.toggleViewDetails}>Close</Button>
 				        </ModalFooter>
 					</Modal>

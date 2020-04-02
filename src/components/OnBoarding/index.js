@@ -88,6 +88,12 @@ export default class OnBoarding extends Component {
 		this.setState({locality: location, latitude: center[0], longitude: center[1], locations: []});
 	}
 
+	logout = () => {
+		localStorage.clear();
+		this.props.history.push("/");
+	} 
+
+
 	render() {
 		const {	name, store_size, gstin, billing_counters, address, locality, city} = this.state;
 		return(
