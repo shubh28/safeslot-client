@@ -33,6 +33,9 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "engines": {
+    "node": "12.13.1"
+  },
   "devDependencies": {
     "prettier": "^1.5.2"
   }
