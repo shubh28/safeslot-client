@@ -3,11 +3,16 @@ import {Header as StyledHeader} from './../../styles'
 import {Link,useHistory} from 'react-router-dom';
 
 import { loadState } from '../../helpers/LocalStorage';
+import { DEFAULT_LOCATION } from '../../consts';
+import {useLocationAndStoreContext} from '../../contexts/location-and-store-context'
 function Header ({heading, backPath}){
     const history = useHistory();
     const [displayLogout, setDisplayLogout] = useState(false);
+    const {setLocation,setStoreSlotId} = useLocationAndStoreContext();
     function logOut() {
         localStorage.clear();
+        setLocation(DEFAULT_LOCATION);
+        setStoreSlotId(undefined);
         history.push('/');
       };
 

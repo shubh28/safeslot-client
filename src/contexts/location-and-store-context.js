@@ -1,12 +1,10 @@
 import React, { useState, createContext, useContext } from "react";
+import { DEFAULT_LOCATION } from "../consts";
 
 const LocationAndStoreContext = createContext();
 
 function LocationAndStoreProvider({ children }) {
-  const [locationAndStore, setLocationAndStore] = useState({location : {
-    latitude: 28.63298099999998,
-    longitude: 77.21928800000002
-  }, storeSlotId:undefined});
+  const [locationAndStore, setLocationAndStore] = useState({location : DEFAULT_LOCATION, storeSlotId:undefined});
 
   function setLocation(location){
     setLocationAndStore({...locationAndStore,location})

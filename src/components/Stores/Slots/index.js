@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { API_URL } from "../../../consts";
@@ -20,11 +20,10 @@ const SlotButton = styled(Button)`
   padding: 0.175rem 0.8rem;
 `;
 
-function Slots({ availableSlots, storeId }) {
+function Slots({ availableSlots=[], storeId }) {
   const history = useHistory();
   const {storeSlotId,setStoreSlotId} = useLocationAndStoreContext();
 
-  
   function makeBooking(slotId) {
     const tokenObj = loadState("userAuthenticationDetails");
     const token = tokenObj && tokenObj.id;
@@ -50,6 +49,7 @@ function Slots({ availableSlots, storeId }) {
   }
 
   return (
+    <>
     <SlotWrapper>
       {availableSlots.length ? (
         availableSlots.map(slot => {
@@ -61,7 +61,7 @@ function Slots({ availableSlots, storeId }) {
                   color="info"
                   outline={!(slot.id===storeSlotId)}
                   size="sm"
-                  onClick={() => makeBooking(slot.id)}
+                  onClick={() => setStoreSlotId(slot.id)}
                 >
                   {`${slot.start_time} - ${slot.end_time}`}
                 </SlotButton>
@@ -72,7 +72,11 @@ function Slots({ availableSlots, storeId }) {
       ) : (
         <div>No slots found</div>
       )}
+
     </SlotWrapper>
+    {availableSlots.length  && 
+      <Button onClick={()=>makeBooking(storeSlotId)}>Book Slot</Button>}
+    </>
   );
 }
 export default Slots;
