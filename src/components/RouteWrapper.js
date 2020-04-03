@@ -10,30 +10,19 @@ import thunk from 'redux-thunk';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { throttle } from 'lodash';
 
-import Home from '../components/Home';
-import Login from '../components/Login';
-import Bookings from '../components/Bookings';
+
 
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
-import thunk from 'redux-thunk';
-import { applyMiddleware, compose, createStore } from 'redux';
-import { throttle } from 'lodash';
 
 import Home from '../components/Home';
 import Login from '../components/Login';
 import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
-
-import donate from '../assets/donate.png';
-
-import reducers from '../reducers';
-import { loadState, saveState } from '../helpers/LocalStorage';
-
-import fetchMiddleware from '../helpers/fetchMiddleware';
 import Stores from './Stores';
 import { CurrentLocationProvider } from '../contexts/current-location-context';
+import fetchMiddleware from '../helpers/fetchMiddleware';
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
