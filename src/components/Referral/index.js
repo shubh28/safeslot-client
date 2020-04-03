@@ -30,7 +30,9 @@ export default class OnBoarding extends Component {
       latitude: '',
       longitude: '',
       locations: [],
-      store_type: ''
+      store_type: '',
+      email: '',
+      phone: ''
     };
   }
 
@@ -56,6 +58,8 @@ export default class OnBoarding extends Component {
       city,
       latitude,
       longitude,
+      phone,
+      email,
       store_type
     } = this.state;
     if (
@@ -87,26 +91,15 @@ export default class OnBoarding extends Component {
         lat: latitude,
         lng: longitude
       },
+      phone,
+      email,
       store_type,
-      isVerified: true
+      isVerified: false
     };
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
       .then(res => {
-        const userId =
-          loadState('userAuthenticationDetails') &&
-          loadState('userAuthenticationDetails').userId;
-        axios
-          .patch(`https://safeslot-backend.herokuapp.com/api/users/${userId}`, {
-            storeId: res.data.id
-          })
-          .then(user => {
-            saveState('userInfo', user.data);
-            this.props.history.push('/owners');
-          })
-          .catch(err => {
-            alert('Some error occurred');
-          });
+        this.props.history.push('/');
       })
       .catch(err => {
         alert('Some error occurred');
@@ -121,6 +114,7 @@ export default class OnBoarding extends Component {
     var state = { ...this.state };
     state[key] = e.target.value;
     this.setState({ ...state });
+    console.log(state);
   };
 
   handleLocalitySearch = e => {
@@ -162,12 +156,13 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_type
+      phone,
+      email
     } = this.state;
     return (
       <div className="onboarding">
         <div className="bookings">
-          <h2 className="text-center">OnBoarding</h2>
+          <h2 className="text-center">Refer Store</h2>
           <a href="#" className="logout" onClick={this.logout}>
             Logout
           </a>
@@ -175,7 +170,7 @@ export default class OnBoarding extends Component {
         <Container>
           <Form>
             <FormText tag="h5" color="black">
-              Please fill in your details to get started up.
+              Please refer nearby stores.
             </FormText>
             <FormGroup>
               <Input
@@ -185,6 +180,26 @@ export default class OnBoarding extends Component {
                 onChange={this.handleOnChange}
                 name="name"
                 placeholder="Store name"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Input
+                type="tel"
+                value={phone}
+                required
+                onChange={this.handleOnChange}
+                name="phone"
+                placeholder="Phone Number (Optional)"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Input
+                type="email"
+                value={email}
+                required
+                onChange={this.handleOnChange}
+                name="email"
+                placeholder="Email (Optional)"
               />
             </FormGroup>
             <FormGroup>
@@ -199,7 +214,6 @@ export default class OnBoarding extends Component {
                 <option value="PHARMACY">Pharmacies</option>
               </Input>
             </FormGroup>
-
             <FormGroup>
               <Input
                 type="text"
