@@ -1,30 +1,28 @@
-import React, { PureComponent } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
+import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 
-import { saveState, loadState } from '../../helpers/LocalStorage';
+  import { saveState, loadState } from '../../helpers/LocalStorage';
 
-export default class LoginForm extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: ''
-    };
-  }
+export default function LoginForm ({toggleLogin}){
 
-  componentDidMount() {
+
+  const [formData,setFormData] = useState({email:'',password:''});
+  const history = useHistory();
+
+  useEffect(()=>{
     const token =
-      loadState('userAuthenticationDetails') &&
-      loadState('userAuthenticationDetails').id;
+    loadState('userAuthenticationDetails') &&
+    loadState('userAuthenticationDetails').id;
     if (token) {
-      this.props.history.push('/');
+      history.push('/');
     }
-  }
-
-  onLoginClick = e => {
+  },[])
+ 
+  function onLoginClick(e){
     e.preventDefault();
-    const { email, password } = this.state;
+    const { email, password } = formData;
     if (email === '' || password === '') {
       alert('Please enter email and password');
     } else {
@@ -42,11 +40,11 @@ export default class LoginForm extends PureComponent {
             .then(response => {
               saveState('userInfo', response.data);
               if (!response.data.isStoreOwner) {
-                this.props.history.push('/');
+                history.push('/');
               } else if (response.data.isStoreOwner && !response.data.storeId) {
-                this.props.history.push('/onboard');
+                history.push('/onboard');
               } else {
-                this.props.history.push('/owner');
+                history.push('/owner');
               }
             });
         })
@@ -54,22 +52,22 @@ export default class LoginForm extends PureComponent {
           alert('Error in logging user');
         });
     }
-  };
+  }
 
-  handleChange = e => {
-    var obj = { ...this.state };
+
+  function handleChange (e) {
+    var obj = { ...formData };
     obj[e.target.name] = e.target.value;
-    this.setState(obj);
+    setFormData(obj);
   };
 
-  render() {
     return (
       <Form>
         <FormGroup>
           <Input
             type="email"
-            value={this.state.email}
-            onChange={this.handleChange}
+            value={formData.email}
+            onChange={handleChange}
             name="email"
             id="exampleEmail"
             placeholder="Enter Email"
@@ -78,8 +76,8 @@ export default class LoginForm extends PureComponent {
         <FormGroup>
           <Input
             type="password"
-            value={this.state.password}
-            onChange={this.handleChange}
+            value={formData.password}
+            onChange={handleChange}
             name="password"
             id="examplePassword"
             placeholder="Enter Password"
@@ -87,14 +85,14 @@ export default class LoginForm extends PureComponent {
         </FormGroup>
         <p>
           Don't have account?{' '}
-          <a href="#" onClick={this.props.toggleLogin}>
+          <a href="#" onClick={toggleLogin}>
             Sign Up
           </a>
         </p>
-        <Button type="submit" color="info" onClick={this.onLoginClick}>
+        <Button type="submit" color="info" onClick={onLoginClick}>
           Login
         </Button>
       </Form>
     );
-  }
+  
 }

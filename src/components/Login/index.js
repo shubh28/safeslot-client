@@ -1,23 +1,17 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showLogin: true
-    };
+export default function Login() {
+  
+  const [showLogin,setShowLogin] = useState(true);
+  function toggleLogin () {
+    setShowLogin(!showLogin);
   }
 
-  toggleLogin = () => {
-    this.setState({ showLogin: !this.state.showLogin });
-  };
-
-  render() {
     return (
       <Container>
         <div className="home-login">
@@ -30,20 +24,17 @@ export default class Login extends Component {
             Welcome!<br></br> Login / Register to continue
           </h4>
           <div className="login-form">
-            {this.state.showLogin ? (
+            {showLogin ? (
               <LoginForm
-                toggleLogin={this.toggleLogin}
-                history={this.props.history}
+                toggleLogin={toggleLogin}
               />
             ) : (
               <SignUpForm
-                toggleLogin={this.toggleLogin}
-                history={this.props.history}
+                toggleLogin={toggleLogin}
               />
             )}
           </div>
         </div>
       </Container>
     );
-  }
 }
