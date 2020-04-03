@@ -26,7 +26,7 @@ export default class SignUpForm extends PureComponent {
     } else {
       // make user sign up
       axios
-        .post(`${API_URL}users`, {
+        .post(`${API_URL}/users`, {
           email,
           password,
           name,

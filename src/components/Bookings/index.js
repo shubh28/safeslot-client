@@ -48,7 +48,7 @@ export default class Bookings extends Component {
     }
     const filter = { where: { user_id: userId }, include: 'stores' };
     axios
-      .get(`${API_URL}bookings?filter=${JSON.stringify(filter)}`)
+      .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
       .then(res => {
         this.setState({ bookings: res.data });
       })
@@ -84,7 +84,7 @@ export default class Bookings extends Component {
 
   addOrderDetails = () => {
     axios
-      .patch(`${API_URL}bookings/${this.state.selectedbooking.id}`, {
+      .patch(`${API_URL}/bookings/${this.state.selectedbooking.id}`, {
         order_details: this.state.orderDetails
       })
       .then(res => {

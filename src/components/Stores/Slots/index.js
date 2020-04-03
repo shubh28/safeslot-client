@@ -27,7 +27,7 @@ function Slots({ availableSlots, storeId }) {
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
-        .post(`${API_URL}bookings`, {
+        .post(`${API_URL}/bookings`, {
           store_id: storeId,
           slot_id: slotId,
           user_id: userId
