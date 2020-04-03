@@ -6,6 +6,7 @@ import { Button } from "reactstrap";
 
 import { loadState } from "../../../helpers/LocalStorage";
 import { useHistory } from "react-router-dom";
+import { useLocationAndStoreContext } from "../../../contexts/location-and-store-context";
 
 const SlotWrapper = styled.div`
   overflow-x: auto;
@@ -21,6 +22,9 @@ const SlotButton = styled(Button)`
 
 function Slots({ availableSlots, storeId }) {
   const history = useHistory();
+  const {storeSlotId,setStoreSlotId} = useLocationAndStoreContext();
+
+  
   function makeBooking(slotId) {
     const tokenObj = loadState("userAuthenticationDetails");
     const token = tokenObj && tokenObj.id;
@@ -40,6 +44,7 @@ function Slots({ availableSlots, storeId }) {
           alert("Error while making booking");
         });
     } else {
+      setStoreSlotId(slotId)
       history.push("/login");
     }
   }
@@ -54,7 +59,7 @@ function Slots({ availableSlots, storeId }) {
                 <SlotButton
                   key={slot.id}
                   color="info"
-                  outline
+                  outline={!(slot.id===storeSlotId)}
                   size="sm"
                   onClick={() => makeBooking(slot.id)}
                 >

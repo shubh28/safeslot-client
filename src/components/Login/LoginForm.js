@@ -4,12 +4,14 @@ import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 
   import { saveState, loadState } from '../../helpers/LocalStorage';
+import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 
 export default function LoginForm ({toggleLogin}){
 
 
   const [formData,setFormData] = useState({email:'',password:''});
   const history = useHistory();
+  const {storeSlotId} = useLocationAndStoreContext();
 
   useEffect(()=>{
     const token =
@@ -40,7 +42,11 @@ export default function LoginForm ({toggleLogin}){
             .then(response => {
               saveState('userInfo', response.data);
               if (!response.data.isStoreOwner) {
-                history.push('/');
+                if(storeSlotId){
+                  history.replace('/stores');
+                }else{
+                  history.replace('/')
+                }
               } else if (response.data.isStoreOwner && !response.data.storeId) {
                 history.push('/onboard');
               } else {

@@ -12,8 +12,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useCurrentLocationContext } from "../../contexts/current-location-context";
-
+import { useLocationAndStoreContext } from "../../contexts/location-and-store-context";
+import {useHistory}  from 'react-router-dom';
 const Controls = styled.div`
   display: grid;
   grid-template-columns: 50px 1fr;
@@ -24,9 +24,12 @@ const Controls = styled.div`
 
 const Map = () => {
   const {
-    currentLocation: { latitude: initialLat, longitude: initialLng },
-    setCurrentLocation
-  } = useCurrentLocationContext();
+    location: { latitude: initialLat, longitude: initialLng },
+    setLocation,
+    setStoreSlotId
+  } = useLocationAndStoreContext();
+
+  const history = useHistory();
   const [viewport, setViewPort] = useState({
     width: "450px",
     height: "100vh",
@@ -109,7 +112,6 @@ const Map = () => {
           />
         </Marker>
 
-        <Link to={`/stores?lat=${viewport.latitude}&lng=${viewport.longitude}`}>
           <Button
             style={{
               position: "absolute",
@@ -118,16 +120,18 @@ const Map = () => {
               transform: "translateX(-50%)"
             }}
             onClick={() =>
-              setCurrentLocation({
+              {setStoreSlotId(undefined);
+              setLocation({
                 latitude: viewport.latitude,
                 longitude: viewport.longitude
-              })
+              });
+            history.push('/stores')}
+
             }
           >
             {" "}
             Locate Stores{" "}
           </Button>
-        </Link>
       </ReactMapGL>
     </div>
   );

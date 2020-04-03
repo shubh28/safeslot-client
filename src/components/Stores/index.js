@@ -15,17 +15,17 @@ import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
 import Slots from "./Slots";
 import { Container } from "../../styles";
 import { Header } from "../common";
+import {useLocationAndStoreContext} from '../../contexts/location-and-store-context'
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+
 function Stores() {
-  const query = useQuery();
+  // const query = useQuery();
 
-  const lat = query.get("lat");
-  const lng = query.get("lng");
+  // const lat = query.get("lat");
+  // const lng = query.get("lng");
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
+  const {location: {latitude: lat,longitude:lng}} = useLocationAndStoreContext();
 
   useEffect(() => {
     setLoading(true);

@@ -21,7 +21,7 @@ import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
 import Stores from './Stores';
-import { CurrentLocationProvider } from '../contexts/current-location-context';
+import { LocationAndStoreProvider } from '../contexts/location-and-store-context';
 import fetchMiddleware from '../helpers/fetchMiddleware';
 
 const enhancers = compose(
@@ -65,7 +65,7 @@ export default class RouteWrapper extends Component {
         <Router>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <Switch>
-              <CurrentLocationProvider>
+              <LocationAndStoreProvider>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
@@ -73,7 +73,7 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/onboard" component={OnBoarding} />
                 <Route exact path="/owners" component={OwnerHome} />
                 <Route render={() => <Redirect to="/" />} />
-                  </CurrentLocationProvider>
+                  </LocationAndStoreProvider>
 
               <Route render={() => <Redirect to="/" />} />
             </Switch>
