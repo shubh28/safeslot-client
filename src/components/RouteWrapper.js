@@ -1,25 +1,39 @@
-import React, { Component } from "react";
-import Provider from "react-redux/es/components/Provider";
+import React, { Component } from 'react';
+import Provider from 'react-redux/es/components/Provider';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Redirect
-} from "react-router-dom";
-import thunk from "redux-thunk";
-import { applyMiddleware, compose, createStore } from "redux";
-import { throttle } from "lodash";
+} from 'react-router-dom';
+import thunk from 'redux-thunk';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { throttle } from 'lodash';
 
-import Home from "../components/Home";
-import Login from "../components/Login";
-import Bookings from "../components/Bookings";
+import Home from '../components/Home';
+import Login from '../components/Login';
+import Bookings from '../components/Bookings';
 
-import reducers from "../reducers";
-import { loadState, saveState } from "../helpers/LocalStorage";
+import reducers from '../reducers';
+import { loadState, saveState } from '../helpers/LocalStorage';
+import thunk from 'redux-thunk';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { throttle } from 'lodash';
 
-import fetchMiddleware from "../helpers/fetchMiddleware";
-import Stores from "./Stores";
-import { CurrentLocationProvider } from "../contexts/current-location-context";
+import Home from '../components/Home';
+import Login from '../components/Login';
+import Bookings from '../components/Bookings';
+import OwnerHome from '../components/OwnerHome';
+import OnBoarding from '../components/OnBoarding';
+
+import donate from '../assets/donate.png';
+
+import reducers from '../reducers';
+import { loadState, saveState } from '../helpers/LocalStorage';
+
+import fetchMiddleware from '../helpers/fetchMiddleware';
+import Stores from './Stores';
+import { CurrentLocationProvider } from '../contexts/current-location-context';
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
@@ -28,7 +42,7 @@ const enhancers = compose(
     : f => f
 );
 
-const userLoggedIndetails = loadState("userAuthenticationDetails");
+const userLoggedIndetails = loadState('userAuthenticationDetails');
 let localStateObject;
 
 if (userLoggedIndetails) {
@@ -60,15 +74,19 @@ export default class RouteWrapper extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <Switch>
               <CurrentLocationProvider>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
                 <Route exact path="/stores" component={Stores} />
+                <Route exact path="/onboard" component={OnBoarding} />
+                <Route exact path="/owners" component={OwnerHome} />
                 <Route render={() => <Redirect to="/" />} />
-              </CurrentLocationProvider>
+                  </CurrentLocationProvider>
+
+              <Route render={() => <Redirect to="/" />} />
             </Switch>
             {/*<div className="footer">
                 CREATED BY

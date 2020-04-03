@@ -1,0 +1,22 @@
+{
+  "editor.fontSize": 18,
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.singleQuote": true,
+  "eslint.enable": true,
+  "files.exclude": {
+    "node_modules": true,
+    ".npm-offline-cache": true
+  },
+ 
+}

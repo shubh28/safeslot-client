@@ -43,12 +43,15 @@ html, #root {
   justify-content: center;
   background-color: #17a2b8;
   color: #fff;
-  padding: .5rem;
+  padding: .8rem;
 }
 .bookings .logout {
   color: #fff;
   position: absolute;
   right: 1rem;
+}
+.bookings h2 {
+  margin: 0;
 }
 .booking-header a {
   /*background-color: #17a2b8;*/
@@ -62,6 +65,12 @@ html, #root {
 }
 .booking-wrapper {
   margin: 2rem 0 4rem 0;
+}
+.onboarding form{ 
+  margin: 2rem 0;
+}
+.owners .container{
+  margin: 1rem 0; 
 }
 .card {
   margin-bottom: .2rem;
@@ -191,4 +200,12 @@ a:hover {
   position: absolute;
   top: 0;
   right: 0;
+}
+.slot-listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.list-group-item {
+  padding: .25rem;
 }

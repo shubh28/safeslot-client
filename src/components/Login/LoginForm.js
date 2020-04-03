@@ -1,45 +1,57 @@
-import React, { PureComponent } from "react";
-import { Form, FormGroup, Input, Button } from "reactstrap";
-import axios from "axios";
+import React, { PureComponent } from 'react';
+import { Form, FormGroup, Input, Button } from 'reactstrap';
+import axios from 'axios';
 
-import { saveState, loadState } from "../../helpers/LocalStorage";
-import { API_URL } from "../../consts";
+import { saveState, loadState } from '../../helpers/LocalStorage';
 
 export default class LoginForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: ""
+      email: '',
+      password: ''
     };
   }
 
   componentDidMount() {
     const token =
-      loadState("userAuthenticationDetails") &&
-      loadState("userAuthenticationDetails").id;
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').id;
     if (token) {
-      this.props.history.push("/");
+      this.props.history.push('/');
     }
   }
 
   onLoginClick = e => {
     e.preventDefault();
     const { email, password } = this.state;
-    if (email === "" || password === "") {
-      alert("Please enter email and password");
+    if (email === '' || password === '') {
+      alert('Please enter email and password');
     } else {
-      // make user sign up
       axios
-        .post(`${API_URL}users/login`, { email, password })
+        .post('https://safeslot-backend.herokuapp.com/api/users/login', {
+          email,
+          password
+        })
         .then(res => {
-          console.log("saving user auth in siginSuccess");
-          saveState("userAuthenticationDetails", res.data);
-          this.props.history.push("/");
-          console.log("User info");
+          saveState('userAuthenticationDetails', res.data);
+          axios
+            .get(
+              `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
+            )
+            .then(response => {
+              saveState('userInfo', response.data);
+              if (!response.data.isStoreOwner) {
+                this.props.history.push('/');
+              } else if (response.data.isStoreOwner && !response.data.storeId) {
+                this.props.history.push('/onboard');
+              } else {
+                this.props.history.push('/owner');
+              }
+            });
         })
         .catch(err => {
-          alert("Error in logging user");
+          alert('Error in logging user');
         });
     }
   };
@@ -74,7 +86,7 @@ export default class LoginForm extends PureComponent {
           />
         </FormGroup>
         <p>
-          Don't have account?{" "}
+          Don't have account?{' '}
           <a href="#" onClick={this.props.toggleLogin}>
             Sign Up
           </a>
