@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import { loadState } from '../../helpers/LocalStorage';
 
 import { API_URL } from '../../consts';
+import { Header } from '../common';
 
 export default class Bookings extends Component {
   constructor(props) {
@@ -98,17 +99,7 @@ export default class Bookings extends Component {
     const { selectedbooking } = this.state;
     return (
       <div>
-        <div className="bookings">
-          <div className="booking-header">
-            <Link to="/">
-              <span className="material-icons">arrow_back</span>
-            </Link>
-          </div>
-          <h2 className="text-center">Bookings</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
+        <Header heading='Bookings' backPath={'/'} /> 
         <Container>
           <div className="booking-wrapper">
             {this.state.bookings.length === 0 && (

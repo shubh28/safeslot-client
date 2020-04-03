@@ -4,7 +4,6 @@ import {
   CardBody,
   CardTitle,
   Button,
-  Container as DefaultContainer
 } from "reactstrap";
 import axios from "axios";
 
@@ -14,6 +13,9 @@ import styled from "styled-components";
 import { ReactComponent as Back } from "../../assets/back.svg";
 import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
 import Slots from "./Slots";
+import { Container } from "../../styles";
+import { Header } from "../common";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -51,21 +53,8 @@ function Stores() {
       });
   }, [lat, lng]);
 
-  const Header = styled.div`
-    display: grid;
-    grid-template-columns: 36px 1fr;
-    grid-gap: 10px;
-    background-color: #000000;
-    svg {
-      height: 24px;
-      width: 24px;
-    }
-  `;
 
-  const Container = styled(DefaultContainer)`
-    padding-top: 10px;
-    padding-bottom: 40px;
-  `;
+
 
   const HeaderDataContainer = styled.div`
     display: grid;
@@ -96,16 +85,9 @@ function Stores() {
   `;
   return (
     <>
-      <Header>
-        <div>
-          <Link to={"/"}>
-            <Button>
-              <Back />
-            </Button>
-          </Link>
-        </div>
-        <div></div>
-      </Header>
+       <Header heading='place name' backPath={'/'} /> 
+         
+     
       <Container className="theme-Container" fluid={true}>
         <div>
           {loading || !stores ? (
