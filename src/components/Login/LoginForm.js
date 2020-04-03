@@ -46,7 +46,7 @@ export default class LoginForm extends PureComponent {
               } else if (response.data.isStoreOwner && !response.data.storeId) {
                 this.props.history.push('/onboard');
               } else {
-                this.props.history.push('/owner');
+                this.props.history.push('/owners');
               }
             });
         })

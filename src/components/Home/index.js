@@ -32,8 +32,22 @@ export default class Home extends Component {
     const token =
       loadState('userAuthenticationDetails') &&
       loadState('userAuthenticationDetails').id;
+    const userId =
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').userId;
+
     if (token) {
       this.setState({ isLoggedIn: true });
+      axios
+        .get(`https://safeslot-backend.herokuapp.com/api/users/${userId}`)
+        .then(res => {
+          if (res.data.isStoreOwner) {
+            this.props.history.push('/owners');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 
