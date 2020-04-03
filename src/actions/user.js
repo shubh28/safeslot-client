@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  API_URL,
   USER_LOGIN,
   GET_USER,
   USER_LOGOUT,
@@ -13,13 +12,14 @@ import {
   GET_MENTORS_INIT,
   GET_MENTORS_SUCCESS,
   GET_MENTORS_ERROR
-} from '../consts';
+} from '../common/consts';
+import * as Endpoints from '../common/endpoints';
 
 export const createProfile = profile => {
   return {
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: '/api/v1/profile',
+      host: Endpoints.API_HOST,
+      path: Endpoints.PROFILE_URL,
       method: 'POST',
       body: profile,
       success: createProfileSuccess,
@@ -60,8 +60,8 @@ function createProfileStart() {
 export const getUserProfileForId = id => {
   return {
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: `/api/v1/user/${id}`,
+      host: Endpoints.API_HOST,
+      path: Endpoints.USER_PROFILE_URL(id),
       method: 'GET',
       success: getProfileSuccess,
       failure: getProfileError,
@@ -73,8 +73,8 @@ export const getUserProfileForId = id => {
 export const getUserProfile = () => {
   return {
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: '/api/v1/profile',
+      host: Endpoints.API_HOST,
+      path: Endpoints.PROFILE_URL,
       method: 'GET',
       success: getProfileSuccess,
       failure: getProfileError,
@@ -121,8 +121,8 @@ export const getMentors = () => {
   return {
     type: 'FETCH_MENTORS',
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: '/api/v1/mentors',
+      host: Endpoints.API_HOST,
+      path: Endpoints.MENTORS_URL,
       method: 'GET',
       success: fetchMentorsSuccess,
       failure: fetchMentorsFail,

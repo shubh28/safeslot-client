@@ -1,11 +1,12 @@
-import * as Constants from '../consts';
+import * as Constants from '../common/consts';
+import * as Endpoints from '../common/endpoints';
 import { saveState } from '../helpers/LocalStorage';
 
 export const login = (email, password) => {
   return {
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: '/api/v1/login',
+      host: Endpoints.API_HOST,
+      path: Endpoints.LOGIN_URL,
       method: 'POST',
       body: {
         email,
@@ -34,8 +35,8 @@ function signInFailure(error) {
 export const signUp = (email, password, confirmPassword) => {
   return {
     fetchConfig: {
-      host: 'http://localhost:7000',
-      path: '/api/v1/signup',
+      host: Endpoints.API_HOST,
+      path: Endpoints.SIGN_UP_URL,
       method: 'POST',
       body: {
         email,

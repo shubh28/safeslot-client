@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { API_URL } from '../consts';
+import * as Endpoints from '../common/endpoints';
 import { getPostForId } from './story';
 
 export const addComment = (post_id, description) => dispatch => {
   axios
-    .post(`${API_URL}/post/${post_id}/comment`, { description })
+    .post(Endpoints.ADD_COMMENT_URL(post_id), { description })
     .then(res => {
       window.location.reload();
     })
@@ -15,7 +15,7 @@ export const addComment = (post_id, description) => dispatch => {
 
 export const deleteComment = (post_id, comment_id) => dispatch => {
   axios
-    .delete(`${API_URL}/comment/${comment_id}`)
+    .delete(Endpoints.UPDATE_COMMENT_URL(comment_id))
     .then(res => {
       dispatch(getPostForId(post_id));
     })
@@ -26,7 +26,7 @@ export const deleteComment = (post_id, comment_id) => dispatch => {
 
 export const editComment = (post_id, comment_id, description) => dispatch => {
   axios
-    .patch(`${API_URL}/comment/${comment_id}`, { description })
+    .patch(Endpoints.UPDATE_COMMENT_URL(comment_id), { description })
     .then(res => {
       dispatch(getPostForId(post_id));
     })

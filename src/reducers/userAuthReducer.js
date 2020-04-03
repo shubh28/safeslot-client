@@ -1,4 +1,4 @@
-import { SIGN_IN_INIT, SIGN_IN_SUCCESS, SIGN_IN_ERROR } from '../consts';
+import { SIGN_IN_INIT, SIGN_IN_SUCCESS, SIGN_IN_ERROR } from '../common/consts';
 import initState from './initialState';
 
 export default function (state = initState.userAuthenticationDetails, action) {

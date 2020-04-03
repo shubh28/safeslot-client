@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-import { API_URL, GET_ALL_POSTS, GET_POST_DETAIL } from '../consts';
+import * as Endpoints from '../common/endpoints';
+import { GET_ALL_POSTS, GET_POST_DETAIL } from '../common/consts';
 
 function emitAllPosts(data) {
   return {
@@ -10,13 +11,7 @@ function emitAllPosts(data) {
 }
 
 export const getAllPosts = searchTerm => dispatch => {
-  let url;
-  if (!searchTerm || searchTerm === '') {
-    url = `${API_URL}/posts`;
-  } else {
-    url = `${API_URL}/posts?includes=asked_by,answers&q=${searchTerm}`;
-  }
-  axios.get(url).then(res => {
+  axios.get(Endpoints.POSTS_URL(searchTerm)).then(res => {
     dispatch(emitAllPosts(res.data));
   });
 };
@@ -29,14 +24,14 @@ function emitPostDetails(data) {
 }
 
 export const getPostForId = id => dispatch => {
-  axios.get(`${API_URL}/${id}/posts`).then(res => {
+  axios.get(Endpoints.POSTS_URL()).then(res => {
     dispatch(emitPostDetails(res.data));
   });
 };
 
 export const deletePost = (id, history) => dispatch => {
   axios
-    .delete(`${API_URL}/${id}/posts`)
+    .delete(Endpoints.POSTS_URL())
     .then(res => {
       history.push('/');
     })
@@ -47,7 +42,7 @@ export const deletePost = (id, history) => dispatch => {
 
 export const addPost = (title, description, history) => dispatch => {
   axios
-    .post(`${API_URL}/posts`, { title, description })
+    .post(Endpoints.POSTS_URL(), { title, description })
     .then(res => {
       history.push(`/story/${res.data.post_id}`);
     })
@@ -59,7 +54,7 @@ export const addPost = (title, description, history) => dispatch => {
 
 export const editPost = (id, title, description, history) => dispatch => {
   axios
-    .patch(`${API_URL}/${id}/posts`, { title, description })
+    .patch(Endpoints.POSTS_URL(), { title, description })
     .then(res => {
       history.push(`/story/${res.data.post_id}`);
     })
@@ -69,25 +64,12 @@ export const editPost = (id, title, description, history) => dispatch => {
 };
 
 export const addComment = (questionId, description, answerId) => dispatch => {
-  if (answerId === undefined) {
-    axios
-      .post(`${API_URL}/questions/${questionId}/comments`, { description })
-      .then(res => {
-        dispatch(getPostForId(questionId));
-      })
-      .catch(err => {
-        alert('Some error while adding comment');
-      });
-  } else {
-    axios
-      .post(`${API_URL}/questions/${questionId}/answers/${answerId}/comments`, {
-        description
-      })
-      .then(res => {
-        dispatch(getPostForId(questionId));
-      })
-      .catch(err => {
-        alert('Some error while adding comment');
-      });
-  }
+  axios
+    .post(Endpoints.COMMENTS_URL({ questionId, answerId }), { description })
+    .then(res => {
+      dispatch(getPostForId(questionId));
+    })
+    .catch(err => {
+      alert('Some error while adding comment');
+    });
 };
