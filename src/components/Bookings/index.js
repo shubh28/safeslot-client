@@ -99,14 +99,14 @@ export default class Bookings extends Component {
     const { selectedbooking } = this.state;
     return (
       <div>
-        <Header heading='Bookings' backPath={'/'} /> 
+        <Header heading="Bookings" backPath={'/'} />
         <Container>
           <div className="booking-wrapper">
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>
             )}
             <Row>
-              <Col lg="4">
+              <Col>
                 {this.state.bookings.map(booking => {
                   return (
                     <Card key={booking.id}>

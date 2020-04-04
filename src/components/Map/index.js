@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import ReactMapGL, {
   Marker,
   Source,
   Layer,
   GeolocateControl
-} from "react-map-gl";
-import { Button } from "reactstrap";
-import location from "./../../assets/location.png";
-import Geocoder from "react-map-gl-geocoder";
-import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useLocationAndStoreContext } from "../../contexts/location-and-store-context";
-import {useHistory}  from 'react-router-dom';
+} from 'react-map-gl';
+import { Button } from 'reactstrap';
+import location from './../../assets/location.png';
+import Geocoder from 'react-map-gl-geocoder';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
+import { useHistory } from 'react-router-dom';
 const Controls = styled.div`
   display: grid;
   grid-template-columns: 50px 1fr;
@@ -31,8 +31,8 @@ const Map = () => {
 
   const history = useHistory();
   const [viewport, setViewPort] = useState({
-    width: "450px",
-    height: "100vh",
+    width: '100%',
+    height: '95vh',
     latitude: initialLat,
     longitude: initialLng,
     zoom: 12
@@ -57,28 +57,28 @@ const Map = () => {
   };
 
   return (
-    <div style={{ margin: "0 auto" }}>
+    <div style={{ margin: '0 auto' }}>
       <ReactMapGL
         ref={mapRef}
         {...viewport}
         mapboxApiAccessToken={
-          "pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ"
+          'pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ'
         }
         mapStyle="mapbox://styles/mapbox/streets-v11"
         onViewportChange={_onViewportChange}
-        style={{ margin: "0 auto" }}
+        style={{ margin: '0 auto' }}
       >
         <Controls>
           <GeolocateControl
             positionOptions={{ enableHighAccuracy: true }}
             trackUserLocation={true}
-            style={{ height: "50px", padding: "10px" }}
+            style={{ height: '50px', padding: '10px' }}
             showUserLocation={true}
           />
           <div
             ref={geoCoderContainerRef}
             style={{
-              height: "50px"
+              height: '50px'
             }}
           />
         </Controls>
@@ -88,7 +88,7 @@ const Map = () => {
           onResult={handleOnResult}
           onViewportChange={_onGeoCoderViewportChange}
           mapboxApiAccessToken={
-            "pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ"
+            'pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ'
           }
           position="top-right"
           mar
@@ -112,26 +112,25 @@ const Map = () => {
           />
         </Marker>
 
-          <Button
-            style={{
-              position: "absolute",
-              left: "50%",
-              bottom: 30,
-              transform: "translateX(-50%)"
-            }}
-            onClick={() =>
-              {setStoreSlotId(undefined);
-              setLocation({
-                latitude: viewport.latitude,
-                longitude: viewport.longitude
-              });
-            history.push('/stores')}
-
-            }
-          >
-            {" "}
-            Locate Stores{" "}
-          </Button>
+        <Button
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: 30,
+            transform: 'translateX(-50%)'
+          }}
+          onClick={() => {
+            setStoreSlotId(undefined);
+            setLocation({
+              latitude: viewport.latitude,
+              longitude: viewport.longitude
+            });
+            history.push('/stores');
+          }}
+        >
+          {' '}
+          Locate Stores{' '}
+        </Button>
       </ReactMapGL>
     </div>
   );
