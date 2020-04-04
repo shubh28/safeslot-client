@@ -10,9 +10,12 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  Badge
 } from 'reactstrap';
 import axios from 'axios';
+
+import { Link } from 'react-router-dom';
 
 import { loadState } from '../../helpers/LocalStorage';
 
@@ -70,12 +73,13 @@ export default class Stores extends Component {
   };
 
   getStoreData = location => {
+    this.setState({ fetchingStores: true });
     axios
       .get(
         `https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}`
       )
       .then(res => {
-        this.setState({ stores: res.data });
+        this.setState({ stores: res.data, fetchingStores: false });
       })
       .catch(err => {
         alert('Some error while fetching stores');
@@ -113,15 +117,40 @@ export default class Stores extends Component {
   };
 
   render() {
+    const token =
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').id;
+
     return (
       <Row>
         <Col lg="4">
+          {this.state.stores.length === 0 && !this.state.fetchingStores && (
+            <div className="emptySearch">
+              Sorry we could not find any store near you. Want to refer nearby
+              stores?
+              <Button
+                tag={Link}
+                to={token ? '/refer' : '/login'}
+                outline
+                color="info"
+              >
+                Refer Stores
+              </Button>
+            </div>
+          )}
           {this.state.stores.map(store => {
             return (
               <Card key={store.id}>
                 <CardBody>
-                  <CardTitle>
+                  <CardTitle className="storeCard">
                     <h3>{store.name}</h3>
+                    <div className="storeVerification">
+                      {store.isVerified ? (
+                        <Badge color="success">Verified</Badge>
+                      ) : (
+                        <Badge color="warning">Not Verified</Badge>
+                      )}
+                    </div>
                   </CardTitle>
                   <CardSubtitle>
                     {store.address}, {store.locality}, {store.city}
@@ -141,6 +170,12 @@ export default class Stores extends Component {
         <Modal isOpen={this.state.openSlots} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Select your slot</ModalHeader>
           <ModalBody>
+            {this.state.slots.length === 0 && (
+              <div className="emptySearch">
+                Oops! This store has not added any slots for booking. Please
+                contact store owner and ask him to add slots.
+              </div>
+            )}
             {this.state.slots.map(slot => {
               return (
                 <Button
@@ -169,7 +204,9 @@ export default class Stores extends Component {
             <Button
               color="info"
               onClick={this.makeBooking}
-              disabled={this.state.selectedSlot === ''}
+              disabled={
+                this.state.selectedSlot === '' || this.state.slots.length === 0
+              }
             >
               Book Now
             </Button>{' '}
