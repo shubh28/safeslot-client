@@ -1,30 +1,26 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import axios from 'axios';
+import { API_URL } from '../../common/consts';
 
-import { saveState, loadState } from '../../helpers/LocalStorage';
+export default function SignUpForm({ toggleLogin }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    isStoreOwner: false
+  });
 
-export default class SignUpForm extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-      phone: '',
-      password: '',
-      isStoreOwner: false
-    };
-  }
-
-  onLoginClick = e => {
+  function onSignupClick(e) {
     e.preventDefault();
-    const { email, phone, name, password, isStoreOwner } = this.state;
+    const { email, phone, name, password, isStoreOwner } = formData;
     if (email === '' || password === '' || phone === '' || name === '') {
       alert('All fields are mandatory. Please try again');
     } else {
       // make user sign up
       axios
-        .post('https://safeslot-backend.herokuapp.com/api/users', {
+        .post(`${API_URL}/users`, {
           email,
           password,
           name,
@@ -32,16 +28,16 @@ export default class SignUpForm extends PureComponent {
           isStoreOwner
         })
         .then(res => {
-          this.props.toggleLogin();
+          toggleLogin();
         })
         .catch(err => {
           alert('Error in signing you up');
         });
     }
-  };
+  }
 
-  handleChange = e => {
-    var obj = { ...this.state };
+  function handleChange(e) {
+    var obj = { ...formData };
     obj[e.target.name] = e.target.value;
     if (e.target.name === 'isStoreOwner') {
       if (e.target.value == 'false') {
@@ -51,74 +47,72 @@ export default class SignUpForm extends PureComponent {
       }
     }
     console.log(obj);
-    this.setState(obj);
-  };
-
-  render() {
-    const { email, phone, name, password, isStoreOwner } = this.state;
-    return (
-      <Form>
-        <FormGroup>
-          <Input
-            type="text"
-            value={name}
-            required
-            onChange={this.handleChange}
-            name="name"
-            placeholder="Enter name"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="email"
-            value={email}
-            required
-            onChange={this.handleChange}
-            name="email"
-            placeholder="Enter Email"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="number"
-            value={phone}
-            required
-            onChange={this.handleChange}
-            name="phone"
-            placeholder="Enter Contact Number"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="password"
-            value={password}
-            required
-            onChange={this.handleChange}
-            name="password"
-            placeholder="Enter Password"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="checkbox"
-            value={isStoreOwner}
-            checked={isStoreOwner}
-            onChange={this.handleChange}
-            name="isStoreOwner"
-          />{' '}
-          Are you a store owner?
-        </FormGroup>
-
-        <p>
-          Alrady have account?{' '}
-          <a href="#" onClick={this.props.toggleLogin}>
-            Login
-          </a>
-        </p>
-        <Button type="submit" color="info" onClick={this.onLoginClick}>
-          SignUp
-        </Button>
-      </Form>
-    );
+    setFormData(obj);
   }
+
+  const { email, phone, name, password, isStoreOwner } = formData;
+  return (
+    <Form>
+      <FormGroup>
+        <Input
+          type="text"
+          value={name}
+          required
+          onChange={handleChange}
+          name="name"
+          placeholder="Enter name"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="email"
+          value={email}
+          required
+          onChange={handleChange}
+          name="email"
+          placeholder="Enter Email"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="number"
+          value={phone}
+          required
+          onChange={handleChange}
+          name="phone"
+          placeholder="Enter Contact Number"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="password"
+          value={password}
+          required
+          onChange={handleChange}
+          name="password"
+          placeholder="Enter Password"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="checkbox"
+          value={isStoreOwner}
+          checked={isStoreOwner}
+          onChange={handleChange}
+          name="isStoreOwner"
+        />{' '}
+        Are you a store owner?
+      </FormGroup>
+
+      <p>
+        Alrady have account?{' '}
+        <a href="#" onClick={toggleLogin}>
+          Login
+        </a>
+      </p>
+      <Button type="submit" color="info" onClick={onSignupClick}>
+        SignUp
+      </Button>
+    </Form>
+  );
 }

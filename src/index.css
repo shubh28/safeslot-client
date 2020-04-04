@@ -1,18 +1,19 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-html, #root {
+html,
+#root {
   background: #e1e9ee;
   scroll-behavior: smooth;
 }
@@ -25,7 +26,7 @@ html, #root {
   position: relative;
   color: #fff;
 }
-.overlay{
+.overlay {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -33,50 +34,31 @@ html, #root {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 2;
   cursor: pointer;
 }
-.bookings {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #17a2b8;
-  color: #fff;
-  padding: .8rem;
-}
-.bookings .logout {
-  color: #fff;
-  position: absolute;
-  right: 1rem;
-}
-.bookings h2 {
-  margin: 0;
-}
+
 .booking-header a {
   /*background-color: #17a2b8;*/
   color: #fff;
   float: left;
-  flex:1;
+  flex: 1;
 }
-.booking-header {
-  position: absolute;
-  left: 1rem;
-}
-.booking-wrapper {
+*/ */ .booking-wrapper {
   margin: 2rem 0 4rem 0;
 }
-.onboarding form{ 
+.onboarding form {
   margin: 2rem 0;
 }
-.owners .container{
-  margin: 1rem 0; 
+.owners .container {
+  margin: 1rem 0;
 }
-.card: {
-  margin-bottom: .2rem;
+.card {
+  margin-bottom: 0.2rem;
 }
 .booking-wrapper .card {
-  margin-bottom: 1rem; 
+  margin-bottom: 1rem;
 }
 .wrapper {
   padding-bottom: 4rem;
@@ -89,11 +71,11 @@ html, #root {
 .cities {
   margin: 1rem 0;
 }
-.cities .btn{
-  margin-bottom: .5rem;
+.cities .btn {
+  margin-bottom: 0.5rem;
 }
 .mt1 {
-  margin-top: 1rem; 
+  margin-top: 1rem;
 }
 .book-now-btn {
   display: flex;
@@ -101,9 +83,9 @@ html, #root {
   justify-content: center;
 }
 .btn {
-  padding: .275rem 1rem;
+  padding: 0.275rem 1rem;
 }
-.hero-sub-text{
+.hero-sub-text {
   padding: 4px 18px;
   text-align: center;
   font-weight: bolder;
@@ -115,10 +97,13 @@ html, #root {
   align-items: center;
   justify-content: flex-end;
 }
-.login-btn .btn{
+.login-btn .btn {
   color: #fff;
 }
-.btn-outline-primary, .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled):focus {
+.btn-outline-primary,
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled):focus {
   color: #fff;
   border-color: #fff;
   background-color: transparent !important;
@@ -142,7 +127,7 @@ a {
 a:hover {
   color: #149db2;
 }
-.home-login{
+.home-login {
   margin-top: 10%;
 }
 .login-wrapper {
@@ -150,7 +135,7 @@ a:hover {
   text-align: center;
 }
 .footer {
-  background-color: rgb(31,31,31);
+  background-color: rgb(31, 31, 31);
   color: #fff;
   display: flex;
   align-items: center;
@@ -163,17 +148,18 @@ a:hover {
   height: 40px;
   font-size: 0.8rem;
 }
-.modal-body, .btn {
+.modal-body,
+.btn {
   margin: 4px;
 }
 .dropdown-menu.show {
-  opacity: 1!important;
+  opacity: 1 !important;
   pointer-events: all !important;
 }
 .dropdown-item {
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .logo-image {
   height: 48px;
@@ -207,7 +193,7 @@ a:hover {
   justify-content: space-between;
 }
 .list-group-item {
-  padding: .25rem;
+  padding: 0.25rem;
 }
 .emptySearch{
   background: #fff;

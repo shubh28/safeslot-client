@@ -17,11 +17,11 @@ import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
 import Referral from '../components/Referral';
 
-import donate from '../assets/donate.png';
-
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
 
+import Stores from './Stores';
+import { LocationAndStoreProvider } from '../contexts/location-and-store-context';
 import fetchMiddleware from '../helpers/fetchMiddleware';
 
 const enhancers = compose(
@@ -63,14 +63,19 @@ export default class RouteWrapper extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <div>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/bookings" component={Bookings} />
-              <Route exact path="/onboard" component={OnBoarding} />
-              <Route exact path="/owners" component={OwnerHome} />
-              <Route exact path="/refer" component={Referral} />
+              <LocationAndStoreProvider>
+                <Route exact path="/" component={Home} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/bookings" component={Bookings} />
+                <Route exact path="/stores" component={Stores} />
+                <Route exact path="/onboard" component={OnBoarding} />
+                <Route exact path="/owners" component={OwnerHome} />
+                <Route exact path="/refer" component={Referral} />
+                <Route render={() => <Redirect to="/" />} />
+              </LocationAndStoreProvider>
+
               <Route render={() => <Redirect to="/" />} />
             </Switch>
             {/*<div className="footer">

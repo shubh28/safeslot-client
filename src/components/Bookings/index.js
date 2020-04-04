@@ -20,6 +20,9 @@ import { Link } from 'react-router-dom';
 
 import { loadState } from '../../helpers/LocalStorage';
 
+import { API_URL } from '../../common/consts';
+import { Header } from '../common';
+
 export default class Bookings extends Component {
   constructor(props) {
     super(props);
@@ -46,11 +49,7 @@ export default class Bookings extends Component {
     }
     const filter = { where: { user_id: userId }, include: 'stores' };
     axios
-      .get(
-        `https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(
-          filter
-        )}`
-      )
+      .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
       .then(res => {
         this.setState({ bookings: res.data });
       })
@@ -86,10 +85,9 @@ export default class Bookings extends Component {
 
   addOrderDetails = () => {
     axios
-      .patch(
-        `https://safeslot-backend.herokuapp.com/api/bookings/${this.state.selectedbooking.id}`,
-        { order_details: this.state.orderDetails }
-      )
+      .patch(`${API_URL}/bookings/${this.state.selectedbooking.id}`, {
+        order_details: this.state.orderDetails
+      })
       .then(res => {
         this.getBookings();
         this.setState({ addDetails: false, selectedbooking: {} });
@@ -101,24 +99,14 @@ export default class Bookings extends Component {
     const { selectedbooking } = this.state;
     return (
       <div>
-        <div className="bookings">
-          <div className="booking-header">
-            <Link to="/">
-              <span className="material-icons">arrow_back</span>
-            </Link>
-          </div>
-          <h2 className="text-center">Bookings</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
+        <Header heading="Bookings" backPath={'/'} />
         <Container>
           <div className="booking-wrapper">
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>
             )}
             <Row>
-              <Col lg="4">
+              <Col>
                 {this.state.bookings.map(booking => {
                   return (
                     <Card key={booking.id}>
