@@ -24,15 +24,15 @@ function Slots({ availableSlots = [], storeId }) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
 
-  function makeBooking(slotId) {
+  function makeBooking({ storeId: bookingStoreId, slotId: bookingSlotId }) {
     const tokenObj = loadState('userAuthenticationDetails');
     const token = tokenObj && tokenObj.id;
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
         .post(`${API_URL}/bookings`, {
-          store_id: storeId,
-          slot_id: slotId,
+          store_id: bookingStoreId,
+          slot_id: bookingSlotId,
           user_id: userId
         })
         .then(res => {
@@ -43,7 +43,7 @@ function Slots({ availableSlots = [], storeId }) {
           alert('Error while making booking');
         });
     } else {
-      setStoreSlotId(slotId);
+      setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });
       history.push('/login');
     }
   }
@@ -59,9 +59,16 @@ function Slots({ availableSlots = [], storeId }) {
                   <SlotButton
                     key={slot.id}
                     color="info"
-                    outline={!(slot.id === storeSlotId)}
+                    outline={
+                      !(
+                        slot.id === storeSlotId.slotId &&
+                        storeId === storeSlotId.storeId
+                      )
+                    }
                     size="sm"
-                    onClick={() => setStoreSlotId(slot.id)}
+                    onClick={() =>
+                      setStoreSlotId({ storeId: storeId, slotId: slot.id })
+                    }
                   >
                     {`${slot.start_time} - ${slot.end_time}`}
                   </SlotButton>

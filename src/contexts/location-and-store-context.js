@@ -1,21 +1,39 @@
-import React, { useState, createContext, useContext } from "react";
-import { DEFAULT_LOCATION } from "../consts";
+import React, { useState, createContext, useContext } from 'react';
+import { DEFAULT_LOCATION } from '../consts';
 
 const LocationAndStoreContext = createContext();
 
 function LocationAndStoreProvider({ children }) {
-  const [locationAndStore, setLocationAndStore] = useState({location : DEFAULT_LOCATION, storeSlotId:undefined});
+  const defaultStoreSlotId = { storeId: undefined, slotId: undefined };
+  const [locationAndStore, setLocationAndStore] = useState({
+    location: DEFAULT_LOCATION,
+    storeSlotId: defaultStoreSlotId
+  });
 
-  function setLocation(location){
-    setLocationAndStore({...locationAndStore,location})
+  function setLocation(location) {
+    setLocationAndStore({ ...locationAndStore, location });
   }
-  function setStoreSlotId(storeSlotId){
-    setLocationAndStore({...locationAndStore,storeSlotId})
+  function setStoreSlotId(storeSlotId) {
+    setLocationAndStore({ ...locationAndStore, storeSlotId });
+  }
+
+  function resetLocation() {
+    setLocation(DEFAULT_LOCATION);
+  }
+  function resetStoreSlotId() {
+    setStoreSlotId(defaultStoreSlotId);
   }
 
   return (
     <LocationAndStoreContext.Provider
-      value={{ location : locationAndStore.location,storeSlotId:locationAndStore.storeSlotId, setLocation,setStoreSlotId }}
+      value={{
+        location: locationAndStore.location,
+        storeSlotId: locationAndStore.storeSlotId,
+        setLocation,
+        setStoreSlotId,
+        resetLocation,
+        resetStoreSlotId
+      }}
     >
       {children}
     </LocationAndStoreContext.Provider>
