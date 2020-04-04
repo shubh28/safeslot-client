@@ -117,7 +117,9 @@ export default class Stores extends Component {
   };
 
   render() {
-    const token = loadState('userAuthenticationDetails') && loadState('userAuthenticationDetails').id;
+    const token =
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').id;
 
     return (
       <Row>
@@ -126,7 +128,12 @@ export default class Stores extends Component {
             <div className="emptySearch">
               Sorry we could not find any store near you. Want to refer nearby
               stores?
-              <Button tag={Link} to={token ? '/refer' : '/login' } outline color="info">
+              <Button
+                tag={Link}
+                to={token ? '/refer' : '/login'}
+                outline
+                color="info"
+              >
                 Refer Stores
               </Button>
             </div>
