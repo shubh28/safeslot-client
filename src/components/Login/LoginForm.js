@@ -1,109 +1,106 @@
-import React, { PureComponent } from 'react';
-import { Form, FormGroup, Input, Button, Alert } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, FormGroup, Input, Button } from 'reactstrap';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import Alerts from '../Alerts';
 import { saveState, loadState } from '../../helpers/LocalStorage';
+import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 
-export default class LoginForm extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      error: {}
-    };
-  }
+export default function LoginForm({ toggleLogin }) {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState({ type: '', message: '' });
+  const history = useHistory();
+  const { storeSlotId } = useLocationAndStoreContext();
 
-  componentDidMount() {
+  useEffect(() => {
     const token =
       loadState('userAuthenticationDetails') &&
       loadState('userAuthenticationDetails').id;
     if (token) {
-      this.props.history.push('/');
+      history.push('/');
     }
-  }
+  }, []);
 
-  showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
-  };
-  closeError = () => {
-    this.setState(Object.assign({ ...this.state }, { error: {} }));
-  };
+  const showError = (type, message) => setError({ type, message });
+  const closeError = () => setError({ type: '', message: '' });
 
-  onLoginClick = e => {
+  function onLoginClick(e) {
     e.preventDefault();
-    const { email, password } = this.state;
+    const { email, password } = formData;
     if (email === '' || password === '') {
-      return this.showError('danger', 'Please enter email and password');
+      showError('danger', 'Please enter email and password');
+    } else {
+      axios
+        .post('https://safeslot-backend.herokuapp.com/api/users/login', {
+          email,
+          password
+        })
+        .then(res => {
+          saveState('userAuthenticationDetails', res.data);
+          axios
+            .get(
+              `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
+            )
+            .then(response => {
+              saveState('userInfo', response.data);
+              if (!response.data.isStoreOwner) {
+                if (storeSlotId) {
+                  history.replace('/stores');
+                } else {
+                  history.replace('/');
+                }
+              } else if (response.data.isStoreOwner && !response.data.storeId) {
+                history.push('/onboard');
+              } else {
+                history.push('/owners');
+              }
+            });
+        })
+        .catch(err => {
+          showError('danger','Error logging in');
+        });
     }
-    axios
-      .post('https://safeslot-backend.herokuapp.com/api/users/login', {
-        email,
-        password
-      })
-      .then(res => {
-        saveState('userAuthenticationDetails', res.data);
-        axios
-          .get(
-            `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
-          )
-          .then(response => {
-            saveState('userInfo', response.data);
-            if (!response.data.isStoreOwner) {
-              this.props.history.push('/');
-            } else if (response.data.isStoreOwner && !response.data.storeId) {
-              this.props.history.push('/onboard');
-            } else {
-              this.props.history.push('/owners');
-            }
-          });
-      })
-      .catch(err => {
-        this.showError('danger', 'Error logging in');
-      });
-
-  };
-
-  handleChange = e => {
-    this.setState(Object.assign({ ...this.state }, { [e.target.name]: e.target.value, error: {} }));
-  };
-
-  render() {
-    return (
-      <Form>
-        <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
-
-        <FormGroup>
-          <Input
-            type="email"
-            value={this.state.email}
-            onChange={this.handleChange}
-            name="email"
-            id="exampleEmail"
-            placeholder="Enter Email"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            type="password"
-            value={this.state.password}
-            onChange={this.handleChange}
-            name="password"
-            id="examplePassword"
-            placeholder="Enter Password"
-          />
-        </FormGroup>
-        <p>
-          Don't have account?{' '}
-          <a href="#" onClick={this.props.toggleLogin}>
-            Sign Up
-          </a>
-        </p>
-        <Button type="submit" color="info" onClick={this.onLoginClick}>
-          Login
-        </Button>
-      </Form>
-    );
   }
+
+  function handleChange(e) {
+    setError({ type: '', message: '' });
+    setFormData(Object.assign({ ...formData }, { [e.target.name]: e.target.value }));
+  }
+
+  return (
+    <Form>
+      <Alerts type={error.type} message={error.message} onClose={closeError} />
+
+      <FormGroup>
+        <Input
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          name="email"
+          id="exampleEmail"
+          placeholder="Enter Email"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          name="password"
+          id="examplePassword"
+          placeholder="Enter Password"
+        />
+      </FormGroup>
+      <p>
+        Don't have account?{' '}
+        <a href="#" onClick={toggleLogin}>
+          Sign Up
+        </a>
+      </p>
+      <Button type="submit" color="info" onClick={onLoginClick}>
+        Login
+      </Button>
+    </Form>
+  );
 }

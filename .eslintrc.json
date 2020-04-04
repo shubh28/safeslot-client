@@ -6,6 +6,7 @@
     "ecmaVersion": 2017,
     "sourceType": "module",
     "allowImportExportEverywhere": true,
+    
     "ecmaFeatures": {
       "jsx": true
     }
@@ -93,7 +94,8 @@
       }
     ],
     "react/prop-types": [0],
-    "react/no-string-refs": "warn"
+    "react/no-string-refs": "warn",
+    "quotes" : ["error","single"] 
   },
   "env": {
     "es6": true,
