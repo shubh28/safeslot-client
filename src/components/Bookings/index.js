@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 
 import { loadState } from '../../helpers/LocalStorage';
 
-import { API_URL } from '../../consts';
+import { API_URL } from '../../common/consts';
 import { Header } from '../common';
 
 export default class Bookings extends Component {

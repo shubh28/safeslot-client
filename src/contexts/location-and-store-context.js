@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext } from 'react';
-import { DEFAULT_LOCATION } from '../consts';
+import { DEFAULT_LOCATION } from '../common/consts';
 
 const LocationAndStoreContext = createContext();
 

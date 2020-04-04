@@ -3,7 +3,7 @@ import { Card, CardBody, CardTitle, Button, Badge } from 'reactstrap';
 import axios from 'axios';
 
 import { Link } from 'react-router-dom';
-import { API_URL } from '../../consts';
+import { API_URL } from '../../common/consts';
 import styled from 'styled-components';
 import { ReactComponent as Back } from '../../assets/back.svg';
 import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';

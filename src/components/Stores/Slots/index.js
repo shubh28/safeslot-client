@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { API_URL } from '../../../consts';
+import { API_URL } from '../../../common/consts';
 import { Button } from 'reactstrap';
 
 import { loadState } from '../../../helpers/LocalStorage';

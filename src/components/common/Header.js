@@ -3,7 +3,7 @@ import { Header as StyledHeader } from './../../styles';
 import { Link, useHistory } from 'react-router-dom';
 
 import { loadState } from '../../helpers/LocalStorage';
-import { DEFAULT_LOCATION } from '../../consts';
+import { DEFAULT_LOCATION } from '../../common/consts';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 function Header({ heading, backPath }) {
   const history = useHistory();
