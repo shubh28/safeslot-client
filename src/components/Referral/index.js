@@ -14,6 +14,7 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 
+import Alerts from '../Alerts';
 import { loadState, saveState } from '../../helpers/LocalStorage';
 
 export default class OnBoarding extends Component {
@@ -32,7 +33,8 @@ export default class OnBoarding extends Component {
       locations: [],
       store_type: '',
       email: '',
-      phone: ''
+      phone: '',
+      error: {}
     };
   }
 
@@ -70,11 +72,12 @@ export default class OnBoarding extends Component {
       !city ||
       !store_type
     ) {
-      alert('All fields are mandatory');
+      this.showError('danger', 'All fields are mandatory');
       return;
     }
     if (!latitude || !longitude) {
-      alert(
+      this.showError(
+        'danger',
         'Please select locality from drop down to calculated your coordinates'
       );
       return;
@@ -102,18 +105,17 @@ export default class OnBoarding extends Component {
         this.props.history.push('/');
       })
       .catch(err => {
-        alert('Some error occurred');
+        this.showError('danger','Some error occurred');
       });
   };
 
   handleOnChange = e => {
-    var key = e.target.name;
+    const key = e.target.name;
     if (key === 'locality') {
       this.handleLocalitySearch(e);
     }
-    var state = { ...this.state };
-    state[key] = e.target.value;
-    this.setState({ ...state });
+
+    this.setState(Object.assign({ ...this.state }, { [key]: e.target.value, error: {} }));
   };
 
   handleLocalitySearch = e => {
@@ -146,6 +148,13 @@ export default class OnBoarding extends Component {
     this.props.history.push('/');
   };
 
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
+  };
+
   render() {
     const {
       name,
@@ -168,6 +177,8 @@ export default class OnBoarding extends Component {
         </div>
         <Container>
           <Form>
+            <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
             <FormText tag="h5" color="black">
               Please refer nearby stores.
             </FormText>
