@@ -1,13 +1,13 @@
 ## SafeSlot
 #### Steps to run:
-Cone the repo.
+Clone the repo.
 ```
-git clone https://github.com/shubh28/safeslot.git
+git clone https://github.com/shubh28/safeslot-client.git
 ```
 Install dependencies.
 ```
-cd safeslot
-npm install
+cd safeslot-client
+npm install or npm i
 ```
 Build
 ```
@@ -17,3 +17,4 @@ Start Server.
 ```
 npm start
 ```
+Navigate to http://localhost:8080 in your browser.
