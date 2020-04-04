@@ -114,7 +114,6 @@ export default class OnBoarding extends Component {
     var state = { ...this.state };
     state[key] = e.target.value;
     this.setState({ ...state });
-    console.log(state);
   };
 
   handleLocalitySearch = e => {
@@ -136,8 +135,8 @@ export default class OnBoarding extends Component {
   handleLocationSelect = (location, center) => {
     this.setState({
       locality: location,
-      latitude: center[0],
-      longitude: center[1],
+      latitude: center[1],
+      longitude: center[0],
       locations: []
     });
   };

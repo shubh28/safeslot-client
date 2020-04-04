@@ -117,6 +117,8 @@ export default class Stores extends Component {
   };
 
   render() {
+    const token = loadState('userAuthenticationDetails') && loadState('userAuthenticationDetails').id;
+
     return (
       <Row>
         <Col lg="4">
@@ -124,7 +126,7 @@ export default class Stores extends Component {
             <div className="emptySearch">
               Sorry we could not find any store near you. Want to refer nearby
               stores?
-              <Button tag={Link} to="/refer" outline color="info">
+              <Button tag={Link} to={token ? '/refer' : '/login' } outline color="info">
                 Refer Stores
               </Button>
             </div>
@@ -196,7 +198,7 @@ export default class Stores extends Component {
               color="info"
               onClick={this.makeBooking}
               disabled={
-                this.state.selectedSlot === '' || this.state.slots.length
+                this.state.selectedSlot === '' || this.state.slots.length === 0
               }
             >
               Book Now
