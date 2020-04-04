@@ -1,12 +1,12 @@
-import React, { useState,useEffect } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import { API_URL } from "../../../consts";
-import { Button } from "reactstrap";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { API_URL } from '../../../consts';
+import { Button } from 'reactstrap';
 
-import { loadState } from "../../../helpers/LocalStorage";
-import { useHistory } from "react-router-dom";
-import { useLocationAndStoreContext } from "../../../contexts/location-and-store-context";
+import { loadState } from '../../../helpers/LocalStorage';
+import { useHistory } from 'react-router-dom';
+import { useLocationAndStoreContext } from '../../../contexts/location-and-store-context';
 
 const SlotWrapper = styled.div`
   overflow-x: auto;
@@ -20,12 +20,12 @@ const SlotButton = styled(Button)`
   padding: 0.175rem 0.8rem;
 `;
 
-function Slots({ availableSlots=[], storeId }) {
+function Slots({ availableSlots = [], storeId }) {
   const history = useHistory();
-  const {storeSlotId,setStoreSlotId} = useLocationAndStoreContext();
+  const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
 
   function makeBooking(slotId) {
-    const tokenObj = loadState("userAuthenticationDetails");
+    const tokenObj = loadState('userAuthenticationDetails');
     const token = tokenObj && tokenObj.id;
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
@@ -36,46 +36,46 @@ function Slots({ availableSlots=[], storeId }) {
           user_id: userId
         })
         .then(res => {
-          console.log("makeBooking successful");
-          history.push("/bookings");
+          console.log('makeBooking successful');
+          history.push('/bookings');
         })
         .catch(err => {
-          alert("Error while making booking");
+          alert('Error while making booking');
         });
     } else {
-      setStoreSlotId(slotId)
-      history.push("/login");
+      setStoreSlotId(slotId);
+      history.push('/login');
     }
   }
 
   return (
     <>
-    <SlotWrapper>
+      <SlotWrapper>
+        {availableSlots.length ? (
+          availableSlots.map(slot => {
+            return (
+              <>
+                {slot && (
+                  <SlotButton
+                    key={slot.id}
+                    color="info"
+                    outline={!(slot.id === storeSlotId)}
+                    size="sm"
+                    onClick={() => setStoreSlotId(slot.id)}
+                  >
+                    {`${slot.start_time} - ${slot.end_time}`}
+                  </SlotButton>
+                )}
+              </>
+            );
+          })
+        ) : (
+          <div>No slots found</div>
+        )}
+      </SlotWrapper>
       {availableSlots.length ? (
-        availableSlots.map(slot => {
-          return (
-            <>
-              {slot && (
-                <SlotButton
-                  key={slot.id}
-                  color="info"
-                  outline={!(slot.id===storeSlotId)}
-                  size="sm"
-                  onClick={() => setStoreSlotId(slot.id)}
-                >
-                  {`${slot.start_time} - ${slot.end_time}`}
-                </SlotButton>
-              )}
-            </>
-          );
-        })
-      ) : (
-        <div>No slots found</div>
-      )}
-
-    </SlotWrapper>
-    {availableSlots.length  && 
-      <Button onClick={()=>makeBooking(storeSlotId)}>Book Slot</Button>}
+        <Button onClick={() => makeBooking(storeSlotId)}>Book Slot</Button>
+      ) : null}
     </>
   );
 }

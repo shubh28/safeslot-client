@@ -195,3 +195,22 @@ a:hover {
 .list-group-item {
   padding: 0.25rem;
 }
+.emptySearch{
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 1px 1px 4px rgba(0,0,0,.2);
+  padding: 1rem;
+  text-align: center;
+}
+.storeVerification {
+
+}
+.storeCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.storeCard h2{
+  margin-bottom: 0;
+}

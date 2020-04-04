@@ -10,16 +10,16 @@ import thunk from 'redux-thunk';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { throttle } from 'lodash';
 
-
-
-import reducers from '../reducers';
-import { loadState, saveState } from '../helpers/LocalStorage';
-
 import Home from '../components/Home';
 import Login from '../components/Login';
 import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
+import Referral from '../components/Referral';
+
+import reducers from '../reducers';
+import { loadState, saveState } from '../helpers/LocalStorage';
+
 import Stores from './Stores';
 import { LocationAndStoreProvider } from '../contexts/location-and-store-context';
 import fetchMiddleware from '../helpers/fetchMiddleware';
@@ -72,8 +72,9 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/stores" component={Stores} />
                 <Route exact path="/onboard" component={OnBoarding} />
                 <Route exact path="/owners" component={OwnerHome} />
+                <Route exact path="/refer" component={Referral} />
                 <Route render={() => <Redirect to="/" />} />
-                  </LocationAndStoreProvider>
+              </LocationAndStoreProvider>
 
               <Route render={() => <Redirect to="/" />} />
             </Switch>

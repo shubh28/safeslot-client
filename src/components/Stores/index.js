@@ -1,31 +1,23 @@
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Button,
-} from "reactstrap";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Card, CardBody, CardTitle, Button, Badge } from 'reactstrap';
+import axios from 'axios';
 
-import { useLocation, Link } from "react-router-dom";
-import { API_URL } from "../../consts";
-import styled from "styled-components";
-import { ReactComponent as Back } from "../../assets/back.svg";
-import { ReactComponent as GroceryBack } from "../../assets/grocery.svg";
-import Slots from "./Slots";
-import { Container } from "../../styles";
-import { Header } from "../common";
-import {useLocationAndStoreContext} from '../../contexts/location-and-store-context'
-
+import { Link } from 'react-router-dom';
+import { API_URL } from '../../consts';
+import styled from 'styled-components';
+import { ReactComponent as Back } from '../../assets/back.svg';
+import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
+import Slots from './Slots';
+import { Container } from '../../styles';
+import { Header } from '../common';
+import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 
 function Stores() {
-  // const query = useQuery();
-
-  // const lat = query.get("lat");
-  // const lng = query.get("lng");
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
-  const {location: {latitude: lat,longitude:lng}} = useLocationAndStoreContext();
+  const {
+    location: { latitude: lat, longitude: lng }
+  } = useLocationAndStoreContext();
 
   useEffect(() => {
     setLoading(true);
@@ -46,24 +38,21 @@ function Stores() {
         setStores(stores);
       })
       .catch(err => {
-        alert("Some error while fetching stores");
+        alert('Some error while fetching stores');
       })
       .finally(() => {
         setLoading(false);
       });
   }, [lat, lng]);
 
-
-
-
   const HeaderDataContainer = styled.div`
     display: grid;
     grid-template-columns: 100px 1fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "logo title"
-      "logo address"
-      "logo distance";
+      'logo title'
+      'logo address'
+      'logo distance';
 
     .logo {
       grid-area: logo;
@@ -73,6 +62,10 @@ function Stores() {
     }
     .title {
       grid-area: title;
+
+      .badge {
+        float: right;
+      }
     }
     .address {
       grid-area: address;
@@ -85,9 +78,8 @@ function Stores() {
   `;
   return (
     <>
-       <Header heading='place name' backPath={'/'} /> 
-         
-     
+      <Header heading="place name" backPath={'/'} />
+
       <Container className="theme-Container" fluid={true}>
         <div>
           {loading || !stores ? (
@@ -102,6 +94,15 @@ function Stores() {
                         <GroceryBack className="logo" />
                         <CardTitle className="title">
                           <strong>{store.name}</strong>
+                          {store.isVerified ? (
+                            <Badge className="badge" color="success">
+                              Verified
+                            </Badge>
+                          ) : (
+                            <Badge className="badge" color="warning">
+                              Not Verified
+                            </Badge>
+                          )}
                         </CardTitle>
                         <div className="address">
                           {store.address}, {store.locality}, {store.city}
@@ -109,7 +110,7 @@ function Stores() {
                         <div className="distance">
                           {store.distance
                             ? `${Math.floor(store.distance * 100) / 100}kms`
-                            : ""}
+                            : ''}
                         </div>
                       </HeaderDataContainer>
                       <Slots availableSlots={store.slots} storeId={store.id} />
@@ -129,14 +130,14 @@ function Stores() {
               })}
             </>
           ) : (
-            <div style={{ textAlign: "center", marginTop: "100px" }}>
-              <h3>
-                Sorry! the stores around the location are yet not registered.
-              </h3>
-              <h6>
-                We are working hard to reach, meanwhile please be careful and
-                stay safe!
-              </h6>
+            <div style={{ textAlign: 'center', marginTop: '100px' }}>
+              <div className="emptySearch">
+                Sorry we could not find any store near you. Want to refer nearby
+                stores?
+                <Button tag={Link} to="/refer" outline color="info">
+                  Refer Stores
+                </Button>
+              </div>
             </div>
           )}
         </div>
