@@ -18,6 +18,7 @@ import {
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import Alerts from '../Alerts';
 import { loadState } from '../../helpers/LocalStorage';
 
 export default class Bookings extends Component {
@@ -28,7 +29,8 @@ export default class Bookings extends Component {
       viewBooking: false,
       selectedbooking: {},
       addDetails: false,
-      orderDetails: ''
+      orderDetails: '',
+      error: {}
     };
   }
 
@@ -55,7 +57,7 @@ export default class Bookings extends Component {
         this.setState({ bookings: res.data });
       })
       .catch(err => {
-        alert('Some error occurred');
+        this.showError('danger', 'Some error occurred');
       });
   };
 
@@ -97,6 +99,13 @@ export default class Bookings extends Component {
       .catch(err => {});
   };
 
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
+  };
+
   render() {
     const { selectedbooking } = this.state;
     return (
@@ -114,6 +123,8 @@ export default class Bookings extends Component {
         </div>
         <Container>
           <div className="booking-wrapper">
+            <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>
             )}
@@ -218,7 +229,7 @@ export default class Bookings extends Component {
               }
               onChange={this.handleOrderDetails}
             />
-            <p>*All items are subject to availabilty</p>
+            <p>*All items are subject to availability</p>
           </ModalBody>
           <ModalFooter>
             <Button color="info" outline onClick={this.addOrderDetails}>

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Form, FormGroup, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Input, Button, Alert } from 'reactstrap';
 import axios from 'axios';
 
+import Alerts from '../Alerts';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 
 export default class LoginForm extends PureComponent {
@@ -9,7 +10,8 @@ export default class LoginForm extends PureComponent {
     super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      error: {}
     };
   }
 
@@ -22,49 +24,56 @@ export default class LoginForm extends PureComponent {
     }
   }
 
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
+  };
+
   onLoginClick = e => {
     e.preventDefault();
     const { email, password } = this.state;
     if (email === '' || password === '') {
-      alert('Please enter email and password');
-    } else {
-      axios
-        .post('https://safeslot-backend.herokuapp.com/api/users/login', {
-          email,
-          password
-        })
-        .then(res => {
-          saveState('userAuthenticationDetails', res.data);
-          axios
-            .get(
-              `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
-            )
-            .then(response => {
-              saveState('userInfo', response.data);
-              if (!response.data.isStoreOwner) {
-                this.props.history.push('/');
-              } else if (response.data.isStoreOwner && !response.data.storeId) {
-                this.props.history.push('/onboard');
-              } else {
-                this.props.history.push('/owners');
-              }
-            });
-        })
-        .catch(err => {
-          alert('Error in logging user');
-        });
+      return this.showError('danger', 'Please enter email and password');
     }
+    axios
+      .post('https://safeslot-backend.herokuapp.com/api/users/login', {
+        email,
+        password
+      })
+      .then(res => {
+        saveState('userAuthenticationDetails', res.data);
+        axios
+          .get(
+            `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
+          )
+          .then(response => {
+            saveState('userInfo', response.data);
+            if (!response.data.isStoreOwner) {
+              this.props.history.push('/');
+            } else if (response.data.isStoreOwner && !response.data.storeId) {
+              this.props.history.push('/onboard');
+            } else {
+              this.props.history.push('/owners');
+            }
+          });
+      })
+      .catch(err => {
+        this.showError('danger', 'Error logging in');
+      });
+
   };
 
   handleChange = e => {
-    var obj = { ...this.state };
-    obj[e.target.name] = e.target.value;
-    this.setState(obj);
+    this.setState(Object.assign({ ...this.state }, { [e.target.name]: e.target.value, error: {} }));
   };
 
   render() {
     return (
       <Form>
+        <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
         <FormGroup>
           <Input
             type="email"

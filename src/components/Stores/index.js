@@ -17,6 +17,7 @@ import axios from 'axios';
 
 import { Link } from 'react-router-dom';
 
+import Alerts from '../Alerts';
 import { loadState } from '../../helpers/LocalStorage';
 
 export default class Stores extends Component {
@@ -27,7 +28,8 @@ export default class Stores extends Component {
       openSlots: false,
       slots: [],
       selectedSlot: '',
-      selectedStore: ''
+      selectedStore: '',
+      error: {}
     };
   }
 
@@ -67,7 +69,7 @@ export default class Stores extends Component {
           });
         })
         .catch(err => {
-          alert('Some error while fetching stores');
+          this.showError('danger','Some error while fetching stores');
         });
     }
   };
@@ -82,7 +84,7 @@ export default class Stores extends Component {
         this.setState({ stores: res.data, fetchingStores: false });
       })
       .catch(err => {
-        alert('Some error while fetching stores');
+        this.showError('danger','Some error while fetching stores');
       });
   };
 
@@ -105,7 +107,7 @@ export default class Stores extends Component {
           history.push('/bookings');
         })
         .catch(err => {
-          alert('Error while making booking');
+          this.showError('danger','Error while making booking');
         });
     }
   };
@@ -114,6 +116,13 @@ export default class Stores extends Component {
     this.setState({
       selectedSlot: slot
     });
+  };
+
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
   render() {
@@ -170,6 +179,8 @@ export default class Stores extends Component {
         <Modal isOpen={this.state.openSlots} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Select your slot</ModalHeader>
           <ModalBody>
+            <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
             {this.state.slots.length === 0 && (
               <div className="emptySearch">
                 Oops! This store has not added any slots for booking. Please

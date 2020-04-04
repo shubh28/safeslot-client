@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import axios from 'axios';
 
+import Alerts from '../Alerts';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 
 export default class SignUpForm extends PureComponent {
@@ -12,7 +13,8 @@ export default class SignUpForm extends PureComponent {
       email: '',
       phone: '',
       password: '',
-      isStoreOwner: false
+      isStoreOwner: false,
+      error: {}
     };
   }
 
@@ -20,44 +22,46 @@ export default class SignUpForm extends PureComponent {
     e.preventDefault();
     const { email, phone, name, password, isStoreOwner } = this.state;
     if (email === '' || password === '' || phone === '' || name === '') {
-      alert('All fields are mandatory. Please try again');
-    } else {
-      // make user sign up
-      axios
-        .post('https://safeslot-backend.herokuapp.com/api/users', {
-          email,
-          password,
-          name,
-          phone,
-          isStoreOwner
-        })
-        .then(res => {
-          this.props.toggleLogin();
-        })
-        .catch(err => {
-          alert('Error in signing you up');
-        });
+      return this.showError('danger', 'All fields are mandatory. Please try again');
     }
+
+    // make user sign up
+    axios
+      .post('https://safeslot-backend.herokuapp.com/api/users', {
+        email,
+        password,
+        name,
+        phone,
+        isStoreOwner
+      })
+      .then(res => {
+        this.props.toggleLogin();
+      })
+      .catch(err => {
+        this.showError('danger', 'Error in signing you up');
+      });
   };
 
   handleChange = e => {
-    var obj = { ...this.state };
-    obj[e.target.name] = e.target.value;
-    if (e.target.name === 'isStoreOwner') {
-      if (e.target.value == 'false') {
-        obj['isStoreOwner'] = true;
-      } else {
-        obj['isStoreOwner'] = false;
-      }
-    }
-    console.log(obj);
-    this.setState(obj);
+    this.setState(Object.assign({ ...this.state }, {
+      [e.target.name]: e.target.name === 'isStoreOwner'? !Boolean(e.target.value) : e.target.value,
+      error: {}
+    }));
+  };
+
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
   render() {
     const { email, phone, name, password, isStoreOwner } = this.state;
     return (
       <Form>
+        <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
         <FormGroup>
           <Input
             type="text"
@@ -110,7 +114,7 @@ export default class SignUpForm extends PureComponent {
         </FormGroup>
 
         <p>
-          Alrady have account?{' '}
+          Already have account?{' '}
           <a href="#" onClick={this.props.toggleLogin}>
             Login
           </a>

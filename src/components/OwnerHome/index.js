@@ -16,8 +16,9 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 
-import { saveState, loadState } from '../../helpers/LocalStorage';
+import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
+import { saveState, loadState } from '../../helpers/LocalStorage';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -27,7 +28,8 @@ export default class OwnerHome extends Component {
       bookings: [],
       viewDetails: false,
       selectedbooking: {},
-      addSlots: false
+      addSlots: false,
+      error: {}
     };
   }
 
@@ -67,12 +69,12 @@ export default class OwnerHome extends Component {
               this.setState({ bookings: res.data });
             })
             .catch(err => {
-              alert('Some error occurred');
+              this.showError('danger', 'Some error occurred');
             });
         }
       })
       .catch(err => {
-        alert('Some error occurred');
+        this.showError('danger', 'Some error occurred');
       });
   }
 
@@ -89,6 +91,13 @@ export default class OwnerHome extends Component {
     this.props.history.push('/');
   };
 
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
+  };
+
   render() {
     const { user } = this.state;
     const store = (user && user.stores) || {};
@@ -101,6 +110,8 @@ export default class OwnerHome extends Component {
           </a>
         </div>
         <Container>
+          <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
           <div className="booking-wrapper">
             <h5>{store.name}</h5>
             <h5>{user.phone}</h5>
