@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import { saveState, loadState } from '../../helpers/LocalStorage';
@@ -9,6 +9,11 @@ import { useLocationAndStoreContext } from '../../contexts/location-and-store-co
 export default function LoginForm({ toggleLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const history = useHistory();
+  const location = useLocation();
+
+  const params = location ? new URLSearchParams(location.search) : undefined;
+
+  const referrer = params ? params.get('ref') : undefined;
   const { storeSlotId } = useLocationAndStoreContext();
 
   useEffect(() => {
@@ -40,8 +45,10 @@ export default function LoginForm({ toggleLogin }) {
             .then(response => {
               saveState('userInfo', response.data);
               if (!response.data.isStoreOwner) {
-                if (storeSlotId) {
+                if (referrer === 'stores') {
                   history.replace('/stores');
+                } else if (referrer === 'refer-store') {
+                  history.replace('/refer');
                 } else {
                   history.replace('/');
                 }

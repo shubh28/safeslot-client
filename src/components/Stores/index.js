@@ -11,6 +11,7 @@ import Slots from './Slots';
 import { Container } from '../../styles';
 import { Header } from '../common';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
+import NoStores from './NoStores';
 
 function Stores() {
   const [stores, setStores] = useState();
@@ -78,7 +79,7 @@ function Stores() {
   `;
   return (
     <>
-      <Header heading="place name" backPath={'/'} />
+      <Header heading="Stores nearby" backPath={'/'} />
 
       <Container className="theme-Container" fluid={true}>
         <div>
@@ -130,15 +131,7 @@ function Stores() {
               })}
             </>
           ) : (
-            <div style={{ textAlign: 'center', marginTop: '100px' }}>
-              <div className="emptySearch">
-                Sorry we could not find any store near you. Want to refer nearby
-                stores?
-                <Button tag={Link} to="/refer" outline color="info">
-                  Refer Stores
-                </Button>
-              </div>
-            </div>
+            <NoStores />
           )}
         </div>
       </Container>
