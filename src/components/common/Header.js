@@ -33,10 +33,12 @@ function Header({ heading, backPath }) {
       </Link>
 
       <h2 className="text-center">{heading}</h2>
-      {displayLogout && (
+      {displayLogout ? (
         <a href="#" className="logout" onClick={logOut}>
           Logout
         </a>
+      ) : (
+        <Link to="/login">Login</Link>
       )}
     </StyledHeader>
   );
