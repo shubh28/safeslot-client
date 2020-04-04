@@ -66,17 +66,17 @@ html, #root {
 .booking-wrapper {
   margin: 2rem 0 4rem 0;
 }
-.onboarding form{ 
+.onboarding form{
   margin: 2rem 0;
 }
 .owners .container{
-  margin: 1rem 0; 
+  margin: 1rem 0;
 }
-.card: {
+.card {
   margin-bottom: .2rem;
 }
 .booking-wrapper .card {
-  margin-bottom: 1rem; 
+  margin-bottom: 1rem;
 }
 .wrapper {
   padding-bottom: 4rem;
@@ -93,7 +93,7 @@ html, #root {
   margin-bottom: .5rem;
 }
 .mt1 {
-  margin-top: 1rem; 
+  margin-top: 1rem;
 }
 .book-now-btn {
   display: flex;
