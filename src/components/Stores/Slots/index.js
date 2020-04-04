@@ -43,7 +43,7 @@ function Slots({ availableSlots = [], storeId, showError }) {
         });
     } else {
       setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });
-      history.push('/login');
+      history.push('/login?ref=stores');
     }
   }
 

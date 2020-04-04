@@ -24,6 +24,7 @@ import { Container } from '../../styles';
 import { API_URL } from '../../common/consts';
 import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
+import NoStores from './NoStores';
 
 function Stores() {
   const [stores, setStores] = useState();
@@ -95,7 +96,7 @@ function Stores() {
   `;
   return (
     <>
-      <Header heading="place name" backPath={'/'} />
+      <Header heading="Stores nearby" backPath={'/'} />
 
       <Container className="theme-Container" fluid={true}>
         <Alerts type={error.type} message={error.message} onClose={closeError} />
@@ -150,15 +151,7 @@ function Stores() {
               })}
             </>
           ) : (
-            <div style={{ textAlign: 'center', marginTop: '100px' }}>
-              <div className="emptySearch">
-                Sorry we could not find any store near you. Want to refer nearby
-                stores?
-                <Button tag={Link} to="/refer" outline color="info">
-                  Refer Stores
-                </Button>
-              </div>
-            </div>
+            <NoStores />
           )}
         </div>
       </Container>
