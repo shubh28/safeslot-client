@@ -11,6 +11,7 @@ import Login from '../components/Login';
 import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
+import Referral from '../components/Referral';
 
 export default function RouteWrapper() {
     return (
@@ -21,6 +22,7 @@ export default function RouteWrapper() {
           <Route exact path="/bookings" component={Bookings} />
           <Route exact path="/onboard" component={OnBoarding} />
           <Route exact path="/owners" component={OwnerHome} />
+          <Route exact path="/refer" component={Referral} />
           <Route render={() => <Redirect to="/" />} />
         </Switch>
       </Router>
