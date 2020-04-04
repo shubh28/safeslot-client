@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import axios from 'axios';
-import { API_URL } from '../../common/consts';
+
+import Alerts from '../Alerts';
 
 export default function SignUpForm({ toggleLogin }) {
   const [formData, setFormData] = useState({
@@ -11,48 +12,47 @@ export default function SignUpForm({ toggleLogin }) {
     password: '',
     isStoreOwner: false
   });
+  const [error, setError] = useState({ type: '', message: '' });
+
+  const showError = (type, message) => setError({ type, message });
+  const closeError = () => setError({ type: '', message: '' });
 
   function onSignupClick(e) {
     e.preventDefault();
     const { email, phone, name, password, isStoreOwner } = formData;
     if (email === '' || password === '' || phone === '' || name === '') {
-      alert('All fields are mandatory. Please try again');
-    } else {
-      // make user sign up
-      axios
-        .post(`${API_URL}/users`, {
-          email,
-          password,
-          name,
-          phone,
-          isStoreOwner
-        })
-        .then(res => {
-          toggleLogin();
-        })
-        .catch(err => {
-          alert('Error in signing you up');
-        });
+      return showError('danger', 'All fields are mandatory. Please try again');
     }
-  }
+
+    // make user sign up
+    axios
+      .post('https://safeslot-backend.herokuapp.com/api/users', {
+        email,
+        password,
+        name,
+        phone,
+        isStoreOwner
+      })
+      .then(res => {
+        this.props.toggleLogin();
+      })
+      .catch(err => {
+        showError('danger', 'Error in signing you up');
+      });
+  };
 
   function handleChange(e) {
-    var obj = { ...formData };
-    obj[e.target.name] = e.target.value;
-    if (e.target.name === 'isStoreOwner') {
-      if (e.target.value == 'false') {
-        obj['isStoreOwner'] = true;
-      } else {
-        obj['isStoreOwner'] = false;
-      }
-    }
-    console.log(obj);
-    setFormData(obj);
+    setFormData(Object.assign({ ...formData }, {
+      [e.target.name]: e.target.name === 'isStoreOwner'? !Boolean(e.target.value) : e.target.value,
+      error: {}
+    }));
   }
 
   const { email, phone, name, password, isStoreOwner } = formData;
   return (
     <Form>
+      <Alerts type={error.type} message={error.message} onClose={closeError} />
+
       <FormGroup>
         <Input
           type="text"

@@ -20,7 +20,7 @@ const SlotButton = styled(Button)`
   padding: 0.175rem 0.8rem;
 `;
 
-function Slots({ availableSlots = [], storeId }) {
+function Slots({ availableSlots = [], storeId, showError }) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
 
@@ -36,11 +36,10 @@ function Slots({ availableSlots = [], storeId }) {
           user_id: userId
         })
         .then(res => {
-          console.log('makeBooking successful');
           history.push('/bookings');
         })
         .catch(err => {
-          alert('Error while making booking');
+          showError('danger', 'Error while making booking');
         });
     } else {
       setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });

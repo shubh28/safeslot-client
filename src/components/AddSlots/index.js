@@ -10,12 +10,15 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 
+import Alerts from '../Alerts';
+
 export default class AddSlots extends Component {
   constructor(props) {
     super(props);
     this.state = {
       allSlots: [],
-      mySlots: {}
+      mySlots: {},
+      error: {}
     };
   }
 
@@ -24,6 +27,7 @@ export default class AddSlots extends Component {
   }
 
   getSlots = () => {
+    this.closeError();
     const { user } = this.props;
     const storeId = user && user.stores && user.stores.id;
     const filter = { where: { storesId: storeId }, include: 'slots' };
@@ -41,8 +45,9 @@ export default class AddSlots extends Component {
         this.setState({ mySlots });
       })
       .catch(err => {
-        alert('Error in fetching slots');
+        this.showError('danger', 'Error in fetching slots');
       });
+
     axios
       .get(`https://safeslot-backend.herokuapp.com/api/slots`)
       .then(res => {
@@ -51,11 +56,12 @@ export default class AddSlots extends Component {
         });
       })
       .catch(err => {
-        alert('Error in fetching slots');
+        this.showError('danger', 'Error in fetching all slots');
       });
   };
 
   addSlots = slot => {
+    this.closeError();
     const { user } = this.props;
     const storeId = user && user.stores && user.stores.id;
     console.log(slot);
@@ -73,11 +79,12 @@ export default class AddSlots extends Component {
         this.getSlots();
       })
       .catch(err => {
-        alert('Error in adding slot');
+        this.showError('danger', 'Error in adding slot');
       });
   };
 
   deleteSlots = slot => {
+    this.closeError();
     axios
       .delete(
         `https://safeslot-backend.herokuapp.com/api/stores_slots_counts/${slot.id}`
@@ -86,8 +93,15 @@ export default class AddSlots extends Component {
         this.getSlots();
       })
       .catch(err => {
-        alert('Error in deleting slot');
+        this.showError('danger', 'Error in deleting slot');
       });
+  };
+
+  showError = (type, message) => {
+    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+  };
+  closeError = () => {
+    this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
   render() {
@@ -97,6 +111,8 @@ export default class AddSlots extends Component {
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
         <ModalBody>
+          <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+
           <p>Please add/remove your slots.</p>
           <ListGroup>
             {Object.keys(mySlots).map(slot => {

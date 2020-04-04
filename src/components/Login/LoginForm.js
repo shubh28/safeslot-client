@@ -3,11 +3,13 @@ import { Form, FormGroup, Input, Button } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
+import Alerts from '../Alerts';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 
 export default function LoginForm({ toggleLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState({ type: '', message: '' });
   const history = useHistory();
   const { storeSlotId } = useLocationAndStoreContext();
 
@@ -20,11 +22,14 @@ export default function LoginForm({ toggleLogin }) {
     }
   }, []);
 
+  const showError = (type, message) => setError({ type, message });
+  const closeError = () => setError({ type: '', message: '' });
+
   function onLoginClick(e) {
     e.preventDefault();
     const { email, password } = formData;
     if (email === '' || password === '') {
-      alert('Please enter email and password');
+      showError('danger', 'Please enter email and password');
     } else {
       axios
         .post('https://safeslot-backend.herokuapp.com/api/users/login', {
@@ -53,19 +58,20 @@ export default function LoginForm({ toggleLogin }) {
             });
         })
         .catch(err => {
-          alert('Error in logging user');
+          showError('danger','Error logging in');
         });
     }
   }
 
   function handleChange(e) {
-    var obj = { ...formData };
-    obj[e.target.name] = e.target.value;
-    setFormData(obj);
+    setError({ type: '', message: '' });
+    setFormData(Object.assign({ ...formData }, { [e.target.name]: e.target.value }));
   }
 
   return (
     <Form>
+      <Alerts type={error.type} message={error.message} onClose={closeError} />
+
       <FormGroup>
         <Input
           type="email"

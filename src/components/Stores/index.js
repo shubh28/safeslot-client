@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardBody, CardTitle, Button, Badge } from 'reactstrap';
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Button,
+  Row,
+  Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Badge
+} from 'reactstrap';
 import axios from 'axios';
-
 import { Link } from 'react-router-dom';
-import { API_URL } from '../../common/consts';
 import styled from 'styled-components';
-import { ReactComponent as Back } from '../../assets/back.svg';
-import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
+
 import Slots from './Slots';
-import { Container } from '../../styles';
+import Alerts from '../Alerts';
 import { Header } from '../common';
+import { Container } from '../../styles';
+import { API_URL } from '../../common/consts';
+import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 
 function Stores() {
   const [stores, setStores] = useState();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({ type: '', message: '' });
+
   const {
     location: { latitude: lat, longitude: lng }
   } = useLocationAndStoreContext();
+
+  const showError = (type, message) => setError({ type, message });
+  const closeError = () => setError({ type: '', message: '' });
 
   useEffect(() => {
     setLoading(true);
@@ -33,12 +51,11 @@ function Stores() {
             slots
           };
         });
-        console.log({ data: stores });
 
         setStores(stores);
       })
       .catch(err => {
-        alert('Some error while fetching stores');
+        showError('danger', 'Some error while fetching stores');
       })
       .finally(() => {
         setLoading(false);
@@ -81,6 +98,8 @@ function Stores() {
       <Header heading="place name" backPath={'/'} />
 
       <Container className="theme-Container" fluid={true}>
+        <Alerts type={error.type} message={error.message} onClose={closeError} />
+
         <div>
           {loading || !stores ? (
             <div>Loading...</div>
@@ -90,6 +109,7 @@ function Stores() {
                 return (
                   <Card key={store.id}>
                     <CardBody>
+
                       <HeaderDataContainer>
                         <GroceryBack className="logo" />
                         <CardTitle className="title">
@@ -113,7 +133,7 @@ function Stores() {
                             : ''}
                         </div>
                       </HeaderDataContainer>
-                      <Slots availableSlots={store.slots} storeId={store.id} />
+                      <Slots availableSlots={store.slots} storeId={store.id} showError={showError}/>
                       {/* <Button
                         outline
                         color="info"
