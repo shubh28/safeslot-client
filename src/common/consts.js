@@ -1,7 +1,4 @@
 // Types for action types
-// export const API_URL = "http://theanswerme.com:8000/api/v1";
-export const API_URL = 'http://localhost:7000/api/v1';
-
 export const SIGN_IN_INIT = 'SIGN_IN_INIT';
 export const SIGN_IN_SUCCESS = 'SIGIN_IN_SUCCESS';
 export const SIGN_IN_ERROR = 'SIGIN_IN_ERROR';
