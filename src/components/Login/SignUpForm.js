@@ -34,16 +34,16 @@ export default function SignUpForm({ toggleLogin }) {
         isStoreOwner
       })
       .then(res => {
-        this.props.toggleLogin();
+        toggleLogin();
       })
       .catch(err => {
         showError('danger', 'Error in signing you up');
       });
-  };
+  }
 
   function handleChange(e) {
     setFormData(Object.assign({ ...formData }, {
-      [e.target.name]: e.target.name === 'isStoreOwner'? !Boolean(e.target.value) : e.target.value,
+      [e.target.name]: e.target.name === 'isStoreOwner'? e.target.checked : e.target.value,
       error: {}
     }));
   }
@@ -96,7 +96,6 @@ export default function SignUpForm({ toggleLogin }) {
       <FormGroup>
         <Input
           type="checkbox"
-          value={isStoreOwner}
           checked={isStoreOwner}
           onChange={handleChange}
           name="isStoreOwner"
@@ -105,7 +104,7 @@ export default function SignUpForm({ toggleLogin }) {
       </FormGroup>
 
       <p>
-        Alrady have account?{' '}
+        Already have account?{' '}
         <a href="#" onClick={toggleLogin}>
           Login
         </a>
