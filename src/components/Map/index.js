@@ -116,7 +116,7 @@ const Map = () => {
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: 30,
+            bottom: '10%',
             transform: 'translateX(-50%)'
           }}
           onClick={() => {
