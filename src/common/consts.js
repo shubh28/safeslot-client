@@ -5,6 +5,11 @@ export const DEFAULT_LOCATION = {
   latitude: 28.63298099999998,
   longitude: 77.21928800000002
 };
+
+export const URL_REFS = {
+  stores: 'stores',
+  referStore: 'refer-store'
+};
 export const SIGN_IN_INIT = 'SIGN_IN_INIT';
 export const SIGN_IN_SUCCESS = 'SIGIN_IN_SUCCESS';
 export const SIGN_IN_ERROR = 'SIGIN_IN_ERROR';

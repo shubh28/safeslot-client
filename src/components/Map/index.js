@@ -96,7 +96,7 @@ const Map = () => {
         {/* <DeckGL {...viewport} layers={[searchResultLayer]} /> */}
 
         <Source type="geojson">
-          <Layer />
+          <Layer type="fill" />
         </Source>
         <Marker
           longitude={viewport.longitude}

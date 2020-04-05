@@ -62,10 +62,10 @@ export default class RouteWrapper extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router>
-          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-            <Switch>
-              <LocationAndStoreProvider>
+        <LocationAndStoreProvider>
+          <Router>
+            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+              <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
@@ -74,19 +74,17 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/owners" component={OwnerHome} />
                 <Route exact path="/refer" component={Referral} />
                 <Route render={() => <Redirect to="/" />} />
-              </LocationAndStoreProvider>
-
-              <Route render={() => <Redirect to="/" />} />
-            </Switch>
-            {/*<div className="footer">
+              </Switch>
+              {/*<div className="footer">
                 CREATED BY
                 <a href="https://www.linkedin.com/in/shubhamjain94/">Shubham Jain</a>
                 <a href="https://www.linkedin.com/in/shubhamjain94/">Akshay Nagpal</a>
                 <img className="donate" src={donate}/>
             </div>
           */}
-          </div>
-        </Router>
+            </div>
+          </Router>
+        </LocationAndStoreProvider>
       </Provider>
     );
   }
