@@ -19,6 +19,7 @@ import axios from 'axios';
 import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
 import { saveState, loadState } from '../../helpers/LocalStorage';
+import StoreBooking from './StoreBooking';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -92,7 +93,9 @@ export default class OwnerHome extends Component {
   };
 
   showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+    this.setState(
+      Object.assign({ ...this.state }, { error: { type, message } })
+    );
   };
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
@@ -110,7 +113,11 @@ export default class OwnerHome extends Component {
           </a>
         </div>
         <Container>
-          <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+          <Alerts
+            type={this.state.error.type}
+            message={this.state.error.message}
+            onClose={this.closeError}
+          />
 
           <div className="booking-wrapper">
             <h5>{store.name}</h5>
@@ -130,60 +137,9 @@ export default class OwnerHome extends Component {
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>
             )}
-            <Row>
-              <Col lg="4">
-                {this.state.bookings.map(booking => {
-                  return (
-                    <Card key={booking.id}>
-                      <CardBody>
-                        <CardTitle>
-                          <h5>Booking Id: {booking.id}</h5>
-                          <h6>
-                            <strong>Booking Date:</strong>{' '}
-                            {new Date(booking.booking_date).toDateString()}
-                          </h6>
-                          <h6>
-                            <strong>Your Slot:</strong> {booking.slot_id}
-                          </h6>
-                        </CardTitle>
-                        {booking.stores && (
-                          <CardSubtitle>
-                            {booking.stores.locality}, {booking.stores.city}
-                          </CardSubtitle>
-                        )}
-                        <Button
-                          outline
-                          color="info"
-                          onClick={() => this.toggleViewDetails(booking)}
-                        >
-                          View Details
-                        </Button>
-                      </CardBody>
-                    </Card>
-                  );
-                })}
-              </Col>
-            </Row>
+
+            <StoreBooking bookings={this.state.bookings} />
           </div>
-          <Modal
-            isOpen={this.state.viewDetails}
-            toggle={this.toggleViewDetails}
-          >
-            <ModalHeader toggle={this.toggleViewDetails}>
-              Order Details
-            </ModalHeader>
-            <ModalBody>
-              <p>
-                Please prepare following order for the user to come and pickup.
-              </p>
-              <p>{this.state.selectedbooking.order_details}</p>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="info" outline onClick={this.toggleViewDetails}>
-                Close
-              </Button>
-            </ModalFooter>
-          </Modal>
         </Container>
       </div>
     );
