@@ -116,7 +116,7 @@ const Map = () => {
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: '20%',
+            bottom: '10%',
             transform: 'translateX(-50%)',
             width: '10rem',
             height: '3rem'
@@ -129,6 +129,7 @@ const Map = () => {
             });
             history.push('/stores');
           }}
+          color="info"
         >
           {' '}
           Locate Stores{' '}
