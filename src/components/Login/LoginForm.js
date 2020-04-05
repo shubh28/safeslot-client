@@ -6,6 +6,7 @@ import axios from 'axios';
 import Alerts from '../Alerts';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
+import { URL_REFS } from '../../common/consts';
 
 export default function LoginForm({ toggleLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -16,7 +17,6 @@ export default function LoginForm({ toggleLogin }) {
   const params = location ? new URLSearchParams(location.search) : undefined;
 
   const referrer = params ? params.get('ref') : undefined;
-  const { storeSlotId } = useLocationAndStoreContext();
 
   useEffect(() => {
     const token =
@@ -50,9 +50,9 @@ export default function LoginForm({ toggleLogin }) {
             .then(response => {
               saveState('userInfo', response.data);
               if (!response.data.isStoreOwner) {
-                if (referrer === 'stores') {
+                if (referrer === URL_REFS.stores) {
                   history.replace('/stores');
-                } else if (referrer === 'refer-store') {
+                } else if (referrer === URL_REFS.referStore) {
                   history.replace('/refer');
                 } else {
                   history.replace('/');
