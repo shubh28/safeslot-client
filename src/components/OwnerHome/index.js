@@ -138,7 +138,10 @@ export default class OwnerHome extends Component {
               <h3 className="text-center">No Bookings Found</h3>
             )}
 
-            <StoreBooking bookings={this.state.bookings} />
+            <StoreBooking
+              bookings={this.state.bookings}
+              style={{ margin: '10px 0' }}
+            />
           </div>
         </Container>
       </div>

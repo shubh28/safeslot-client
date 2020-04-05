@@ -15,7 +15,7 @@ import {
   TabContent
 } from 'reactstrap';
 
-export default function StoreBooking({ bookings = [] }) {
+export default function StoreBooking({ bookings = [], ...others }) {
   const [selectedBooking, setSelectedBooking] = useState();
   const [activeTab, setActiveTab] = useState('1');
 
@@ -27,7 +27,7 @@ export default function StoreBooking({ bookings = [] }) {
     1}-${new Date().getDate()}`;
   return (
     <>
-      <Nav tabs>
+      <Nav tabs {...others}>
         <NavItem>
           <NavLink
             className={activeTab === '1' ? 'active' : ''}
