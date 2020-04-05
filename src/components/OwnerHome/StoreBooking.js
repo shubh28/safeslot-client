@@ -14,6 +14,7 @@ import {
   TabPane,
   TabContent
 } from 'reactstrap';
+import getSortResult from '../../helpers/getDateSortResult';
 
 export default function StoreBooking({ bookings = [], ...others }) {
   const [selectedBooking, setSelectedBooking] = useState();
@@ -25,6 +26,7 @@ export default function StoreBooking({ bookings = [], ...others }) {
 
   const todayDateString = `${new Date().getFullYear()}-${new Date().getMonth() +
     1}-${new Date().getDate()}`;
+
   return (
     <>
       <Nav tabs {...others}>
@@ -58,6 +60,9 @@ export default function StoreBooking({ bookings = [], ...others }) {
                   booking =>
                     new Date(booking.booking_date) >= new Date(todayDateString)
                 )
+                .sort((one, two) =>
+                  getSortResult(one.booking_date, two.booking_date)
+                )
                 .map(booking => {
                   return (
                     <BookingCard
@@ -77,6 +82,9 @@ export default function StoreBooking({ bookings = [], ...others }) {
                 .filter(
                   booking =>
                     new Date(booking.booking_date) < new Date(todayDateString)
+                )
+                .sort((one, two) =>
+                  getSortResult(one.booking_date, two.booking_date)
                 )
                 .map(booking => {
                   return (
