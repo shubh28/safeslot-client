@@ -7,26 +7,90 @@ import {
   ModalBody,
   ModalHeader,
   ModalFooter,
-  Button
+  Button,
+  Nav,
+  NavItem,
+  NavLink,
+  TabPane,
+  TabContent
 } from 'reactstrap';
 
 export default function StoreBooking({ bookings = [] }) {
   const [selectedBooking, setSelectedBooking] = useState();
+  const [activeTab, setActiveTab] = useState('1');
+
+  const toggle = tab => {
+    if (activeTab !== tab) setActiveTab(tab);
+  };
+
+  const todayDateString = `${new Date().getFullYear()}-${new Date().getMonth() +
+    1}-${new Date().getDate()}`;
   return (
     <>
-      <Row>
-        <Col lg="4">
-          {bookings.map(booking => {
-            return (
-              <BookingCard
-                booking={booking}
-                key={booking.id}
-                setSelectedBooking={setSelectedBooking}
-              />
-            );
-          })}
-        </Col>
-      </Row>
+      <Nav tabs>
+        <NavItem>
+          <NavLink
+            className={activeTab === '1' ? 'active' : ''}
+            onClick={() => {
+              toggle('1');
+            }}
+          >
+            Today
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={activeTab === '2' ? 'active' : ''}
+            onClick={() => {
+              toggle('2');
+            }}
+          >
+            History
+          </NavLink>
+        </NavItem>
+      </Nav>
+      <TabContent activeTab={activeTab}>
+        <TabPane tabId="1">
+          <Row>
+            <Col>
+              {bookings
+                .filter(
+                  booking =>
+                    new Date(booking.booking_date) >= new Date(todayDateString)
+                )
+                .map(booking => {
+                  return (
+                    <BookingCard
+                      booking={booking}
+                      key={booking.id}
+                      setSelectedBooking={setSelectedBooking}
+                    />
+                  );
+                })}
+            </Col>
+          </Row>
+        </TabPane>
+        <TabPane tabId="2">
+          <Row>
+            <Col>
+              {bookings
+                .filter(
+                  booking =>
+                    new Date(booking.booking_date) < new Date(todayDateString)
+                )
+                .map(booking => {
+                  return (
+                    <BookingCard
+                      booking={booking}
+                      key={booking.id}
+                      setSelectedBooking={setSelectedBooking}
+                    />
+                  );
+                })}
+            </Col>
+          </Row>
+        </TabPane>
+      </TabContent>
 
       {selectedBooking && (
         <Modal
