@@ -34,7 +34,7 @@ export default function SignUpForm({ toggleLogin }) {
         isStoreOwner
       })
       .then(res => {
-        this.props.toggleLogin();
+        toggleLogin();
       })
       .catch(err => {
         showError('danger', 'Error in signing you up');
