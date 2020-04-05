@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { Button, Popover, PopoverBody } from 'reactstrap';
 import { loadState } from '../../helpers/LocalStorage';
+import { URL_REFS } from '../../common/consts';
 
 export default function NoStores() {
   const [showModal, setShowModal] = useState(false);
@@ -31,8 +32,8 @@ export default function NoStores() {
           toggle={() => setShowModal(!showModal)}
         >
           <PopoverBody>
-            Please <Link to={'/login?ref=refer-store'}>Login</Link> to refer a
-            store.
+            Please <Link to={`/login?ref=${URL_REFS.referStore}`}>Login</Link>{' '}
+            to refer a store.
           </PopoverBody>
         </Popover>
       </div>

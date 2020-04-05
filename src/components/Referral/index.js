@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 
 import { loadState, saveState } from '../../helpers/LocalStorage';
+import { URL_REFS } from '../../common/consts';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ export default class OnBoarding extends Component {
       loadState('userAuthenticationDetails') &&
       loadState('userAuthenticationDetails').userId;
     if (!userId) {
-      this.props.history.push('/');
+      this.props.history.push(`/login?ref=${URL_REFS.referStore}`);
       return;
     }
   }
