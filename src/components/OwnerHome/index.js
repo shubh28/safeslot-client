@@ -92,7 +92,9 @@ export default class OwnerHome extends Component {
   };
 
   showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+    this.setState(
+      Object.assign({ ...this.state }, { error: { type, message } })
+    );
   };
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
@@ -110,7 +112,11 @@ export default class OwnerHome extends Component {
           </a>
         </div>
         <Container>
-          <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+          <Alerts
+            type={this.state.error.type}
+            message={this.state.error.message}
+            onClose={this.closeError}
+          />
 
           <div className="booking-wrapper">
             <h5>{store.name}</h5>

@@ -98,7 +98,9 @@ export default class Bookings extends Component {
   };
 
   showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+    this.setState(
+      Object.assign({ ...this.state }, { error: { type, message } })
+    );
   };
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
@@ -111,7 +113,11 @@ export default class Bookings extends Component {
         <Header heading="Bookings" backPath={'/'} />
         <Container>
           <div className="booking-wrapper">
-            <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+            <Alerts
+              type={this.state.error.type}
+              message={this.state.error.message}
+              onClose={this.closeError}
+            />
 
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>

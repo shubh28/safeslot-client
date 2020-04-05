@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Alert } from 'reactstrap';
 
-const Alerts = (props) => {
+const Alerts = props => {
   const { message, type, onClose } = props;
   const [visible, setVisible] = useState(Boolean(message));
 
@@ -18,7 +18,6 @@ const Alerts = (props) => {
     <Alert color={type} isOpen={visible} toggle={onDismiss}>
       {message}
     </Alert>
-
   );
 };
 

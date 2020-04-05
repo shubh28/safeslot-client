@@ -99,7 +99,11 @@ function Stores() {
       <Header heading="Stores nearby" backPath={'/'} />
 
       <Container className="theme-Container" fluid={true}>
-        <Alerts type={error.type} message={error.message} onClose={closeError} />
+        <Alerts
+          type={error.type}
+          message={error.message}
+          onClose={closeError}
+        />
 
         <div>
           {loading || !stores ? (
@@ -110,7 +114,6 @@ function Stores() {
                 return (
                   <Card key={store.id}>
                     <CardBody>
-
                       <HeaderDataContainer>
                         <GroceryBack className="logo" />
                         <CardTitle className="title">
@@ -134,7 +137,11 @@ function Stores() {
                             : ''}
                         </div>
                       </HeaderDataContainer>
-                      <Slots availableSlots={store.slots} storeId={store.id} showError={showError}/>
+                      <Slots
+                        availableSlots={store.slots}
+                        storeId={store.id}
+                        showError={showError}
+                      />
                       {/* <Button
                         outline
                         color="info"

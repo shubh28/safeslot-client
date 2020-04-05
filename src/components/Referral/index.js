@@ -83,6 +83,10 @@ export default class OnBoarding extends Component {
       );
       return;
     }
+    const userId =
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').userId;
+
     const body = {
       name,
       address,
@@ -98,7 +102,8 @@ export default class OnBoarding extends Component {
       phone,
       email,
       store_type,
-      isVerified: false
+      isVerified: false,
+      referredBy: userId
     };
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
@@ -106,7 +111,7 @@ export default class OnBoarding extends Component {
         this.props.history.push('/');
       })
       .catch(err => {
-        this.showError('danger','Some error occurred');
+        this.showError('danger', 'Some error occurred');
       });
   };
 
@@ -116,7 +121,9 @@ export default class OnBoarding extends Component {
       this.handleLocalitySearch(e);
     }
 
-    this.setState(Object.assign({ ...this.state }, { [key]: e.target.value, error: {} }));
+    this.setState(
+      Object.assign({ ...this.state }, { [key]: e.target.value, error: {} })
+    );
   };
 
   handleLocalitySearch = e => {
@@ -150,7 +157,9 @@ export default class OnBoarding extends Component {
   };
 
   showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+    this.setState(
+      Object.assign({ ...this.state }, { error: { type, message } })
+    );
   };
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
@@ -178,7 +187,11 @@ export default class OnBoarding extends Component {
         </div>
         <Container>
           <Form>
-            <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+            <Alerts
+              type={this.state.error.type}
+              message={this.state.error.message}
+              onClose={this.closeError}
+            />
 
             <FormText tag="h5" color="black">
               Please refer nearby stores.

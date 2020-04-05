@@ -65,14 +65,16 @@ export default function LoginForm({ toggleLogin }) {
             });
         })
         .catch(err => {
-          showError('danger','Error logging in');
+          showError('danger', 'Error logging in');
         });
     }
   }
 
   function handleChange(e) {
     setError({ type: '', message: '' });
-    setFormData(Object.assign({ ...formData }, { [e.target.name]: e.target.value }));
+    setFormData(
+      Object.assign({ ...formData }, { [e.target.name]: e.target.value })
+    );
   }
 
   return (

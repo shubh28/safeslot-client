@@ -42,10 +42,18 @@ export default function SignUpForm({ toggleLogin }) {
   }
 
   function handleChange(e) {
-    setFormData(Object.assign({ ...formData }, {
-      [e.target.name]: e.target.name === 'isStoreOwner'? e.target.checked : e.target.value,
-      error: {}
-    }));
+    setFormData(
+      Object.assign(
+        { ...formData },
+        {
+          [e.target.name]:
+            e.target.name === 'isStoreOwner'
+              ? e.target.checked
+              : e.target.value,
+          error: {}
+        }
+      )
+    );
   }
 
   const { email, phone, name, password, isStoreOwner } = formData;

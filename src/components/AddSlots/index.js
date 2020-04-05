@@ -98,7 +98,9 @@ export default class AddSlots extends Component {
   };
 
   showError = (type, message) => {
-    this.setState(Object.assign({ ...this.state }, { error: { type, message} }));
+    this.setState(
+      Object.assign({ ...this.state }, { error: { type, message } })
+    );
   };
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
@@ -111,7 +113,11 @@ export default class AddSlots extends Component {
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
         <ModalBody>
-          <Alerts type={this.state.error.type} message={this.state.error.message} onClose={this.closeError} />
+          <Alerts
+            type={this.state.error.type}
+            message={this.state.error.message}
+            onClose={this.closeError}
+          />
 
           <p>Please add/remove your slots.</p>
           <ListGroup>
