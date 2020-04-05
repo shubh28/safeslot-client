@@ -116,8 +116,10 @@ const Map = () => {
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: '10%',
-            transform: 'translateX(-50%)'
+            bottom: '20%',
+            transform: 'translateX(-50%)',
+            width: '10rem',
+            height: '3rem'
           }}
           onClick={() => {
             setStoreSlotId(undefined);
