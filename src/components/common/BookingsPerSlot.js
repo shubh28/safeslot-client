@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Collapse } from 'reactstrap';
 import getSortResult from '../../helpers/getDateSortResult';
-import BookingCard from '../common/BookingCard';
+import BookingCardForStore from '../common/BookingCardForStore';
 
 export default function BookingPerSlot({
   slotString,
@@ -32,7 +32,7 @@ export default function BookingPerSlot({
             )
             .map(booking => {
               return (
-                <BookingCard
+                <BookingCardForStore
                   booking={booking}
                   key={booking.id}
                   setSelectedBooking={setSelectedBooking}
