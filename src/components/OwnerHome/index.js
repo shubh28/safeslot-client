@@ -20,6 +20,7 @@ import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
+import { API_URL } from '../../common/consts';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -59,13 +60,12 @@ export default class OwnerHome extends Component {
           this.props.history.push('/onboard');
         } else {
           const storeId = user && user.storeId;
-          const filter = { where: { store_id: storeId } };
+          const filter = {
+            where: { store_id: storeId },
+            include: ['slots', 'users']
+          };
           axios
-            .get(
-              `https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(
-                filter
-              )}`
-            )
+            .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
             .then(res => {
               this.setState({ bookings: res.data });
             })

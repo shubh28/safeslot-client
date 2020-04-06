@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import BookingCard from '../common/BookingCard';
 import {
   Row,
   Col,
@@ -9,49 +8,37 @@ import {
   ModalFooter,
   Button
 } from 'reactstrap';
-import getSortResult from '../../helpers/getDateSortResult';
-export const BookingListType = { today: 'today', history: 'history' };
 
-export default function BookingList({
-  type = BookingListType.today,
-  bookings = []
-}) {
+import BookingPerSlot from './BookingsPerSlot';
+
+export default function BookingList({ bookings = [] }) {
   const [selectedBooking, setSelectedBooking] = useState();
 
-  const todayDateString = `${new Date().getFullYear()}-${new Date().getMonth() +
-    1}-${new Date().getDate()}`;
+  const uniqueSlotStrings = bookings
+    .map(booking => `${booking.slots.start_time} - ${booking.slots.end_time}`)
+    .filter((current, index, array) => array.indexOf(current) === index);
 
-  function filterBasedOnType(booking) {
-    if (type === BookingListType.today) {
-      return new Date(booking.booking_date) >= new Date(todayDateString);
-    } else if (type === BookingListType.history) {
-      return new Date(booking.booking_date) < new Date(todayDateString);
-    } else {
-      return true;
-    }
+  function getBookingsForSlot(slotString, bookings) {
+    return bookings.filter(
+      booking =>
+        `${booking.slots.start_time} - ${booking.slots.end_time}` === slotString
+    );
   }
-  const filteredBooking = bookings.filter(filterBasedOnType) || [];
+  console.log({ uniqueSlotStrings });
   return (
     <>
       <Row>
         <Col>
-          {filteredBooking.length ? (
-            filteredBooking
-              .sort((one, two) =>
-                getSortResult(one.booking_date, two.booking_date)
-              )
-              .map(booking => {
-                return (
-                  <BookingCard
-                    booking={booking}
-                    key={booking.id}
-                    setSelectedBooking={setSelectedBooking}
-                  />
-                );
-              })
-          ) : (
-            <div>No records found</div>
-          )}
+          {uniqueSlotStrings.length
+            ? uniqueSlotStrings.map(slotString => (
+                <BookingPerSlot
+                  key={slotString}
+                  slotString={slotString}
+                  bookings={getBookingsForSlot(slotString, bookings)}
+                  setSelectedBooking={setSelectedBooking}
+                />
+              ))
+            : null}
         </Col>
       </Row>
       {selectedBooking && (
