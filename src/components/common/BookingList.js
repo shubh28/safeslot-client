@@ -80,7 +80,10 @@ export default function BookingList({
               ))
             ) : null
           ) : dateBookings.length ? (
-            <BookingListOfADay dateBooking={dateBookings[0]} />
+            <BookingListOfADay
+              dateBooking={dateBookings[0]}
+              setSelectedBooking={setSelectedBooking}
+            />
           ) : null}
         </Col>
       </Row>
