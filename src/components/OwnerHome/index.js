@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Container,
   Row,
   Col,
   Card,
@@ -22,6 +21,8 @@ import { saveState, loadState } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import { API_URL } from '../../common/consts';
 import formatBookingsList from './formatBookingsList';
+import { Header } from '../common';
+import { Container } from '../../styles';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -106,14 +107,10 @@ export default class OwnerHome extends Component {
     const { user } = this.state;
     const store = (user && user.stores) || {};
     return (
-      <div className="owners">
-        <div className="bookings">
-          <h2 className="text-center">Owner Portal</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
-        <Container>
+      <>
+        <Header heading="Owner Portal" backPath={'/'} />
+
+        <Container className="theme-Container" fluid={true}>
           <Alerts
             type={this.state.error.type}
             message={this.state.error.message}
@@ -145,7 +142,7 @@ export default class OwnerHome extends Component {
             />
           </div>
         </Container>
-      </div>
+      </>
     );
   }
 }
