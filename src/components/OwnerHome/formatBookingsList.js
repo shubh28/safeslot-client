@@ -14,8 +14,8 @@ export default function formatBookingsList(bookings) {
       .map(booking => `${booking.slots.start_time} - ${booking.slots.end_time}`)
       .filter((current, index, array) => array.indexOf(current) === index);
 
-    const slotBookings = slotStrings.map(slotString => {
-      const bookingsOfSlots = bookingsOfDate.filter(
+    const slots = slotStrings.map(slotString => {
+      const slotBookings = bookingsOfDate.filter(
         booking =>
           `${booking.slots.start_time} - ${booking.slots.end_time}` ===
           slotString
@@ -23,13 +23,13 @@ export default function formatBookingsList(bookings) {
 
       return {
         slotString,
-        bookings: bookingsOfSlots
+        slotBookings
       };
     });
 
     return {
       date: dateString,
-      bookings: slotBookings
+      slots
     };
   });
 }

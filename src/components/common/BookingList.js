@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Row,
   Col,
@@ -6,28 +6,68 @@ import {
   ModalBody,
   ModalHeader,
   ModalFooter,
-  Button
+  Button,
+  Collapse
 } from 'reactstrap';
+import BookingCardForStore from '../common/BookingCardForStore';
 
-import BookingPerSlot from './BookingsPerSlot';
+function CollapsableWrapper({ children, title, ...others }) {
+  const [isOpen, setIsOpen] = useState(false);
 
-export default function BookingList({ bookings = [], groupByDate = true }) {
+  return (
+    <div {...others}>
+      <div
+        style={{
+          background: '#ccc',
+          padding: '5px',
+          margin: '3px',
+          border: '1px solid #000',
+          borderRadius: '4px'
+        }}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <strong>{title}</strong>
+      </div>
+      <Collapse isOpen={isOpen} style={{ margin: '10px' }}>
+        {children}
+      </Collapse>
+    </div>
+  );
+}
+
+export default function BookingList({
+  bookings: dateBookings = [],
+  groupByDate = true
+}) {
   const [selectedBooking, setSelectedBooking] = useState();
 
   return (
     <>
       <Row>
         <Col>
-          {/* {uniqueSlotStrings.length
-            ? uniqueSlotStrings.map(slotString => (
-                <BookingPerSlot
-                  key={slotString}
-                  slotString={slotString}
-                  bookings={getBookingsForSlot(slotString, bookings)}
-                  setSelectedBooking={setSelectedBooking}
-                />
+          {dateBookings.length
+            ? dateBookings.map(dateBooking => (
+                <CollapsableWrapper title={dateBooking.date}>
+                  {dateBooking.slots.length ? (
+                    dateBooking.slots.map(slot => (
+                      <CollapsableWrapper title={slot.slotString}>
+                        {slot.slotBookings.length
+                          ? slot.slotBookings.map(booking => (
+                              <BookingCardForStore
+                                booking={booking}
+                                key={booking.id}
+                                setSelectedBooking={setSelectedBooking}
+                              />
+                            ))
+                          : null}
+                      </CollapsableWrapper>
+                    ))
+                  ) : (
+                    <div>No records found</div>
+                  )}
+                </CollapsableWrapper>
               ))
-            : null} */}
+            : null}
         </Col>
       </Row>
       {selectedBooking && (
