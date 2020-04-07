@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Nav, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import BookingList from '../common/BookingList';
+import getDateString from '../../helpers/getDateString';
 
 const BookingListType = { today: 'today', history: 'history' };
 
@@ -11,14 +12,17 @@ export default function StoreBooking({ bookings = [], ...others }) {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
-  const todayDateString = `${new Date().getFullYear()}-${new Date().getMonth() +
-    1}-${new Date().getDate()}`;
-
   function filterBasedOnType(type, booking) {
     if (type === BookingListType.today) {
-      return new Date(booking.booking_date) >= new Date(todayDateString);
+      return (
+        new Date(booking.date) >=
+        new Date(getDateString(new Date().toLocaleString()))
+      );
     } else if (type === BookingListType.history) {
-      return new Date(booking.booking_date) < new Date(todayDateString);
+      return (
+        new Date(booking.date) <
+        new Date(getDateString(new Date().toLocaleString()))
+      );
     } else {
       return true;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -11,25 +11,14 @@ import {
 
 import BookingPerSlot from './BookingsPerSlot';
 
-export default function BookingList({ bookings = [] }) {
+export default function BookingList({ bookings = [], groupByDate = true }) {
   const [selectedBooking, setSelectedBooking] = useState();
 
-  const uniqueSlotStrings = bookings
-    .map(booking => `${booking.slots.start_time} - ${booking.slots.end_time}`)
-    .filter((current, index, array) => array.indexOf(current) === index);
-
-  function getBookingsForSlot(slotString, bookings) {
-    return bookings.filter(
-      booking =>
-        `${booking.slots.start_time} - ${booking.slots.end_time}` === slotString
-    );
-  }
-  console.log({ uniqueSlotStrings });
   return (
     <>
       <Row>
         <Col>
-          {uniqueSlotStrings.length
+          {/* {uniqueSlotStrings.length
             ? uniqueSlotStrings.map(slotString => (
                 <BookingPerSlot
                   key={slotString}
@@ -38,7 +27,7 @@ export default function BookingList({ bookings = [] }) {
                   setSelectedBooking={setSelectedBooking}
                 />
               ))
-            : null}
+            : null} */}
         </Col>
       </Row>
       {selectedBooking && (

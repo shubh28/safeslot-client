@@ -21,6 +21,7 @@ import AddSlots from '../AddSlots';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import { API_URL } from '../../common/consts';
+import formatBookingsList from './formatBookingsList';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class OwnerHome extends Component {
           axios
             .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
             .then(res => {
-              this.setState({ bookings: res.data });
+              this.setState({ bookings: formatBookingsList(res.data) });
             })
             .catch(err => {
               this.showError('danger', 'Some error occurred');
