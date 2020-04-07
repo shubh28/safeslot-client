@@ -35,6 +35,29 @@ function CollapsableWrapper({ children, title, ...others }) {
   );
 }
 
+function BookingListOfADay({ dateBooking, setSelectedBooking }) {
+  return (
+    <>
+      {dateBooking.slots.length ? (
+        dateBooking.slots.map(slot => (
+          <CollapsableWrapper title={slot.slotString}>
+            {slot.slotBookings.length
+              ? slot.slotBookings.map(booking => (
+                  <BookingCardForStore
+                    booking={booking}
+                    key={booking.id}
+                    setSelectedBooking={setSelectedBooking}
+                  />
+                ))
+              : null}
+          </CollapsableWrapper>
+        ))
+      ) : (
+        <div>No records found</div>
+      )}
+    </>
+  );
+}
 export default function BookingList({
   bookings: dateBookings = [],
   groupByDate = true
@@ -45,29 +68,20 @@ export default function BookingList({
     <>
       <Row>
         <Col>
-          {dateBookings.length
-            ? dateBookings.map(dateBooking => (
+          {groupByDate ? (
+            dateBookings.length ? (
+              dateBookings.map(dateBooking => (
                 <CollapsableWrapper title={dateBooking.date}>
-                  {dateBooking.slots.length ? (
-                    dateBooking.slots.map(slot => (
-                      <CollapsableWrapper title={slot.slotString}>
-                        {slot.slotBookings.length
-                          ? slot.slotBookings.map(booking => (
-                              <BookingCardForStore
-                                booking={booking}
-                                key={booking.id}
-                                setSelectedBooking={setSelectedBooking}
-                              />
-                            ))
-                          : null}
-                      </CollapsableWrapper>
-                    ))
-                  ) : (
-                    <div>No records found</div>
-                  )}
+                  <BookingListOfADay
+                    dateBooking={dateBooking}
+                    setSelectedBooking={setSelectedBooking}
+                  />
                 </CollapsableWrapper>
               ))
-            : null}
+            ) : null
+          ) : dateBookings.length ? (
+            <BookingListOfADay dateBooking={dateBookings[0]} />
+          ) : null}
         </Col>
       </Row>
       {selectedBooking && (

@@ -57,6 +57,7 @@ export default function StoreBooking({ bookings = [], ...others }) {
             bookings={bookings.filter(booking =>
               filterBasedOnType(BookingListType.today, booking)
             )}
+            groupByDate={false}
           />
         </TabPane>
         <TabPane tabId="2">
