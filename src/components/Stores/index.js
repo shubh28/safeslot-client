@@ -96,7 +96,7 @@ function Stores() {
   `;
   return (
     <>
-      <Header heading="Stores nearby" backPath={'/'} />
+      <Header heading="Stores nearby" backPath={'/map'} />
 
       <Container className="theme-Container" fluid={true}>
         <Alerts
