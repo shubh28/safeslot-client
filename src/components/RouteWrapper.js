@@ -16,6 +16,7 @@ import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
 import Referral from '../components/Referral';
+import Splash from '../components/Splash';
 
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
@@ -66,7 +67,8 @@ export default class RouteWrapper extends Component {
           <Router>
             <div style={{ maxWidth: '500px', margin: '0 auto' }}>
               <Switch>
-                <Route exact path="/" component={Home} />
+                <Route exact path="/" component={Splash} />
+                <Route exact path="/map" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
                 <Route exact path="/stores" component={Stores} />
