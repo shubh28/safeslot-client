@@ -18,7 +18,7 @@ export default function Splash() {
   }, [user]);
   return (
       <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-        <img src={logo} style={{marginTop: '5rem'}} />
+        <img src={logo} style={{marginTop: '5rem', width: '65%', height: '65%', marginLeft: '18%'}} />
         <span style={{marginBottom: '3rem'}}>getting essentials safely during crisis</span>
         <h5>Buy Essentials</h5>
         <Link style={{marginBottom: '2rem'}} to={'/login'}>
@@ -28,7 +28,9 @@ export default function Splash() {
         <Link style={{marginBottom: '2rem'}} to={'/registermystore'}>
           <Button> Login/Register</Button>
         </Link>
-        <Link to={'/map'}> SKIP</Link>
+        <Link to={'/map'}> 
+          <Button color="info">SKIP</Button>
+        </Link>
       </div>
   );
 }
