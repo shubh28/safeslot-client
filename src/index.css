@@ -14,7 +14,7 @@ code {
 }
 html,
 #root {
-  background: #e1e9ee;
+  background: #fff;
   scroll-behavior: smooth;
 }
 .top-fold {

@@ -80,7 +80,7 @@ function Slots({ availableSlots = [], storeId, showError }) {
         )}
       </SlotWrapper>
       {availableSlots.length ? (
-        <Button onClick={() => makeBooking(storeSlotId)}>Book Slot</Button>
+        <Button color="info" onClick={() => makeBooking(storeSlotId)}>Book Slot</Button>
       ) : null}
     </>
   );

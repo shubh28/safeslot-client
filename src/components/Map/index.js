@@ -84,6 +84,7 @@ const Map = () => {
         </Controls>
         <Geocoder
           mapRef={mapRef}
+          placeholder="Search your locality"
           containerRef={geoCoderContainerRef}
           onResult={handleOnResult}
           onViewportChange={_onGeoCoderViewportChange}
