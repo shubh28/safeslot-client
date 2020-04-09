@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import useCurrentUser from '../../hooks/useCurrentUser';
-const logo = require('../../assets/logo.png')
+import logo from '../../assets/logo.png'
 
 export default function Splash() {
   const [loading, user, error] = useCurrentUser();
