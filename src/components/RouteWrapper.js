@@ -75,6 +75,7 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/onboard" component={OnBoarding} />
                 <Route exact path="/owners" component={OwnerHome} />
                 <Route exact path="/refer" component={Referral} />
+                <Route exact path="/registermystore" component={Referral} />
                 <Route render={() => <Redirect to="/" />} />
               </Switch>
               {/*<div className="footer">
