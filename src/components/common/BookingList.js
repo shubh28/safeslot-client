@@ -14,6 +14,8 @@ import BookingCardForStore from '../common/BookingCardForStore';
 function CollapsableWrapper({ children, title, ...others }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const displayTitle = title.indexOf(":") === -1 ? new Date(title).toDateString() :title
+
   return (
     <div {...others}>
       <div
@@ -26,7 +28,7 @@ function CollapsableWrapper({ children, title, ...others }) {
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <strong>{title}</strong>
+        <strong>{displayTitle}</strong>
       </div>
       <Collapse isOpen={isOpen} style={{ margin: '10px' }}>
         {children}
@@ -40,7 +42,7 @@ function BookingListOfADay({ dateBooking, setSelectedBooking }) {
     <>
       {dateBooking.slots.length ? (
         dateBooking.slots.map(slot => (
-          <CollapsableWrapper title={slot.slotString}>
+          <CollapsableWrapper title={slot.slotString} key={slot.slotString}>
             {slot.slotBookings.length
               ? slot.slotBookings.map(booking => (
                   <BookingCardForStore
@@ -71,7 +73,7 @@ export default function BookingList({
           {groupByDate ? (
             dateBookings.length ? (
               dateBookings.map(dateBooking => (
-                <CollapsableWrapper title={dateBooking.date}>
+                <CollapsableWrapper title={dateBooking.date} key={dateBooking.date}>
                   <BookingListOfADay
                     dateBooking={dateBooking}
                     setSelectedBooking={setSelectedBooking}
