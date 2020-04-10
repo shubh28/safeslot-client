@@ -3,7 +3,7 @@ import { Button } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import useCurrentUser from '../../hooks/useCurrentUser';
 const logo = require('../../assets/logo.png')
-const grocery = require('../../assets/grocery.png')
+const grocery = require('../../assets/grocery1.png')
 const chemist = require('../../assets/chemist.png')
 
 export default function Splash() {
