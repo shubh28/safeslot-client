@@ -65,7 +65,6 @@ export default function BookingList({
   groupByDate = true
 }) {
   const [selectedBooking, setSelectedBooking] = useState();
-
   return (
     <>
       <Row>

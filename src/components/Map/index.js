@@ -11,7 +11,6 @@ import Geocoder from 'react-map-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 import { useHistory } from 'react-router-dom';
 const Controls = styled.div`
