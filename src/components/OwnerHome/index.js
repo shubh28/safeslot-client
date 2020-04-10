@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Container,
   Row,
   Col,
   Card,
@@ -20,6 +19,10 @@ import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
+import { API_URL } from '../../common/consts';
+import formatBookingsList from './formatBookingsList';
+import { Header } from '../common';
+import { Container } from '../../styles';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -59,15 +62,14 @@ export default class OwnerHome extends Component {
           this.props.history.push('/onboard');
         } else {
           const storeId = user && user.storeId;
-          const filter = { where: { store_id: storeId } };
+          const filter = {
+            where: { store_id: storeId },
+            include: ['slots', 'users']
+          };
           axios
-            .get(
-              `https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(
-                filter
-              )}`
-            )
+            .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
             .then(res => {
-              this.setState({ bookings: res.data });
+              this.setState({ bookings: formatBookingsList(res.data) });
             })
             .catch(err => {
               this.showError('danger', 'Some error occurred');
@@ -105,14 +107,10 @@ export default class OwnerHome extends Component {
     const { user } = this.state;
     const store = (user && user.stores) || {};
     return (
-      <div className="owners">
-        <div className="bookings">
-          <h2 className="text-center">Owner Portal</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
-        <Container>
+      <>
+        <Header heading="Owner Portal" backPath={'/'} />
+
+        <Container className="theme-Container" fluid={true}>
           <Alerts
             type={this.state.error.type}
             message={this.state.error.message}
@@ -144,7 +142,7 @@ export default class OwnerHome extends Component {
             />
           </div>
         </Container>
-      </div>
+      </>
     );
   }
 }
