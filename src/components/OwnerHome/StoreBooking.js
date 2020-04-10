@@ -16,12 +16,12 @@ export default function StoreBooking({ bookings = [], ...others }) {
     if (type === BookingListType.today) {
       return (
         new Date(booking.date) >=
-        new Date(getDateString(new Date().toLocaleString()))
+        new Date(getDateString(new Date()))
       );
     } else if (type === BookingListType.history) {
       return (
         new Date(booking.date) <
-        new Date(getDateString(new Date().toLocaleString()))
+        new Date(getDateString(new Date()))
       );
     } else {
       return true;
