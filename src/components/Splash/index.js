@@ -33,7 +33,7 @@ export default function Splash() {
         <Link to={'/map'}> 
           <Button color="info">SKIP</Button>
         </Link>
-        <div style={{marginTop: '48px', display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+        <div style={{marginTop: '5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
           <Link to={'/map'}><img src={grocery} width="80" /></Link>
           <Link to={'/map'}><img src={chemist} width="80" /></Link>
         </div>
