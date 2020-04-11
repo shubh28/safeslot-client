@@ -47,6 +47,12 @@ const StoreLandingWrapper = styled(Container)`
       background-color: rgb(0, 0, 0, 0.5);
       color: #fff;
     }
+
+    .slider-register-button {
+      background-color: #fff;
+      color: rgb(0, 0, 0, 0.75);
+      font-weight: 500;
+    }
     /* background-color: #ccc;
     background-image: url(../../assets/home.jpg);
 
@@ -109,7 +115,10 @@ export default function StoreLanding() {
               </strong>
             </div>
             <Link to="/login">
-              <Button className="register-button"> Register Now</Button>
+              <Button className="register-button slider-register-button">
+                {' '}
+                Register Now
+              </Button>
             </Link>
           </div>
         </div>
@@ -162,10 +171,10 @@ export default function StoreLanding() {
         <h3>For Help, please call us</h3>
 
         <h5>
-          Abhilash : <a href="+91 9034432424">+91 9034432424</a>{' '}
+          Abhilash : <a href="tel:+919034432424">+91 9034432424</a>{' '}
         </h5>
         <h5>
-          Hardik : <a href="+91 9873378665">+91 9873378665</a>{' '}
+          Hardik : <a href="tel:+919873378665">+91 9873378665</a>{' '}
         </h5>
 
         <p>
@@ -174,8 +183,8 @@ export default function StoreLanding() {
 
         <p>
           <strong>
-            PS: The Service is FREE for store owners. It's a community driven
-            idea to fight against this pandemic
+            PS: The service is completely FREE. It's a community driven idea to
+            fight against this pandemic
           </strong>
         </p>
       </section>
