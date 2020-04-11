@@ -6,26 +6,53 @@ import logo from '../../assets/logo.png';
 import correctTiming from '../../assets/feature-display-correct-timing.png';
 import socialDistancing from '../../assets/feature-social-distancing.png';
 import crowdManagement from '../../assets/feature-crowd-management.png';
+import bannerImage from '../../assets/home.jpg';
 import { Link } from 'react-router-dom';
+import Typist from 'react-typist';
 const StoreLandingWrapper = styled(Container)`
   .header {
     height: 64px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
     .logo {
       width: 130px;
     }
   }
 
+  .banner-font {
+    font-size: 2rem;
+  }
+
   section {
-    margin: 1rem 0;
+    margin-bottom: 1rem;
     text-align: center;
   }
   .slider {
     height: 300px;
-    background-color: #ccc;
+    margin: 0 -15px;
+    position: relative;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background-color: rgb(0, 0, 0, 0.5);
+      color: #fff;
+    }
+    /* background-color: #ccc;
+    background-image: url(../../assets/home.jpg);
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center; */
   }
   .feature-section {
     text-align: center;
@@ -43,18 +70,49 @@ const StoreLandingWrapper = styled(Container)`
   .register-button {
     font-size: 1.5rem;
   }
+
+  .banner-text {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export default function StoreLanding() {
   return (
     <StoreLandingWrapper>
       <div className="header">
-        <img src={logo} alt="logo" className="logo" />
-
-        <Button>Login</Button>
+        <Link to="/">
+          <img src={logo} alt="logo" className="logo" />
+        </Link>
+        <Link to="/login">
+          <Button>Login</Button>
+        </Link>
       </div>
+
       <section>
-        <div className="slider"></div>
+        <div className="slider">
+          <img src={bannerImage} width="100%" />
+          <div className="overlay">
+            <div className="banner-text">
+              <strong className="banner-font">
+                Register your
+                <Typist avgTypingDelay={100} startDelay={0}>
+                  Grocery
+                  <Typist.Backspace count={7} delay={2000} />
+                  Pharmacy
+                  <Typist.Backspace count={8} delay={2000} />
+                  Food
+                </Typist>
+                Store
+              </strong>
+            </div>
+            <Link to="/login">
+              <Button className="register-button"> Register Now</Button>
+            </Link>
+          </div>
+        </div>
       </section>
       <section className="feature-section">
         <h2>Benefits of SafeSlot</h2>
@@ -103,15 +161,15 @@ export default function StoreLanding() {
       <section>
         <h3>For Help, please call us</h3>
 
-        <h4>
+        <h5>
           Abhilash : <a href="+91 9034432424">+91 9034432424</a>{' '}
-        </h4>
-        <h4>
+        </h5>
+        <h5>
           Hardik : <a href="+91 9873378665">+91 9873378665</a>{' '}
-        </h4>
+        </h5>
 
         <p>
-          <strong> Let's fight #corona a.k.a. #covid19 together</strong>
+          <strong> Let's fight against #corona a.k.a. #covid19 together</strong>
         </p>
 
         <p>
