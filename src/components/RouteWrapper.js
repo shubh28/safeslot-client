@@ -24,6 +24,7 @@ import { loadState, saveState } from '../helpers/LocalStorage';
 import Stores from './Stores';
 import { LocationAndStoreProvider } from '../contexts/location-and-store-context';
 import fetchMiddleware from '../helpers/fetchMiddleware';
+import StoreLanding from './StoreLanding';
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
@@ -68,6 +69,11 @@ export default class RouteWrapper extends Component {
             <div style={{ maxWidth: '500px', margin: '0 auto' }}>
               <Switch>
                 <Route exact path="/" component={Splash} />
+                <Route
+                  exact
+                  path="/register-your-store"
+                  component={StoreLanding}
+                />
                 <Route exact path="/map" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
