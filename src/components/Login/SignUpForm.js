@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import axios from 'axios';
+import useLogin from '../../hooks/useLogin';
 
 import Alerts from '../Alerts';
 
@@ -13,7 +14,12 @@ export default function SignUpForm({ toggleLogin }) {
     isStoreOwner: false
   });
   const [error, setError] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const { loading: loggingIn, error: signUpError, login } = useLogin();
 
+  useEffect(() => {
+    setError({ type: 'danger', message: signUpError });
+  }, [signUpError]);
   const showError = (type, message) => setError({ type, message });
   const closeError = () => setError({ type: '', message: '' });
 
@@ -25,6 +31,7 @@ export default function SignUpForm({ toggleLogin }) {
     }
 
     // make user sign up
+    setLoading(true);
     axios
       .post('https://safeslot-backend.herokuapp.com/api/users', {
         email,
@@ -34,10 +41,13 @@ export default function SignUpForm({ toggleLogin }) {
         isStoreOwner
       })
       .then(res => {
-        toggleLogin();
+        login(email, password);
       })
       .catch(err => {
         showError('danger', 'Error in signing you up');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -117,8 +127,13 @@ export default function SignUpForm({ toggleLogin }) {
           Login
         </a>
       </p>
-      <Button type="submit" color="info" onClick={onSignupClick}>
-        SignUp
+      <Button
+        type="submit"
+        color="info"
+        disabled={loading || loggingIn}
+        onClick={onSignupClick}
+      >
+        {loading || loggingIn ? 'Signing Up' : 'SignUp'}
       </Button>
     </Form>
   );
