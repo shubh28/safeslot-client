@@ -7,7 +7,6 @@ const BookingListType = { today: 'today', history: 'history' };
 
 export default function StoreBooking({ bookings = [], ...others }) {
   const [activeTab, setActiveTab] = useState('1');
-
   const toggle = tab => {
     if (activeTab !== tab) setActiveTab(tab);
   };
@@ -15,13 +14,13 @@ export default function StoreBooking({ bookings = [], ...others }) {
   function filterBasedOnType(type, booking) {
     if (type === BookingListType.today) {
       return (
-        new Date(booking.date) >=
-        new Date(getDateString(new Date()))
+        new Date(getDateString(booking.booking_date)).getTime() >=
+        new Date(getDateString(new Date())).getTime()
       );
     } else if (type === BookingListType.history) {
       return (
-        new Date(booking.date) <
-        new Date(getDateString(new Date()))
+        new Date(getDateString(booking.booking_date)).getTime() <
+        new Date(getDateString(new Date())).getTime()
       );
     } else {
       return true;
@@ -54,17 +53,13 @@ export default function StoreBooking({ bookings = [], ...others }) {
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
           <BookingList
-            bookings={bookings.filter(booking =>
-              filterBasedOnType(BookingListType.today, booking)
-            )}
+            bookings={bookings.today}
             groupByDate={false}
           />
         </TabPane>
         <TabPane tabId="2">
           <BookingList
-            bookings={bookings.filter(booking =>
-              filterBasedOnType(BookingListType.history, booking)
-            )}
+            bookings={bookings.history}
           />
         </TabPane>
       </TabContent>

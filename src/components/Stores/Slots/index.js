@@ -53,10 +53,9 @@ function Slots({ availableSlots = [], storeId, showError }) {
         {availableSlots.length ? (
           availableSlots.map(slot => {
             return (
-              <>
+              <span key={slot.id}>
                 {slot && (
                   <SlotButton
-                    key={slot.id}
                     color="info"
                     outline={
                       !(
@@ -69,10 +68,10 @@ function Slots({ availableSlots = [], storeId, showError }) {
                       setStoreSlotId({ storeId: storeId, slotId: slot.id })
                     }
                   >
-                    {`${slot.start_time} - ${slot.end_time}`}
+                    {`${slot.start_hours.toString().padStart(2, '0')}:${slot.start_minutes.toString().padStart(2, '0')} - ${slot.end_hours.toString().padStart(2, '0')}:${slot.end_minutes.toString().padStart(2, '0')}`}
                   </SlotButton>
                 )}
-              </>
+              </span>
             );
           })
         ) : (

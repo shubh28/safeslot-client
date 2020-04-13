@@ -16,7 +16,7 @@ import {
 import axios from 'axios';
 
 import Alerts from '../Alerts';
-import AddSlots from '../AddSlots';
+import AddSlots from '../AddSlots/b';
 import { saveState, loadState } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import { API_URL } from '../../common/consts';
@@ -64,19 +64,21 @@ export default class OwnerHome extends Component {
           const storeId = user && user.storeId;
           const filter = {
             where: { store_id: storeId },
-            include: ['slots', 'users']
+            include: ['stores','stores_slots','users', 'slots']
           };
           axios
             .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
             .then(res => {
-              this.setState({ bookings: formatBookingsList(res.data) });
+              this.setState({ bookings: formatBookingsList(res.data)});
             })
             .catch(err => {
+              console.log(err);
               this.showError('danger', 'Some error occurred');
             });
         }
       })
       .catch(err => {
+        console.log(err);
         this.showError('danger', 'Some error occurred');
       });
   }
@@ -109,7 +111,6 @@ export default class OwnerHome extends Component {
     return (
       <>
         <Header heading="Owner Portal" backPath={'/'} />
-
         <Container className="theme-Container" fluid={true}>
           <Alerts
             type={this.state.error.type}
