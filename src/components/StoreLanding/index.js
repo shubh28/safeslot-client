@@ -141,10 +141,10 @@ export default function StoreLanding() {
             <div className="feature">
               <img
                 src={correctTiming}
-                alt="display correct timing"
+                alt="display correct timings"
                 className="feature-img"
               />
-              <h3 className="feature-title"> Display Correct Timing</h3>
+              <h3 className="feature-title"> Display Correct Timings</h3>
             </div>
           </Col>
 
@@ -184,7 +184,7 @@ export default function StoreLanding() {
         <p>
           <strong>
             PS: The service is completely FREE. It's a community driven idea to
-            fight against this pandemic
+            fight against this pandemic.
           </strong>
         </p>
       </section>
