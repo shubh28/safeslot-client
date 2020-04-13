@@ -15,7 +15,7 @@ export default function useLogin() {
       setLoading(true);
       axios
         .post('https://safeslot-backend.herokuapp.com/api/users/login', {
-          email,
+          email: email.toLowerCase(),
           password
         })
         .then(res => {

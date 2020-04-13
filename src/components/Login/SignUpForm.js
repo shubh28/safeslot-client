@@ -34,7 +34,7 @@ export default function SignUpForm({ toggleLogin }) {
     setLoading(true);
     axios
       .post('https://safeslot-backend.herokuapp.com/api/users', {
-        email,
+        email: email.toLowerCase(),
         password,
         name,
         phone,
