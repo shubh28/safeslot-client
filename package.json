@@ -38,8 +38,8 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "^12.13.1",
-    "npm": "^6.12.1"
+    "node": "12.13.1",
+    "npm": "6.12.1"
   },
   "devDependencies": {
     "prettier": "^1.5.2"
