@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import { useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
-
 import Alerts from '../Alerts';
-import { saveState, loadState } from '../../helpers/LocalStorage';
-import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
-import { URL_REFS } from '../../common/consts';
+import { loadState } from '../../helpers/LocalStorage';
+import useLogin from '../../hooks/useLogin';
 
 export default function LoginForm({ toggleLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState({ type: '', message: '' });
   const history = useHistory();
-  const location = useLocation();
 
-  const params = location ? new URLSearchParams(location.search) : undefined;
+  const { login, loading, error: loginError } = useLogin();
 
-  const referrer = params ? params.get('ref') : undefined;
+  useEffect(() => {
+    if (loginError) {
+      setError({ type: 'danger', message: loginError });
+    }
+  }, [loginError]);
 
   useEffect(() => {
     const token =
@@ -36,37 +36,7 @@ export default function LoginForm({ toggleLogin }) {
     if (email === '' || password === '') {
       showError('danger', 'Please enter email and password');
     } else {
-      axios
-        .post('https://safeslot-backend.herokuapp.com/api/users/login', {
-          email,
-          password
-        })
-        .then(res => {
-          saveState('userAuthenticationDetails', res.data);
-          axios
-            .get(
-              `https://safeslot-backend.herokuapp.com/api/users/${res.data.userId}`
-            )
-            .then(response => {
-              saveState('userInfo', response.data);
-              if (!response.data.isStoreOwner) {
-                if (referrer === URL_REFS.stores) {
-                  history.replace('/stores');
-                } else if (referrer === URL_REFS.referStore) {
-                  history.replace('/refer');
-                } else {
-                  history.replace('/');
-                }
-              } else if (response.data.isStoreOwner && !response.data.storeId) {
-                history.push('/onboard');
-              } else {
-                history.push('/owners');
-              }
-            });
-        })
-        .catch(err => {
-          showError('danger', 'Error logging in');
-        });
+      login(email, password);
     }
   }
 
@@ -107,8 +77,13 @@ export default function LoginForm({ toggleLogin }) {
           Sign Up
         </a>
       </p>
-      <Button type="submit" color="info" onClick={onLoginClick}>
-        Login
+      <Button
+        type="submit"
+        color="info"
+        disabled={loading}
+        onClick={onLoginClick}
+      >
+        {loading ? 'Logging In' : 'Login'}
       </Button>
     </Form>
   );
