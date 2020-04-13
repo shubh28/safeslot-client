@@ -52,7 +52,6 @@ function Stores() {
             slots
           };
         });
-
         setStores(stores);
       })
       .catch(err => {
@@ -138,20 +137,10 @@ function Stores() {
                         </div>
                       </HeaderDataContainer>
                       <Slots
-                        availableSlots={store.slots}
+                        availableSlots={store.stores_slots}
                         storeId={store.id}
                         showError={showError}
                       />
-                      {/* <Button
-                        outline
-                        color="info"
-                        onClick={() => {
-                          setSelectedStore(store);
-                          console.log(store);
-                        }}
-                      >
-                        Book Slot
-                      </Button> */}
                     </CardBody>
                   </Card>
                 );

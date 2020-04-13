@@ -10,11 +10,12 @@ import {
   Collapse
 } from 'reactstrap';
 import BookingCardForStore from '../common/BookingCardForStore';
+import getDateString from '../../helpers/getDateString';
 
 function CollapsableWrapper({ children, title, ...others }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const displayTitle = title.indexOf(":") === -1 ? new Date(title).toDateString() :title
+  // const displayTitle = title.indexOf(":") === -1 ? new Date(title).toDateString() :title
 
   return (
     <div {...others}>
@@ -28,7 +29,7 @@ function CollapsableWrapper({ children, title, ...others }) {
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <strong>{displayTitle}</strong>
+        <strong>{title}</strong>
       </div>
       <Collapse isOpen={isOpen} style={{ margin: '10px' }}>
         {children}
@@ -37,29 +38,61 @@ function CollapsableWrapper({ children, title, ...others }) {
   );
 }
 
-function BookingListOfADay({ dateBooking, setSelectedBooking }) {
+function BookingListOfADay({ dateBookings = {}, setSelectedBooking, groupByDate = true }) {
   return (
     <>
-      {dateBooking.slots.length ? (
-        dateBooking.slots.map(slot => (
-          <CollapsableWrapper title={slot.slotString} key={slot.slotString}>
-            {slot.slotBookings.length
-              ? slot.slotBookings.map(booking => (
+      {
+        groupByDate ? (
+           Object.keys(dateBookings).map(slot => {
+             return <CollapsableWrapper title={slot} key={slot}>
+               {
+                 dateBookings[slot].map(booking => (
                   <BookingCardForStore
                     booking={booking}
                     key={booking.id}
                     setSelectedBooking={setSelectedBooking}
                   />
-                ))
-              : null}
-          </CollapsableWrapper>
-        ))
-      ) : (
-        <div>No records found</div>
-      )}
+                 ))
+               }
+             </CollapsableWrapper>
+           })
+          )
+        :(
+          dateBookings.map(booking => (
+            <BookingCardForStore
+              booking={booking}
+              key={booking.id}
+              setSelectedBooking={setSelectedBooking}
+            />
+          ))
+        )
+      }
     </>
   );
 }
+
+    // <>
+    //   {dateBooking.slots.length ? (
+    //     dateBooking.slots.map(slot => (
+    //       <CollapsableWrapper title={slot.slotString} key={slot.slotString}>
+    //         {slot.slotBookings.length
+    //           ? slot.slotBookings.map(booking => (
+    //               <BookingCardForStore
+    //                 booking={booking}
+    //                 key={booking.id}
+    //                 setSelectedBooking={setSelectedBooking}
+    //               />
+    //             ))
+    //           : null}
+    //       </CollapsableWrapper>
+    //     ))
+    //   ) : (
+    //     <div>No records found</div>
+    //   )}
+    // </>
+
+
+
 export default function BookingList({
   bookings: dateBookings = [],
   groupByDate = true
@@ -70,20 +103,20 @@ export default function BookingList({
       <Row>
         <Col>
           {groupByDate ? (
-            dateBookings.length ? (
-              dateBookings.map(dateBooking => (
-                <CollapsableWrapper title={dateBooking.date} key={dateBooking.date}>
+              Object.keys(dateBookings).map(date => (
+                <CollapsableWrapper title={date} key={date}>
                   <BookingListOfADay
-                    dateBooking={dateBooking}
+                    dateBookings={dateBookings[date]}
                     setSelectedBooking={setSelectedBooking}
+                    groupByDate={groupByDate}
                   />
                 </CollapsableWrapper>
               ))
-            ) : null
           ) : dateBookings.length ? (
             <BookingListOfADay
-              dateBooking={dateBookings[0]}
+              dateBookings={dateBookings}
               setSelectedBooking={setSelectedBooking}
+              groupByDate={groupByDate}
             />
           ) : null}
         </Col>
