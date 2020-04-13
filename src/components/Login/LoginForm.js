@@ -10,13 +10,9 @@ export default function LoginForm({ toggleLogin }) {
   const [error, setError] = useState({ type: '', message: '' });
   const history = useHistory();
 
-  const { login, loading, error: loginError } = useLogin();
-
-  useEffect(() => {
-    if (loginError) {
-      setError({ type: 'danger', message: loginError });
-    }
-  }, [loginError]);
+  const { login, loading } = useLogin(message =>
+    setError({ type: 'danger', message })
+  );
 
   useEffect(() => {
     const token =
