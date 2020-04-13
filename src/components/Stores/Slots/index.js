@@ -23,24 +23,40 @@ const SlotButton = styled(Button)`
 function Slots({ availableSlots = [], storeId, showError }) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
-
+  
   function makeBooking({ storeId: bookingStoreId, slotId: bookingSlotId }) {
     const tokenObj = loadState('userAuthenticationDetails');
     const token = tokenObj && tokenObj.id;
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
-        .post(`${API_URL}/bookings`, {
-          store_id: bookingStoreId,
-          slot_id: bookingSlotId,
-          user_id: userId
-        })
+        .get(`http://localhost:3001/api/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`)
         .then(res => {
-          history.push('/bookings');
+          if (res.data.message === "Success") {
+            axios
+              .post(`${API_URL}/bookings`, {
+                store_id: bookingStoreId,
+                slot_id: bookingSlotId,
+                user_id: userId
+              })
+              .then(res => {
+                history.push('/bookings');
+              })
+              .catch(err => {
+                showError('danger', 'Error while making booking');
+              });
+          } else {
+            showError('danger', 'Some error while validating slot. Please try again');
+          }
         })
         .catch(err => {
-          showError('danger', 'Error while making booking');
-        });
+          if (err.response.status === 400) {
+            showError('danger', err.response.data.message);
+          } else {
+            showError('danger', 'Some error occurred.');
+          }
+        })
+
     } else {
       setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });
       history.push(`/login?ref=${URL_REFS.stores}`);
