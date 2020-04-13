@@ -3,9 +3,8 @@ import axios from 'axios';
 import { saveState } from '../helpers/LocalStorage';
 import { useHistory, useLocation } from 'react-router-dom';
 import { URL_REFS } from '../common/consts';
-export default function useLogin() {
+export default function useLogin(onError) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
   const history = useHistory();
   const location = useLocation();
   const params = location ? new URLSearchParams(location.search) : undefined;
@@ -41,16 +40,20 @@ export default function useLogin() {
               }
             });
         })
-        .catch(err => {
-          setError('Error logging in');
+        .catch(res => {
+          if (res?.response?.data?.error?.message === 'login failed') {
+            onError('Email address or password is incorrect');
+          } else {
+            onError('Error while logging in');
+          }
         })
         .finally(() => {
           setLoading(false);
         });
     } else {
-      setError('Error logging in');
+      onError('Error logging in');
     }
   }
 
-  return { loading, error, login };
+  return { loading, login };
 }

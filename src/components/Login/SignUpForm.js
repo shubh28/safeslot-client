@@ -15,11 +15,10 @@ export default function SignUpForm({ toggleLogin }) {
   });
   const [error, setError] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const { loading: loggingIn, error: signUpError, login } = useLogin();
+  const { loading: loggingIn, login } = useLogin(message =>
+    setError({ type: 'danger', message })
+  );
 
-  useEffect(() => {
-    setError({ type: 'danger', message: signUpError });
-  }, [signUpError]);
   const showError = (type, message) => setError({ type, message });
   const closeError = () => setError({ type: '', message: '' });
 
@@ -43,8 +42,19 @@ export default function SignUpForm({ toggleLogin }) {
       .then(res => {
         login(email, password);
       })
-      .catch(err => {
-        showError('danger', 'Error in signing you up');
+      .catch(res => {
+        if (
+          res?.response?.data?.error?.details?.messages?.email?.length &&
+          res.response.data.error.details.messages.email[0] ===
+            'Email already exists'
+        ) {
+          showError(
+            'danger',
+            'Email address already exists, please login instead'
+          );
+        } else {
+          showError('danger', 'Error ocurred while signing you up');
+        }
       })
       .finally(() => {
         setLoading(false);
