@@ -30,7 +30,7 @@ function Slots({ availableSlots = [], storeId, showError }) {
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
-        .get(`http://localhost:3001/api/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`)
+        .get(`${API_URL}/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`)
         .then(res => {
           if (res.data.message === "Success") {
             axios
