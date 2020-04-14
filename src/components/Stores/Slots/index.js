@@ -50,7 +50,7 @@ function Slots({ availableSlots = [], storeId, showError }) {
           }
         })
         .catch(err => {
-          if (err.response.status === 400) {
+          if (err.response && err.response.status === 400) {
             showError('danger', err.response.data.message);
           } else {
             showError('danger', 'Some error occurred.');
