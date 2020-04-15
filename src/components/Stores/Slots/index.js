@@ -23,16 +23,18 @@ const SlotButton = styled(Button)`
 function Slots({ availableSlots = [], storeId, showError }) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
-  
+
   function makeBooking({ storeId: bookingStoreId, slotId: bookingSlotId }) {
     const tokenObj = loadState('userAuthenticationDetails');
     const token = tokenObj && tokenObj.id;
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
-        .get(`${API_URL}/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`)
+        .get(
+          `${API_URL}/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`
+        )
         .then(res => {
-          if (res.data.message === "Success") {
+          if (res.data.message === 'Success') {
             axios
               .post(`${API_URL}/bookings`, {
                 store_id: bookingStoreId,
@@ -46,7 +48,10 @@ function Slots({ availableSlots = [], storeId, showError }) {
                 showError('danger', 'Error while making booking');
               });
           } else {
-            showError('danger', 'Some error while validating slot. Please try again');
+            showError(
+              'danger',
+              'Some error while validating slot. Please try again'
+            );
           }
         })
         .catch(err => {
@@ -55,8 +60,7 @@ function Slots({ availableSlots = [], storeId, showError }) {
           } else {
             showError('danger', 'Some error occurred.');
           }
-        })
-
+        });
     } else {
       setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });
       history.push(`/login?ref=${URL_REFS.stores}`);
@@ -84,7 +88,18 @@ function Slots({ availableSlots = [], storeId, showError }) {
                       setStoreSlotId({ storeId: storeId, slotId: slot.id })
                     }
                   >
-                    {`${slot.start_hours.toString().padStart(2, '0')}:${slot.start_minutes.toString().padStart(2, '0')} - ${slot.end_hours.toString().padStart(2, '0')}:${slot.end_minutes.toString().padStart(2, '0')}`}
+                    {`${slot.start_hours
+                      .toString()
+                      .padStart(
+                        2,
+                        '0'
+                      )}:${slot.start_minutes
+                      .toString()
+                      .padStart(2, '0')} - ${slot.end_hours
+                      .toString()
+                      .padStart(2, '0')}:${slot.end_minutes
+                      .toString()
+                      .padStart(2, '0')}`}
                   </SlotButton>
                 )}
               </span>
@@ -95,7 +110,9 @@ function Slots({ availableSlots = [], storeId, showError }) {
         )}
       </SlotWrapper>
       {availableSlots.length ? (
-        <Button color="info" onClick={() => makeBooking(storeSlotId)}>Book Slot</Button>
+        <Button color="info" onClick={() => makeBooking(storeSlotId)}>
+          Book Slot
+        </Button>
       ) : null}
     </>
   );

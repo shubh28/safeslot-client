@@ -1,12 +1,11 @@
 import getDateString from '../../helpers/getDateString';
-import {getSlotTime} from '../../helpers';
+import { getSlotTime } from '../../helpers';
 
 export default function formatBookingsList(bookings) {
-
   const result = {
     today: [],
     history: {}
-  }
+  };
 
   bookings.forEach(booking => {
     const today = new Date(getDateString(new Date())).getTime();
@@ -23,12 +22,11 @@ export default function formatBookingsList(bookings) {
           result.history[bookingDateString][slotString] = [booking];
         }
       } else {
-        result.history[bookingDateString] = {} 
+        result.history[bookingDateString] = {};
         result.history[bookingDateString][slotString] = [booking];
       }
     }
-  })
-
+  });
 
   return result;
 
@@ -45,26 +43,26 @@ export default function formatBookingsList(bookings) {
 
   //   console.log(dateStrings);
 
-    // const slotStrings = bookingsOfDate
-    //   .map(booking => `${booking.slots.start_time} - ${booking.slots.end_time}`)
-    //   .filter((current, index, array) => array.indexOf(current) === index);
+  // const slotStrings = bookingsOfDate
+  //   .map(booking => `${booking.slots.start_time} - ${booking.slots.end_time}`)
+  //   .filter((current, index, array) => array.indexOf(current) === index);
 
-    // const slots = slotStrings.map(slotString => {
-    //   const slotBookings = bookingsOfDate.filter(
-    //     booking =>
-    //       `${booking.slots.start_time} - ${booking.slots.end_time}` ===
-    //       slotString
-    //   );
+  // const slots = slotStrings.map(slotString => {
+  //   const slotBookings = bookingsOfDate.filter(
+  //     booking =>
+  //       `${booking.slots.start_time} - ${booking.slots.end_time}` ===
+  //       slotString
+  //   );
 
-    //   return {
-    //     slotString,
-    //     slotBookings
-    //   };
-    // });
+  //   return {
+  //     slotString,
+  //     slotBookings
+  //   };
+  // });
 
-    // return {
-    //   date: dateString,
-    //   slots
-    // };
+  // return {
+  //   date: dateString,
+  //   slots
+  // };
   // });
 }

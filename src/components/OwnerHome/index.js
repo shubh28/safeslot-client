@@ -58,18 +58,22 @@ export default class OwnerHome extends Component {
           this.props.history.push('/');
           return;
         }
-        if (user.isStoreOwner && !user.storeId) {
+        if (
+          (user.isStoreOwner && !user.storeId) ||
+          !user.stores ||
+          Object.keys(user.stores).length === 0
+        ) {
           this.props.history.push('/onboard');
         } else {
           const storeId = user && user.storeId;
           const filter = {
             where: { store_id: storeId },
-            include: ['stores','stores_slots','users', 'slots']
+            include: ['stores', 'stores_slots', 'users', 'slots']
           };
           axios
             .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
             .then(res => {
-              this.setState({ bookings: formatBookingsList(res.data)});
+              this.setState({ bookings: formatBookingsList(res.data) });
             })
             .catch(err => {
               console.log(err);

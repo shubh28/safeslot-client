@@ -52,15 +52,10 @@ export default function StoreBooking({ bookings = [], ...others }) {
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
-          <BookingList
-            bookings={bookings.today}
-            groupByDate={false}
-          />
+          <BookingList bookings={bookings.today} groupByDate={false} />
         </TabPane>
         <TabPane tabId="2">
-          <BookingList
-            bookings={bookings.history}
-          />
+          <BookingList bookings={bookings.history} />
         </TabPane>
       </TabContent>
     </>
