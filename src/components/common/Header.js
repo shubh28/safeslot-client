@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header as StyledHeader } from './../../styles';
 import { Link, useHistory } from 'react-router-dom';
+import { slide as Menu } from 'react-burger-menu';
 
 import { loadState } from '../../helpers/LocalStorage';
 import { DEFAULT_LOCATION } from '../../common/consts';
@@ -26,6 +27,49 @@ function Header({ heading, backPath }) {
       setDisplayLogout(false);
     }
   }, []);
+
+  var styles = {
+    bmBurgerButton: {
+      position: 'relative',
+      left: 0,
+      top: 0,
+      width: '36px',
+      height: '30px'
+    },
+    bmBurgerBars: {
+      background: '#fff'
+    },
+    bmBurgerBarsHover: {
+      background: '#000'
+    },
+    bmCrossButton: {
+      height: '30px',
+      width: '30px'
+    },
+    bmCross: {
+      background: '#fff',
+      height: '30px'
+    },
+    bmMenuWrap: {
+      position: 'fixed',
+      height: '100%'
+    },
+    bmMenu: {
+      width: 'auto',
+      background: '#17a2b8',
+      padding: '2.5em 1.5em 0'
+      // fontSize: '1.15em'
+    },
+    bmItemList: {
+      color: '#b8b7ad',
+      padding: '0.8em'
+    },
+    bmItem: {},
+    bmOverlay: {
+      background: 'rgba(0, 0, 0, 0.3)'
+    }
+  };
+
   return (
     <StyledHeader>
       <Link to={backPath}>
@@ -33,13 +77,20 @@ function Header({ heading, backPath }) {
       </Link>
 
       <h2 className="text-center">{heading}</h2>
-      {displayLogout ? (
-        <a href="#" className="logout" onClick={logOut}>
-          Logout
+      <Menu right styles={styles}>
+        {displayLogout ? (
+          <a href="#" className="logout" onClick={logOut}>
+            Logout
+          </a>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
+        <a href="/bookings" className="menu-item">
+          Bookings
         </a>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
+        <a href="/map">Map</a>
+        <a href="/about">About</a>
+      </Menu>
     </StyledHeader>
   );
 }

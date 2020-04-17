@@ -16,6 +16,7 @@
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "react": "^16.13.1",
+    "react-burger-menu": "^2.6.13",
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.3",
     "react-map-gl-geocoder": "^2.0.11",
