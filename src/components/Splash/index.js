@@ -7,7 +7,6 @@ const grocery = require('../../assets/grocery1.png');
 const chemist = require('../../assets/chemist.png');
 
 export default function Splash() {
-  const [loadCount, setLoadCount] = React.useState(0);
   const [loading, user, error] = useCurrentUser();
   const history = useHistory();
   useEffect(() => {
@@ -23,13 +22,7 @@ export default function Splash() {
     <div
       style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}
     >
-      {loadCount < 3 ? (
-        <div id="loading-overlay">
-          <div id="loading-text">loading...</div>
-        </div>
-      ) : null}
       <img
-        onLoad={e => setLoadCount(loadCount + 1)}
         src={logo}
         style={{
           margin: 'auto',
@@ -61,18 +54,10 @@ export default function Splash() {
         }}
       >
         <Link to={'/map'}>
-          <img
-            onLoad={e => setLoadCount(loadCount + 1)}
-            src={grocery}
-            width="80"
-          />
+          <img src={grocery} width="80" />
         </Link>
         <Link to={'/map'}>
-          <img
-            onLoad={e => setLoadCount(loadCount + 1)}
-            src={chemist}
-            width="80"
-          />
+          <img src={chemist} width="80" />
         </Link>
       </div>
     </div>
