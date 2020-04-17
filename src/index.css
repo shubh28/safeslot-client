@@ -198,7 +198,8 @@ a:hover {
 .emptySearch{
   background: #fff;
   border-radius: 4px;
-  box-shadow: 1px 1px 4px rgba(0,0,0,.2);
+  border: 1px solid rgba(0,0,0,.15);
+  /* box-shadow: 1px 1px 4px rgba(0,0,0,.2); */
   padding: 1rem;
   text-align: center;
 }

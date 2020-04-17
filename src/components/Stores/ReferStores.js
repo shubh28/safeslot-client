@@ -4,9 +4,12 @@ import { Button, Popover, PopoverBody } from 'reactstrap';
 import { loadState } from '../../helpers/LocalStorage';
 import { URL_REFS } from '../../common/consts';
 
-export default function NoStores() {
+export default function ReferStores({ nostores }) {
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
+  let message = nostores
+    ? 'Sorry we could not find any store near you. Want to refer nearby stores?'
+    : "Don't see your store here?";
 
   function onReferClick() {
     const tokenObj = loadState('userAuthenticationDetails');
@@ -19,9 +22,9 @@ export default function NoStores() {
     }
   }
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px' }}>
+    <div style={{ textAlign: 'center', marginTop: nostores ? '100px' : '5px' }}>
       <div className="emptySearch">
-        Sorry we could not find any store near you. Want to refer nearby stores?
+        {message}
         <Button id="refer-button" outline color="info" onClick={onReferClick}>
           Refer Stores
         </Button>
