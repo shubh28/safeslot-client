@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 export const StyledMenu = styled.nav`
-  display: flex;
+  display: ${({ open }) => (open ? 'flex' : 'none')};
   flex-direction: column;
   justify-content: center;
   background: #fff;
   height: 100vh;
   width: 50%;
+  overflow-x: hidden;
   text-align: left;
   padding: 2rem;
   position: absolute;
@@ -14,6 +15,7 @@ export const StyledMenu = styled.nav`
   right: 0;
   z-index: 1;
   transition: transform 0.3s ease-in-out;
+  transition: display 0.3s ease-in-out;
   transform: translateX(0);
   transform: ${({ open }) => (open ? 'translateX(0)' : 'translateX(100%)')};
 
