@@ -2,21 +2,22 @@
 import React from 'react';
 import { bool } from 'prop-types';
 import { StyledMenu } from '../../styles/burgerMenu';
+import { Link } from 'react-router-dom';
 
 const Menu = ({ open, displayLogout, logOut }) => {
   return (
     <StyledMenu open={open}>
       {displayLogout ? (
-        <a href="#" className="logout" onClick={logOut}>
+        <Link to="#" onClick={logOut}>
           Logout
-        </a>
+        </Link>
       ) : (
-        <a href="/login">Login</a>
+        <Link to="/login">Login</Link>
       )}
-      <a href="/">Home</a>
-      <a href="/map">Map</a>
-      <a href="/bookings">Bookings</a>
-      <a href="/about">About Us</a>
+      <Link to="/">Home</Link>
+      <Link to="/map">Map</Link>
+      {displayLogout ? <Link to="/bookings">Bookings</Link> : null}
+      <Link to="/about">About Us</Link>
     </StyledMenu>
   );
 };
