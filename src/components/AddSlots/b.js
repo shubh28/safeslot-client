@@ -8,10 +8,7 @@ import {
   ModalFooter,
   ListGroup,
   ListGroupItem,
-  Form,
-  Input,
-  FormGroup,
-  Label
+  Input
 } from 'reactstrap';
 
 import Alerts from '../Alerts';
@@ -110,10 +107,10 @@ export default function AddSlots({
   const printAllSlots = () => {
     const store = user.stores || {};
     const startHour = parseInt(store.shop_open_hours || 0);
-    const endHour = parseInt(store.shop_close_hours || 0);
+    const endHour = parseInt(store.shop_close_hours || 23);
     const startMinutes = parseInt(store.shop_open_minutes || 0);
     const endMinutes = parseInt(store.shop_close_hours || 0);
-    const slotDuration = parseInt(store.slot_duration || 0);
+    const slotDuration = parseInt(store.slot_duration || 15);
 
     const buttons = [];
 
@@ -154,19 +151,9 @@ export default function AddSlots({
         timeString = '';
         minutes += slotDuration;
       }
-
-      // for (let j=startMinutes; j<=45; j+=slotDuration) {
-      // 	timeString = `${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`;
-      // }
-      // timeString = timeString + " - ";
-      // for (let j=startMinutes; j<=45; j+=slotDuration) {
-      // 	timeString = timeString + `${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`;
-      // }
     }
     return buttons;
   };
-
-  printAllSlots();
 
   return (
     <Modal isOpen={openModal} toggle={toggleAddSlots}>

@@ -9,7 +9,7 @@ export default function ReferStores({ nostores }) {
   const history = useHistory();
   let message = nostores
     ? 'Sorry we could not find any store near you. Want to refer nearby stores?'
-    : "Don't see your store here?";
+    : "Can't find a store?";
 
   function onReferClick() {
     const tokenObj = loadState('userAuthenticationDetails');
