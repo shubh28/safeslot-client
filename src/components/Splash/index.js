@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Spinner } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import useCurrentUser from '../../hooks/useCurrentUser';
 const logo = require('../../assets/logo.png');
@@ -25,7 +25,10 @@ export default function Splash() {
     >
       {loadCount < 3 ? (
         <div id="loading-overlay">
-          <div id="loading-text">loading...</div>
+          <div className="spinner-border text-info" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+          Please Wait...
         </div>
       ) : null}
       <img

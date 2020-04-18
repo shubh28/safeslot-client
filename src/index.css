@@ -224,8 +224,9 @@ a:hover {
 }
 
 #loading-overlay {
-  position: fixed; /* Sit on top of the page content */
+  position: fixed;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -242,3 +243,4 @@ a:hover {
   color: black;
   text-transform: uppercase;
 }
+
