@@ -68,7 +68,7 @@ export default class OwnerHome extends Component {
           const storeId = user && user.storeId;
           const filter = {
             where: { store_id: storeId },
-            include: ['stores', 'stores_slots', 'users', 'slots']
+            include: ['stores', 'stores_slots', 'users']
           };
           axios
             .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)

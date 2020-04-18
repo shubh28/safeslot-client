@@ -30,7 +30,7 @@ export default class AddSlots extends Component {
     this.closeError();
     const { user } = this.props;
     const storeId = user && user.stores && user.stores.id;
-    const filter = { where: { storesId: storeId }, include: 'slots' };
+    const filter = { where: { storesId: storeId }};
     const mySlots = {};
     axios
       .get(

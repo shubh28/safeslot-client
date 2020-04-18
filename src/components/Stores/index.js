@@ -44,17 +44,10 @@ function Stores() {
     axios
       .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}`)
       .then(res => {
-        const stores = res.data.map(store => {
-          const { stores_slots_count, ...others } = store;
-          const slots = stores_slots_count.map(store_slot => store_slot.slots);
-          return {
-            ...others,
-            slots
-          };
-        });
-        setStores(stores);
+        setStores(res.data);
       })
       .catch(err => {
+        console.log(err);
         showError('danger', 'Some error while fetching stores');
       })
       .finally(() => {
