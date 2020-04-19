@@ -6,22 +6,23 @@ export const StyledMenu = styled.nav`
   justify-content: center;
   background: #fff;
   height: 100vh;
-  width: 50%;
+  width: ${({ open }) => (open ? '50%' : '1%')};
+  visibility: ${({ open }) => (open ? 'visible' : 'hidden')};
   text-align: left;
   padding: 2rem;
   position: absolute;
   top: 0;
   right: 0;
   z-index: 1;
-  transition: transform 0.3s ease-in-out;
-  transform: translateX(0);
-  transform: ${({ open }) => (open ? 'translateX(0)' : 'translateX(100%)')};
+  transition: width 0.3s ease-in-out;
+  transition: visibility: 0.5s ease-in-out;
 
   @media (max-width: 576px) {
-    width: 50%;
+    width: ${({ open }) => (open ? '50%' : '0')};
   }
 
   a {
+    display: ${({ open }) => (open ? 'static' : 'none')};
     font-size: 1 rem;
     text-transform: uppercase;
     padding: 1rem 0;
