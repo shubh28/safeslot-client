@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import AddSlotService from './addSlotService';
 import {
   Button,
   ModalBody,
@@ -47,41 +47,32 @@ export default class AddSlots extends Component {
     })
   };
 
-  getSlots = () => {
+  getSlots = async () => {
     const user = this.props.user;
     const storeId = user && user.storeId;
-    const filter = { where: { storeId: storeId } };
-    axios
-      .get(
-        `https://safeslot-backend.herokuapp.com/api/stores_slots?filter=${JSON.stringify(
-          filter
-        )}`
-      )
-      .then(res => {
-        this.setState({
-          allSlots: res.data
-        });
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in fetching all slots');
-      });
+    const service = new AddSlotService;
+    try {
+      const slotsRes = await service.fetchSlots(storeId);
+      const slots = slotsRes.data;
+      this.setState({ allSlots: slots });
+
+    } catch (error) {
+      this.showError('danger', 'Error in fetching all slots');
+    }
   };
 
-  deleteSlots = slotId => {
+  deleteSlots = async(slotId) => {
     this.closeError();
-    axios
-      .delete(
-        `https://safeslot-backend.herokuapp.com/api/stores_slots/${slotId}`
-      )
-      .then(res => {
-        this.getSlots();
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in deleting slot');
-      });
+    const service = new AddSlotService;
+    try {
+      await service.deleteSlots(slotId);
+      this.getSlots();
+    } catch (error) {
+      this.showError('danger', 'Error in deleting slot');
+    }
   };
 
-  addSlots = timeString => {
+  addSlots = async(timeString) => {
     this.closeError();
     const user = this.props.user;
     const storeId = user && user.storeId;
@@ -106,16 +97,13 @@ export default class AddSlots extends Component {
       storeId: storeId
     };
 
-    axios
-      .post(`https://safeslot-backend.herokuapp.com/api/stores_slots`, {
-        ...body
-      })
-      .then(res => {
-        this.getSlots();
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in adding slot');
-      });
+    const service = new AddSlotService;
+    try {
+      await service.addSlots(body);
+      this.getSlots();
+    } catch (error) {
+      this.showError('danger', 'Error in adding slot');
+    }
   };
 
   printAllSlots = () => {
