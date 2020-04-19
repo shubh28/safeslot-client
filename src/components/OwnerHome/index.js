@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Alerts from '../Alerts';
-import AddSlots from '../AddSlots/b';
+import AddSlots from '../AddSlots';
 import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import formatBookingsList from './formatBookingsList';
