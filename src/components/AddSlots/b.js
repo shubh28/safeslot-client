@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import {
   Button,
@@ -8,39 +8,47 @@ import {
   ModalFooter,
   ListGroup,
   ListGroupItem,
-  Form,
   Input,
-  FormGroup,
-  Label
 } from 'reactstrap';
 
 import Alerts from '../Alerts';
 
-export default function AddSlots({
-  toggleAddSlots,
-  user,
-  openModal,
-  ...others
-}) {
-  let maxPeopleAllowedRef = useRef(null);
-  const [allSlots, setAllSlots] = useState([]);
-  const [error, setError] = useState({});
-  const [selectedTime, setSelectedTime] = useState({
-    start_minutes: 0,
-    start_hours: 0,
-    end_hours: 0,
-    end_minutes: 0,
-    maximun_people_allowed: 5
-  });
+export default class AddSlots extends Component {
+  constructor(props) {
+    super(props)
 
-  useEffect(() => {
-    getSlots();
-  }, []);
+    this.state = {
+      error: {},
+      allSlots: [],
+      selectedTime: {
+        start_minutes: 0,
+        start_hours: 0,
+        end_hours: 0,
+        end_minutes: 0,
+        maximun_people_allowed: 5
+      }
+    }
+    this.maxPeopleAllowedRef = React.createRef();
+  }
 
-  const showError = (type, message) => setError({ type, message });
-  const closeError = () => setError({ type: '', message: '' });
+  componentDidMount() {
+    this.getSlots();
+  }
 
-  const getSlots = () => {
+  showError = (type, message) => {
+    this.setState({
+      error: { type, message }
+    });
+  };
+
+  closeError = () => {
+    this.setState({
+      error: { type: '', message: '' }
+    })
+  };
+
+  getSlots = () => {
+    const user = this.props.user;
     const storeId = user && user.storeId;
     const filter = { where: { storeId: storeId } };
     axios
@@ -50,29 +58,32 @@ export default function AddSlots({
         )}`
       )
       .then(res => {
-        setAllSlots(res.data);
+        this.setState({
+          allSlots: res.data
+        });
       })
       .catch(err => {
-        showError('danger', 'Error in fetching all slots');
+        this.showError('danger', 'Error in fetching all slots');
       });
   };
 
-  const deleteSlots = slotId => {
-    closeError();
+  deleteSlots = slotId => {
+    this.closeError();
     axios
       .delete(
         `https://safeslot-backend.herokuapp.com/api/stores_slots/${slotId}`
       )
       .then(res => {
-        getSlots();
+        this.getSlots();
       })
       .catch(err => {
-        showError('danger', 'Error in deleting slot');
+        this.showError('danger', 'Error in deleting slot');
       });
   };
 
-  const addSlots = timeString => {
-    closeError();
+  addSlots = timeString => {
+    this.closeError();
+    const user = this.props.user;
     const storeId = user && user.storeId;
 
     const timeArray = timeString.split(' - ');
@@ -100,14 +111,15 @@ export default function AddSlots({
         ...body
       })
       .then(res => {
-        getSlots();
+        this.getSlots();
       })
       .catch(err => {
-        showError('danger', 'Error in adding slot');
+        this.showError('danger', 'Error in adding slot');
       });
   };
 
-  const printAllSlots = () => {
+  printAllSlots = () => {
+    const user = this.props.user;
     const store = user.stores || {};
     const startHour = parseInt(store.shop_open_hours || 0);
     const endHour = parseInt(store.shop_close_hours || 0);
@@ -141,11 +153,11 @@ export default function AddSlots({
             <Input
               type="number"
               id={timeString}
-              ref={maxPeopleAllowedRef}
+              ref={this.maxPeopleAllowedRef}
               style={{ width: '20%' }}
               defaultValue="0"
             />
-            <Button color="link" onClick={addSlots.bind(null, timeString)}>
+            <Button color="link" onClick={this.addSlots.bind(null, timeString)}>
               Add
             </Button>
           </ListGroupItem>
@@ -154,72 +166,67 @@ export default function AddSlots({
         timeString = '';
         minutes += slotDuration;
       }
-
-      // for (let j=startMinutes; j<=45; j+=slotDuration) {
-      // 	timeString = `${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`;
-      // }
-      // timeString = timeString + " - ";
-      // for (let j=startMinutes; j<=45; j+=slotDuration) {
-      // 	timeString = timeString + `${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`;
-      // }
     }
     return buttons;
   };
 
-  // printAllSlots();
+  render() {
+    const { toggleAddSlots, openModal } = this.props;
+    const { allSlots, error } = this.state;
 
-  return (
-    <Modal isOpen={openModal} toggle={toggleAddSlots}>
-      <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
-      <ModalBody>
-        <Alerts
-          type={error.type}
-          message={error.message}
-          onClose={closeError}
-        />
+    return (
+      <Modal isOpen={openModal} toggle={toggleAddSlots}>
+        <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
+        <ModalBody>
+          <Alerts
+            type={error.type}
+            message={error.message}
+            onClose={this.closeError}
+          />
 
-        <p>
-          Please add your slots. Enter maximun people allowed in the blank space
-          for each slot.
-        </p>
+          <p>
+            Please add your slots. Enter maximun people allowed in the blank space
+            for each slot.
+          </p>
 
-        <ListGroup>{printAllSlots()}</ListGroup>
+          <ListGroup>{this.printAllSlots()}</ListGroup>
 
-        <br></br>
-        {allSlots.length > 0 && <p>Delete slots.</p>}
+          <br></br>
+          {allSlots.length > 0 && <p>Delete slots.</p>}
 
-        <ListGroup>
-          {allSlots.map(slot => {
-            return (
-              <ListGroupItem key={slot.id} className="slot-listItem">
-                {slot.start_hours &&
-                  slot.start_hours.toString().padStart(2, '0')}
-                :
-                {slot.start_minutes &&
-                  slot.start_minutes.toString().padStart(2, '0')}
-                &nbsp;-&nbsp;
-                {slot.end_hours && slot.end_hours.toString().padStart(2, '0')}:
-                {slot.end_minutes &&
-                  slot.end_minutes.toString().padStart(2, '0')}
-                <Button
-                  color="link"
-                  onClick={() => {
-                    deleteSlots(slot.id);
-                  }}
-                >
-                  Remove
-                </Button>
-              </ListGroupItem>
-            );
-          })}
-        </ListGroup>
-        <br></br>
-      </ModalBody>
-      <ModalFooter>
-        <Button color="info" outline onClick={toggleAddSlots}>
-          Close
-        </Button>
-      </ModalFooter>
-    </Modal>
-  );
+          <ListGroup>
+            {allSlots.map(slot => {
+              return (
+                <ListGroupItem key={slot.id} className="slot-listItem">
+                  {slot.start_hours &&
+                    slot.start_hours.toString().padStart(2, '0')}
+                  :
+                  {slot.start_minutes &&
+                    slot.start_minutes.toString().padStart(2, '0')}
+                  &nbsp;-&nbsp;
+                  {slot.end_hours && slot.end_hours.toString().padStart(2, '0')}:
+                  {slot.end_minutes &&
+                    slot.end_minutes.toString().padStart(2, '0')}
+                  <Button
+                    color="link"
+                    onClick={() => {
+                      this.deleteSlots(slot.id);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </ListGroupItem>
+              );
+            })}
+          </ListGroup>
+          <br></br>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="info" outline onClick={toggleAddSlots}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
 }

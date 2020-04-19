@@ -409,7 +409,7 @@ export default class OnBoarding extends Component {
                 justifyContent: 'space-between'
               }}
             >
-              <label style={{ width: '50%' }}>Shop Cloing Time</label>
+              <label style={{ width: '50%' }}>Shop Closing Time</label>
               <Input
                 type="select"
                 style={{ width: '20%' }}
