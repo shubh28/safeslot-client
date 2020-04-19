@@ -166,7 +166,7 @@ export default function AddSlots({
     return buttons;
   };
 
-  printAllSlots();
+  // printAllSlots();
 
   return (
     <Modal isOpen={openModal} toggle={toggleAddSlots}>

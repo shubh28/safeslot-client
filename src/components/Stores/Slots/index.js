@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { API_URL, URL_REFS } from '../../../common/consts';
