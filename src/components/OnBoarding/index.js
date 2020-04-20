@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Button,
@@ -86,7 +85,7 @@ export default class OnBoarding extends Component {
     if (!latitude || !longitude) {
       this.showError(
         'danger',
-        'Please select locality from drop down to calculated your coordinates'
+        'Please select locality from drop down to calculate your coordinates'
       );
       return;
     }

@@ -13,6 +13,7 @@ import {
 } from 'reactstrap';
 
 import Alerts from '../Alerts';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup'
 
 export default class AddSlots extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class AddSlots extends Component {
     }
   };
 
-  deleteSlots = async(slotId) => {
+  deleteSlots = async (slotId) => {
     this.closeError();
     const service = new AddSlotService;
     try {
@@ -78,7 +79,7 @@ export default class AddSlots extends Component {
     }
   };
 
-  addSlots = async(timeString) => {
+  addSlots = async (timeString) => {
     this.closeError();
     const user = this.props.user;
     const storeId = user && user.storeId;
@@ -164,64 +165,14 @@ export default class AddSlots extends Component {
     return buttons;
   };
 
-  createHours = type => {
-    const options = [];
-    const { shop_open_hours, shop_close_hours } = this.state;
-    if (type === 'start') {
-      const endTime = shop_close_hours !== 0 ? parseInt(shop_close_hours) : 23;
-      for (let i = 0; i <= endTime; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    } else {
-      const startTime = shop_open_hours !== 0 ? parseInt(shop_open_hours) : 0;
-      for (let i = startTime; i <= 23; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    }
-    return options;
-  };
-
-
-  createMinutes = type => {
-    const options = [];
-    const { shop_close_minutes, shop_open_minutes } = this.state;
-    // if (type === "start") {
-    // const endTime = shop_close_minutes !== 0 ? parseInt(shop_close_minutes) : 55;
-    for (let i = 0; i <= 45; i += 15) {
-      options.push(
-        <option key={i} value={i.toString().padStart(2, '0')}>
-          {i.toString().padStart(2, '0')}
-        </option>
-      );
-    }
-    // }
-
-    // else {
-    //   const startTime = shop_open_minutes !== 0 ? parseInt(shop_open_minutes) : 0;
-    //   for(let i=startTime; i<=55; i+=15){
-    //     options.push(
-    //       <option key={i} value={i.toString().padStart(2, '0')}>
-    //         {i.toString().padStart(2, '0')}
-    //       </option>
-    //     );
-    //   }
-    // }
-    return options;
-  };
-
   render() {
     const { toggleAddSlots, openModal } = this.props;
     const { allSlots, error,
+      shop_open_hours,
+      shop_open_minutes,
       shop_close_hours,
-      shop_close_minutes } = this.state;
+      shop_close_minutes,
+    } = this.state;
 
     return (
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
@@ -233,34 +184,32 @@ export default class AddSlots extends Component {
             onClose={this.closeError}
           />
 
-          <FormGroup
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}
-            >
-              <label style={{ width: '50%' }}>Shop Closing Time</label>
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_close_hours}
-                name="shop_close_hours"
-                onChange={this.handleOnChange}
-              >
-                {this.createHours('end')}
-              </Input>
-              &nbsp;:&nbsp;
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_close_minutes}
-                name="shop_close_minutes"
-                onChange={this.handleOnChange}
-              >
-                {this.createMinutes('end')}
-              </Input>
-            </FormGroup>
+          <TimeSelectFormGroup
+            shop_open_hours={shop_open_hours}
+            shop_open_minutes={shop_open_minutes}
+            shop_close_hours={shop_close_hours}
+            shop_close_minutes={shop_close_minutes}
+            onOpenHoursChanged={(hours) => {
+              this.setState({
+                shop_open_hours: hours
+              })
+            }}
+            onOpenMinsChanged={(mins) => {
+              this.setState({
+                shop_open_minutes: mins
+              })
+            }}
+            onCloseHoursChanged={(hours) => {
+              this.setState({
+                shop_close_hours: hours
+              })
+            }}
+            onCloseMinsChanged={(mins) => {
+              this.setState({
+                shop_close_minutes: mins
+              })
+            }}
+          />
 
           <p>
             Please add your slots. Enter maximun people allowed in the blank space
