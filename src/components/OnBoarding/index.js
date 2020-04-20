@@ -194,7 +194,6 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_type,
       shop_open_hours,
       shop_open_minutes,
       shop_close_hours,

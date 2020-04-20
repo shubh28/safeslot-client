@@ -9,7 +9,6 @@ import {
   ListGroup,
   ListGroupItem,
   Input,
-  FormGroup
 } from 'reactstrap';
 
 import Alerts from '../Alerts';
@@ -29,10 +28,6 @@ export default class AddSlots extends Component {
         end_minutes: 0,
         maximun_people_allowed: 5
       },
-      shop_open_hours: 0,
-      shop_open_minutes: 0,
-      shop_close_hours: 0,
-      shop_close_minutes: 0,
       slot_duration: 15,
     }
     this.maxPeopleAllowedRef = React.createRef();
@@ -166,14 +161,19 @@ export default class AddSlots extends Component {
   };
 
   render() {
-    const { toggleAddSlots, openModal } = this.props;
+    const { toggleAddSlots, openModal, user } = this.props;
     const { allSlots, error,
+
+    } = this.state;
+
+    const {
       shop_open_hours,
       shop_open_minutes,
       shop_close_hours,
       shop_close_minutes,
-    } = this.state;
+    } = user.stores;
 
+    console.log(shop_open_hours);
     return (
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>

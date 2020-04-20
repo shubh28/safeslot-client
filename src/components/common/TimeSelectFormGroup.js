@@ -16,11 +16,11 @@ export default class TimeSelectFormGroup extends Component {
       }
     } else {
       const startTime = shop_open_hours !== 0 ? parseInt(shop_open_hours) : 0;
+      console.log(startTime, 'startTime')
       for (let i = startTime; i <= 23; i++) {
         options.push(i);
       }
     }
-    console.log(options)
     return options;
   };
 
@@ -45,6 +45,7 @@ export default class TimeSelectFormGroup extends Component {
       onCloseHoursChanged,
       onCloseMinsChanged
     } = this.props;
+
     return (
       <div>
         <TimeSelect
@@ -95,7 +96,7 @@ function TimeSelect({
         onChange={(e) => { onHoursChanged(e.target.value) }}
       >
         {hoursList.map((item) => {
-          return <option key={item} value={item.toString().padStart(2, '0')}>
+          return <option key={item} value={item}>
             {item.toString().padStart(2, '0')}
           </option>
         })}
@@ -108,7 +109,7 @@ function TimeSelect({
         onChange={(e) => { onMinutesChanged(e.target.value) }}
       >
         {minutesList.map((item) => {
-          return <option key={item} value={item.toString().padStart(2, '0')}>
+          return <option key={item} value={item}>
             {item.toString().padStart(2, '0')}
           </option>
         })}

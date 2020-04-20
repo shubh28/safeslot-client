@@ -5,6 +5,7 @@ export default class OwnerHomeService {
 
   fetchUser = async (userId) => {
     const res = await axios.get(`${API_URL}/users/${userId}?filter={"include": "stores"}`);
+    console.log(res.data);
     return res;
   }
 
