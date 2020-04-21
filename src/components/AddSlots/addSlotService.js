@@ -58,4 +58,12 @@ export default class AddSlotService {
     })
     return res.data
   }
+
+
+  updateSlotDuration = async (storeId, duration) => {
+    const res = await axios.patch(`${API_URL}/stores/${storeId}`, {
+      slot_duration: duration
+    })
+    return res.data
+  }
 }

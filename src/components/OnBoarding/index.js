@@ -4,7 +4,6 @@ import {
   Button,
   Form,
   FormGroup,
-  Label,
   Input,
   FormText,
   UncontrolledDropdown,
@@ -12,11 +11,11 @@ import {
   DropdownItem
 } from 'reactstrap';
 import axios from 'axios';
-
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -109,8 +108,6 @@ export default class OnBoarding extends Component {
       shop_close_minutes,
       slot_duration
     };
-
-    console.log(body);
 
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
@@ -347,18 +344,13 @@ export default class OnBoarding extends Component {
                 })
               }}
             />
-            <FormGroup>
-              <Label>Duration of each slot</Label>
-              <Input
-                type="select"
-                value={slot_duration}
-                name="slot_duration"
-                onChange={this.handleOnChange}
-              >
-                <option value="15">15 minutes</option>
-                <option value="30">30 minutes</option>
-              </Input>
-            </FormGroup>
+            <SlotDuration
+              slotDuration={slot_duration}
+              onDurationChange={(duration) => {
+                this.setState({
+                  slot_duration: duration
+                })
+              }} />
             <FormGroup>
               <Button
                 required

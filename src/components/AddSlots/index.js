@@ -11,7 +11,8 @@ import {
   Input,
 } from 'reactstrap';
 import Alerts from '../Alerts';
-import TimeSelectFormGroup from '../common/TimeSelectFormGroup'
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 
 export default class AddSlots extends Component {
@@ -159,6 +160,7 @@ export default class AddSlots extends Component {
       shop_open_minutes,
       shop_close_hours,
       shop_close_minutes,
+      slot_duration,
     } = this.state.store;
 
     return (
@@ -189,6 +191,12 @@ export default class AddSlots extends Component {
               this.setState({ store: await this.service.updateShopCloseMins(storeId, mins) });
             }}
           />
+
+          <SlotDuration
+            slotDuration={slot_duration}
+            onDurationChange={async (duration) => {
+              this.setState({ store: await this.service.updateSlotDuration(storeId, duration) });
+            }} />
 
           <p>
             Please add your slots. Enter maximun people allowed in the blank space
