@@ -222,3 +222,12 @@ a:hover {
 .addSlotsForm .form-group .form-control {
   width: 25%;
 }
+.custom_image_uploader{
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: gray;
+  color: white;
+}
