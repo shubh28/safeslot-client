@@ -212,14 +212,14 @@ export default class AddSlots extends Component {
             {allSlots.map(slot => {
               return (
                 <ListGroupItem key={slot.id} className="slot-listItem">
-                  {slot.start_hours &&
+                  {(slot.start_hours || slot.start_hours === 0) &&
                     slot.start_hours.toString().padStart(2, '0')}
                   :
-                  {slot.start_minutes &&
+                  {(slot.start_minutes || slot.start_minutes === 0) &&
                     slot.start_minutes.toString().padStart(2, '0')}
                   &nbsp;-&nbsp;
-                  {slot.end_hours && slot.end_hours.toString().padStart(2, '0')}:
-                  {slot.end_minutes &&
+                  {(slot.end_hours || slot.end_hours === 0) && slot.end_hours.toString().padStart(2, '0')}:
+                  {(slot.end_minutes || slot.end_minutes === 0) &&
                     slot.end_minutes.toString().padStart(2, '0')}
                   <Button
                     color="link"
