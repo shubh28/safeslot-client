@@ -112,6 +112,7 @@ export default class OwnerHome extends Component {
                 openModal={this.state.addSlots}
                 user={this.state.user}
                 toggleAddSlots={this.toggleAddSlots}
+                storeId={this.state.user.storeId}
               />
             )}
 

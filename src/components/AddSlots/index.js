@@ -20,17 +20,9 @@ export default class AddSlots extends Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       error: {},
       allSlots: [],
-      selectedTime: {
-        start_minutes: 0,
-        start_hours: 0,
-        end_hours: 0,
-        end_minutes: 0,
-        maximun_people_allowed: 5
-      },
       slot_duration: 15,
       store: {}
     }
@@ -38,7 +30,7 @@ export default class AddSlots extends Component {
   }
 
   async componentDidMount() {
-    const storeId = this.props.user.storeId;
+    const storeId = this.props.storeId;
 
     this.setState({
       store: await this.service.getStoreData(storeId)
@@ -60,8 +52,7 @@ export default class AddSlots extends Component {
   };
 
   getSlots = async () => {
-    const user = this.props.user;
-    const storeId = user && user.storeId;
+    const storeId = this.props.storeId;
     try {
       const slotsRes = await this.service.fetchSlots(storeId);
       const slots = slotsRes.data;
@@ -84,9 +75,7 @@ export default class AddSlots extends Component {
 
   addSlots = async (timeString) => {
     this.closeError();
-    const user = this.props.user;
-    const storeId = user && user.storeId;
-
+    const storeId = this.props.storeId;
     const timeArray = timeString.split(' - ');
     const startTime = timeArray && timeArray[0].split(':');
     const endTime = timeArray && timeArray[1].split(':');
@@ -116,8 +105,6 @@ export default class AddSlots extends Component {
     const store = this.state.store;
     const startHour = parseInt(store.shop_open_hours || 0);
     const endHour = parseInt(store.shop_close_hours || 0);
-    const startMinutes = parseInt(store.shop_open_minutes || 0);
-    const endMinutes = parseInt(store.shop_close_hours || 0);
     const slotDuration = parseInt(store.slot_duration || 15);
 
     const buttons = [];
@@ -164,7 +151,7 @@ export default class AddSlots extends Component {
   };
 
   render() {
-    const { toggleAddSlots, openModal, user } = this.props;
+    const { toggleAddSlots, openModal, storeId } = this.props;
     const { allSlots, error } = this.state;
 
     const {
@@ -174,7 +161,6 @@ export default class AddSlots extends Component {
       shop_close_minutes,
     } = this.state.store;
 
-    const storeId = user.storeId;
     return (
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
