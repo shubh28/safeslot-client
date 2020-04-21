@@ -16,7 +16,6 @@ export default class TimeSelectFormGroup extends Component {
       }
     } else {
       const startTime = shop_open_hours !== 0 ? parseInt(shop_open_hours) : 0;
-      console.log(startTime, 'startTime')
       for (let i = startTime; i <= 23; i++) {
         options.push(i);
       }

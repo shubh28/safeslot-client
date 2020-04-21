@@ -13,6 +13,9 @@ import {
 
 import Alerts from '../Alerts';
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup'
+import axios from 'axios';
+import { API_URL } from '../../common/consts';
+
 
 export default class AddSlots extends Component {
   constructor(props) {
@@ -29,11 +32,18 @@ export default class AddSlots extends Component {
         maximun_people_allowed: 5
       },
       slot_duration: 15,
+      store: {}
     }
     this.maxPeopleAllowedRef = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const storeId = this.props.user.storeId;
+    const res = await axios.get(`${API_URL}/stores/${storeId}`)
+    this.setState({
+      store: res.data
+    });
+
     this.getSlots();
   }
 
@@ -87,9 +97,6 @@ export default class AddSlots extends Component {
     const endHours = endTime && endTime[0];
     const endMinutes = endTime && endTime[1];
 
-    console.log(timeArray[0]);
-    console.log(startTime, endTime);
-
     const body = {
       start_minutes: startMinutes,
       start_hours: startHours,
@@ -109,13 +116,12 @@ export default class AddSlots extends Component {
   };
 
   printAllSlots = () => {
-    const user = this.props.user;
-    const store = user.stores || {};
+    const store = this.state.store;
     const startHour = parseInt(store.shop_open_hours || 0);
     const endHour = parseInt(store.shop_close_hours || 0);
     const startMinutes = parseInt(store.shop_open_minutes || 0);
     const endMinutes = parseInt(store.shop_close_hours || 0);
-    const slotDuration = parseInt(store.slot_duration || 0);
+    const slotDuration = parseInt(store.slot_duration || 15);
 
     const buttons = [];
 
@@ -162,18 +168,16 @@ export default class AddSlots extends Component {
 
   render() {
     const { toggleAddSlots, openModal, user } = this.props;
-    const { allSlots, error,
-
-    } = this.state;
+    const { allSlots, error} = this.state;
 
     const {
       shop_open_hours,
       shop_open_minutes,
       shop_close_hours,
       shop_close_minutes,
-    } = user.stores;
+    } = this.state.store;
 
-    console.log(shop_open_hours);
+    const storeId = user.storeId;
     return (
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
@@ -189,25 +193,29 @@ export default class AddSlots extends Component {
             shop_open_minutes={shop_open_minutes}
             shop_close_hours={shop_close_hours}
             shop_close_minutes={shop_close_minutes}
-            onOpenHoursChanged={(hours) => {
-              this.setState({
+            onOpenHoursChanged={async (hours) => {
+              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
                 shop_open_hours: hours
               })
+              this.setState({ store: res.data });
             }}
-            onOpenMinsChanged={(mins) => {
-              this.setState({
+            onOpenMinsChanged={async (mins) => {
+              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
                 shop_open_minutes: mins
               })
+              this.setState({ store: res.data });
             }}
-            onCloseHoursChanged={(hours) => {
-              this.setState({
+            onCloseHoursChanged={async (hours) => {
+              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
                 shop_close_hours: hours
               })
+              this.setState({ store: res.data });
             }}
-            onCloseMinsChanged={(mins) => {
-              this.setState({
+            onCloseMinsChanged={async (mins) => {
+              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
                 shop_close_minutes: mins
               })
+              this.setState({ store: res.data });
             }}
           />
 
