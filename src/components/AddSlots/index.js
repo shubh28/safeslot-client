@@ -137,6 +137,11 @@ export default class AddSlots extends Component {
               ref={this.maxPeopleAllowedRef}
               style={{ width: '20%' }}
               defaultValue="0"
+              min={0}
+              max={1000}
+              onInput = {(e) =>{
+                e.target.value = Math.min(e.target.value, 1000)
+              }}
             />
             <Button color="link" onClick={this.addSlots.bind(null, timeString)}>
               Add
@@ -199,7 +204,7 @@ export default class AddSlots extends Component {
             }} />
 
           <p>
-            Please add your slots. Enter maximun people allowed in the blank space
+            Please add your slots. Enter maximum people allowed in the blank space
             for each slot.
           </p>
 
