@@ -10,14 +10,14 @@ import {
   ListGroupItem,
   Input,
 } from 'reactstrap';
-
 import Alerts from '../Alerts';
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup'
-import axios from 'axios';
-import { API_URL } from '../../common/consts';
 
 
 export default class AddSlots extends Component {
+
+  service = new AddSlotService;
+
   constructor(props) {
     super(props)
 
@@ -39,9 +39,9 @@ export default class AddSlots extends Component {
 
   async componentDidMount() {
     const storeId = this.props.user.storeId;
-    const res = await axios.get(`${API_URL}/stores/${storeId}`)
+
     this.setState({
-      store: res.data
+      store: await this.service.getStoreData(storeId)
     });
 
     this.getSlots();
@@ -62,9 +62,8 @@ export default class AddSlots extends Component {
   getSlots = async () => {
     const user = this.props.user;
     const storeId = user && user.storeId;
-    const service = new AddSlotService;
     try {
-      const slotsRes = await service.fetchSlots(storeId);
+      const slotsRes = await this.service.fetchSlots(storeId);
       const slots = slotsRes.data;
       this.setState({ allSlots: slots });
 
@@ -75,9 +74,8 @@ export default class AddSlots extends Component {
 
   deleteSlots = async (slotId) => {
     this.closeError();
-    const service = new AddSlotService;
     try {
-      await service.deleteSlots(slotId);
+      await this.service.deleteSlots(slotId);
       this.getSlots();
     } catch (error) {
       this.showError('danger', 'Error in deleting slot');
@@ -106,9 +104,8 @@ export default class AddSlots extends Component {
       storeId: storeId
     };
 
-    const service = new AddSlotService;
     try {
-      await service.addSlots(body);
+      await this.service.addSlots(body);
       this.getSlots();
     } catch (error) {
       this.showError('danger', 'Error in adding slot');
@@ -168,7 +165,7 @@ export default class AddSlots extends Component {
 
   render() {
     const { toggleAddSlots, openModal, user } = this.props;
-    const { allSlots, error} = this.state;
+    const { allSlots, error } = this.state;
 
     const {
       shop_open_hours,
@@ -194,28 +191,16 @@ export default class AddSlots extends Component {
             shop_close_hours={shop_close_hours}
             shop_close_minutes={shop_close_minutes}
             onOpenHoursChanged={async (hours) => {
-              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
-                shop_open_hours: hours
-              })
-              this.setState({ store: res.data });
+              this.setState({ store: await this.service.updateShopOpenHours(storeId, hours) });
             }}
             onOpenMinsChanged={async (mins) => {
-              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
-                shop_open_minutes: mins
-              })
-              this.setState({ store: res.data });
+              this.setState({ store: await this.service.updateShopOpenMins(storeId, mins) });
             }}
             onCloseHoursChanged={async (hours) => {
-              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
-                shop_close_hours: hours
-              })
-              this.setState({ store: res.data });
+              this.setState({ store: await this.service.updateShopCloseHours(storeId, hours) });
             }}
             onCloseMinsChanged={async (mins) => {
-              let res = await axios.patch(`${API_URL}/stores/${storeId}`, {
-                shop_close_minutes: mins
-              })
-              this.setState({ store: res.data });
+              this.setState({ store: await this.service.updateShopCloseMins(storeId, mins) });
             }}
           />
 

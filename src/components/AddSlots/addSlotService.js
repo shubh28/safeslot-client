@@ -25,4 +25,37 @@ export default class AddSlotService {
     });
     return res;
   }
+
+  getStoreData = async(storeId) => {
+    const res = await axios.get(`${API_URL}/stores/${storeId}`);
+    return res.data
+  }
+
+  updateShopOpenHours = async (storeId, hours) => {
+    const res = await axios.patch(`${API_URL}/stores/${storeId}`, {
+      shop_open_hours: hours
+    })
+    return res.data
+  }
+
+  updateShopOpenMins = async (storeId, mins) => {
+    const res = await axios.patch(`${API_URL}/stores/${storeId}`, {
+      shop_open_minutes: mins
+    })
+    return res.data
+  }
+
+  updateShopCloseHours = async (storeId, hours) => {
+    const res = await axios.patch(`${API_URL}/stores/${storeId}`, {
+      shop_close_hours: hours
+    })
+    return res.data
+  }
+
+  updateShopCloseMins = async (storeId, mins) => {
+    const res = await axios.patch(`${API_URL}/stores/${storeId}`, {
+      shop_close_minutes: mins
+    })
+    return res.data
+  }
 }
