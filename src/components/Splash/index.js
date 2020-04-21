@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Spinner } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import useCurrentUser from '../../hooks/useCurrentUser';
 const logo = require('../../assets/logo.png');
@@ -7,6 +7,7 @@ const grocery = require('../../assets/grocery1.png');
 const chemist = require('../../assets/chemist.png');
 
 export default function Splash() {
+  const [loadCount, setLoadCount] = React.useState(0);
   const [loading, user, error] = useCurrentUser();
   const history = useHistory();
   useEffect(() => {
@@ -22,7 +23,16 @@ export default function Splash() {
     <div
       style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}
     >
+      {loadCount < 3 ? (
+        <div id="loading-overlay">
+          <div className="spinner-border text-info" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+          Please Wait...
+        </div>
+      ) : null}
       <img
+        onLoad={e => setLoadCount(loadCount + 1)}
         src={logo}
         style={{
           margin: 'auto',
@@ -54,10 +64,18 @@ export default function Splash() {
         }}
       >
         <Link to={'/map'}>
-          <img src={grocery} width="80" />
+          <img
+            onLoad={e => setLoadCount(loadCount + 1)}
+            src={grocery}
+            width="80"
+          />
         </Link>
         <Link to={'/map'}>
-          <img src={chemist} width="80" />
+          <img
+            onLoad={e => setLoadCount(loadCount + 1)}
+            src={chemist}
+            width="80"
+          />
         </Link>
       </div>
     </div>

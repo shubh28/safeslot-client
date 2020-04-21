@@ -105,7 +105,7 @@ export default class AddSlots extends Component {
   printAllSlots = () => {
     const store = this.state.store;
     const startHour = parseInt(store.shop_open_hours || 0);
-    const endHour = parseInt(store.shop_close_hours || 0);
+    const endHour = parseInt(store.shop_close_hours || 23);
     const slotDuration = parseInt(store.slot_duration || 15);
 
     const buttons = [];

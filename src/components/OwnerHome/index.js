@@ -27,7 +27,6 @@ export default class OwnerHome extends Component {
   };
 
   async componentDidMount() {
-
     const userAuthDetails = loadUserAuthenticationDetails();
     const userId = userAuthDetails && userAuthDetails.userId;
 

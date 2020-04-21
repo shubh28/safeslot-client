@@ -12,7 +12,7 @@ export default class OwnerHomeService {
   fetchBookings = async (storeId) => {
     const filter = {
       where: { store_id: storeId },
-      include: ['stores', 'stores_slots', 'users', 'slots']
+      include: ['stores', 'stores_slots', 'users']
     };
     const res = await axios.get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`);
     return res;

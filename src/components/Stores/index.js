@@ -24,7 +24,7 @@ import { Container } from '../../styles';
 import { API_URL } from '../../common/consts';
 import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
-import NoStores from './NoStores';
+import ReferStores from './ReferStores';
 
 function Stores() {
   const [stores, setStores] = useState();
@@ -44,17 +44,10 @@ function Stores() {
     axios
       .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}`)
       .then(res => {
-        const stores = res.data.map(store => {
-          const { stores_slots_count, ...others } = store;
-          const slots = stores_slots_count.map(store_slot => store_slot.slots);
-          return {
-            ...others,
-            slots
-          };
-        });
-        setStores(stores);
+        setStores(res.data);
       })
       .catch(err => {
+        console.log(err);
         showError('danger', 'Some error while fetching stores');
       })
       .finally(() => {
@@ -145,9 +138,10 @@ function Stores() {
                   </Card>
                 );
               })}
+              <ReferStores />
             </>
           ) : (
-            <NoStores />
+            <ReferStores nostores={true} />
           )}
         </div>
       </Container>
