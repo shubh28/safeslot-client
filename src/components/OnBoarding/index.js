@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Button,
   Form,
   FormGroup,
-  Label,
   Input,
   FormText,
   UncontrolledDropdown,
@@ -13,10 +11,11 @@ import {
   DropdownItem
 } from 'reactstrap';
 import axios from 'axios';
-
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -85,7 +84,7 @@ export default class OnBoarding extends Component {
     if (!latitude || !longitude) {
       this.showError(
         'danger',
-        'Please select locality from drop down to calculated your coordinates'
+        'Please select locality from drop down to calculate your coordinates'
       );
       return;
     }
@@ -109,8 +108,6 @@ export default class OnBoarding extends Component {
       shop_close_minutes,
       slot_duration
     };
-
-    console.log(body);
 
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
@@ -185,58 +182,6 @@ export default class OnBoarding extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-  createHours = type => {
-    const options = [];
-    const { shop_open_hours, shop_close_hours } = this.state;
-    if (type === 'start') {
-      const endTime = shop_close_hours !== 0 ? parseInt(shop_close_hours) : 23;
-      for (let i = 0; i <= endTime; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    } else {
-      const startTime = shop_open_hours !== 0 ? parseInt(shop_open_hours) : 0;
-      for (let i = startTime; i <= 23; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    }
-    return options;
-  };
-
-  createMinutes = type => {
-    const options = [];
-    const { shop_close_minutes, shop_open_minutes } = this.state;
-    // if (type === "start") {
-    // const endTime = shop_close_minutes !== 0 ? parseInt(shop_close_minutes) : 55;
-    for (let i = 0; i <= 45; i += 15) {
-      options.push(
-        <option key={i} value={i.toString().padStart(2, '0')}>
-          {i.toString().padStart(2, '0')}
-        </option>
-      );
-    }
-    // }
-
-    // else {
-    //   const startTime = shop_open_minutes !== 0 ? parseInt(shop_open_minutes) : 0;
-    //   for(let i=startTime; i<=55; i+=15){
-    //     options.push(
-    //       <option key={i} value={i.toString().padStart(2, '0')}>
-    //         {i.toString().padStart(2, '0')}
-    //       </option>
-    //     );
-    //   }
-    // }
-    return options;
-  };
-
   render() {
     const {
       name,
@@ -246,7 +191,6 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_type,
       shop_open_hours,
       shop_open_minutes,
       shop_close_hours,
@@ -314,7 +258,7 @@ export default class OnBoarding extends Component {
               />
               <UncontrolledDropdown
                 isOpen={this.state.locations.length > 0}
-                toggle={() => {}}
+                toggle={() => { }}
               >
                 <DropdownMenu right>
                   {this.state.locations.map(location => {
@@ -374,74 +318,39 @@ export default class OnBoarding extends Component {
                 placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
-            <FormGroup
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+            <TimeSelectFormGroup
+              shop_open_hours={shop_open_hours}
+              shop_open_minutes={shop_open_minutes}
+              shop_close_hours={shop_close_hours}
+              shop_close_minutes={shop_close_minutes}
+              onOpenHoursChanged={(hours) => {
+                this.setState({
+                  shop_open_hours: hours
+                })
               }}
-            >
-              <label style={{ width: '50%' }}>Shop Opening Time</label>
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_open_hours}
-                name="shop_open_hours"
-                onChange={this.handleOnChange}
-              >
-                {this.createHours('start')}
-              </Input>
-              &nbsp;:&nbsp;
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_open_minutes}
-                name="shop_open_minutes"
-                onChange={this.handleOnChange}
-              >
-                {this.createMinutes('start')}
-              </Input>
-            </FormGroup>
-            <FormGroup
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+              onOpenMinsChanged={(mins) => {
+                this.setState({
+                  shop_open_minutes: mins
+                })
               }}
-            >
-              <label style={{ width: '50%' }}>Shop Cloing Time</label>
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_close_hours}
-                name="shop_close_hours"
-                onChange={this.handleOnChange}
-              >
-                {this.createHours('end')}
-              </Input>
-              &nbsp;:&nbsp;
-              <Input
-                type="select"
-                style={{ width: '20%' }}
-                value={shop_close_minutes}
-                name="shop_close_minutes"
-                onChange={this.handleOnChange}
-              >
-                {this.createMinutes('end')}
-              </Input>
-            </FormGroup>
-            <FormGroup>
-              <label>Duration of each slot</label>
-              <Input
-                type="select"
-                value={slot_duration}
-                name="slot_duration"
-                onChange={this.handleOnChange}
-              >
-                <option value="15">15 minutes</option>
-                <option value="30">30 minutes</option>
-              </Input>
-            </FormGroup>
+              onCloseHoursChanged={(hours) => {
+                this.setState({
+                  shop_close_hours: hours
+                })
+              }}
+              onCloseMinsChanged={(mins) => {
+                this.setState({
+                  shop_close_minutes: mins
+                })
+              }}
+            />
+            <SlotDuration
+              slotDuration={slot_duration}
+              onDurationChange={(duration) => {
+                this.setState({
+                  slot_duration: duration
+                })
+              }} />
             <FormGroup>
               <Button
                 required
