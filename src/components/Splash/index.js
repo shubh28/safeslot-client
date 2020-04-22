@@ -43,17 +43,27 @@ export default function Splash() {
           {user.isStoreOwner ? (
             <>
               <h5>Manage My Stores</h5>
-              <Link to={'/owners'}>Manage Store/s</Link>
+              <Link to={'/owners'}>
+                <Button>Manage Stores</Button>
+              </Link>
             </>
-          ) : null}
-          <h5>Know a Store Near You?</h5>
-          <Link to={'/refer'}>
-            <Button> Refer a Store</Button>
-          </Link>
+          ) : (
+            <>
+              <h5>Know a Store Near You?</h5>
+              <Link to={'/refer'}>
+                <Button> Refer a Store</Button>
+              </Link>
+            </>
+          )}
           <h5>Manage your Bookings</h5>
-          <Link to={'/bookings'}>
-            <Button> Bookings</Button>
-          </Link>
+          <div className="doubleButton">
+            <Link to={'/bookings'}>
+              <Button>My Bookings</Button>
+            </Link>
+            <Link to={'/map'}>
+              <Button> New Booking</Button>
+            </Link>
+          </div>
           <h5>Currently logged in as {user.email}</h5>
           <Button
             style={{ width: 'min-content', alignSelf: 'center' }}

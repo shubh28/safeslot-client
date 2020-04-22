@@ -19,12 +19,12 @@ export default function Home() {
       axios
         .get(`https://safeslot-backend.herokuapp.com/api/users/${userId}`)
         .then(res => {
-          if (res.data.isStoreOwner) {
-            setDisplayMap(false);
-            history.push('/owners');
-          } else {
-            setDisplayMap(true);
-          }
+          // if (res.data.isStoreOwner) {
+          //   setDisplayMap(false);
+          //   history.push('/owners');
+          // } else {
+          setDisplayMap(true);
+          // }
         })
         .catch(err => {
           console.log(err);

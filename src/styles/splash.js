@@ -25,6 +25,11 @@ export const StyledSplash = styled.div/*css*/ `
     margin-bottom: 2rem;
   }
 
+  .doubleButton {
+    display: inline;
+    margin-bottom: 2rem;
+  }
+
   .splashBody {
     margin-top: 3rem;
     display: flex;
