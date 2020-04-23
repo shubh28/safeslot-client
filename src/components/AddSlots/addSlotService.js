@@ -5,28 +5,24 @@ import { API_URL } from '../../common/consts';
 export default class AddSlotService {
 
   fetchSlots = async (storeId) => {
-    const filter = { where: { storeId: storeId } };
-    const res = await  axios
-    .get(
-      `${API_URL}/stores_slots?filter=${JSON.stringify(
-        filter
-      )}`
-    );
-    return res;
+    let res = await axios.get(`${API_URL}/stores/${storeId}/stores_slots`);
+    return res.data;
+  }
+
+  deleteAllSlots = async (storeId) => {
+    await axios.delete(`${API_URL}/stores/${storeId}/stores_slots`);
   }
 
   deleteSlots = async (slotId) => {
     await axios.delete(`${API_URL}/stores_slots/${slotId}`);
   }
 
-  addSlots = async (body) => {
-    const res = await axios.post(`${API_URL}/stores_slots`, {
-      ...body
-    });
-    return res;
+  addSlots = async (slots, storeId) => {
+    let res = await axios.post(`${API_URL}/stores/${storeId}/stores_slots`, slots);
+    return res.data;
   }
 
-  getStoreData = async(storeId) => {
+  getStoreData = async (storeId) => {
     const res = await axios.get(`${API_URL}/stores/${storeId}`);
     return res.data
   }
@@ -65,5 +61,12 @@ export default class AddSlotService {
       slot_duration: duration
     })
     return res.data
+  }
+
+  updateSlotMaxPeopleAllowed = async (slotId, max) => {
+    const res = await axios.patch(`${API_URL}/stores_slots/${slotId}`, {
+      maximun_people_allowed : max
+    })
+    return res.data;
   }
 }

@@ -23,20 +23,18 @@ export default class AddSlots extends Component {
     super(props)
     this.state = {
       error: {},
-      allSlots: [],
+      store: {},
+      slots: [],
       slot_duration: 10,
-      store: {}
     }
     this.maxPeopleAllowedRef = React.createRef();
   }
 
   async componentDidMount() {
     const storeId = this.props.storeId;
-
     this.setState({
       store: await this.service.getStoreData(storeId)
     });
-
     this.getSlots();
   }
 
@@ -55,10 +53,8 @@ export default class AddSlots extends Component {
   getSlots = async () => {
     const storeId = this.props.storeId;
     try {
-      const slotsRes = await this.service.fetchSlots(storeId);
-      const slots = slotsRes.data;
-      this.setState({ allSlots: slots });
-
+      const slots = await this.service.fetchSlots(storeId);
+      this.setState({ slots });
     } catch (error) {
       this.showError('danger', 'Error in fetching all slots');
     }
@@ -118,10 +114,49 @@ export default class AddSlots extends Component {
   }
 
   printAllSlots = () => {
-    const store = this.state.store;
+    return this.state.slots.map((element, index) => {
+      const start = this.formatHoursAndMinutes(element.start_hours, element.start_minutes);
+      const end = this.formatHoursAndMinutes(element.end_hours, element.end_minutes);
+
+      const timeString = `${start} - ${end}`;
+      return (
+        <ListGroupItem key={timeString} className="slot-listItem">
+          {timeString}
+          <Input
+            type="number"
+            id={timeString}
+            ref={this.maxPeopleAllowedRef}
+            style={{ width: '20%' }}
+            defaultValue="0"
+            min={0}
+            max={1000}
+            value={element.maximun_people_allowed}
+            onInput={(e) => {
+              e.target.value = Math.min(e.target.value, 1000)
+            }}
+            onChange={async (e) => {
+              let newMax = e.target.value;
+              let newSlot = await this.service.updateSlotMaxPeopleAllowed(element.id, newMax);
+              this.setState(prevState => {
+                let copy = [...prevState.slots];
+                copy[index].maximun_people_allowed = newSlot.maximun_people_allowed;
+                return {
+                  slots: copy
+                }
+              });
+            }}
+          />
+        </ListGroupItem>
+      );
+    });
+  };
+
+  onDurationChanged = async (duration) => {
+    this.setState({ store: await this.service.updateSlotDuration(this.props.storeId, duration) });
+
     const startTime = this.toTimestamp(this.getStartTime());
     const endTime = this.toTimestamp(this.getEndTime());
-    const interval = parseInt(store.slot_duration || 10);
+    const interval = duration;
     const timeslots = [startTime];
 
     let tempTime = startTime;
@@ -139,27 +174,25 @@ export default class AddSlots extends Component {
       result.push({ slotStartTime, slotEndTime })
     })
 
-    return result.map((element) => {
-      const timeString = `${this.timestampToTime(element.slotStartTime)} - ${this.timestampToTime(element.slotEndTime)}`;
-      return (
-        <ListGroupItem key={timeString} className="slot-listItem">
-          {timeString}
-          <Input
-            type="number"
-            id={timeString}
-            ref={this.maxPeopleAllowedRef}
-            style={{ width: '20%' }}
-            defaultValue="0"
-            min={0}
-            max={1000}
-            onInput={(e) => {
-              e.target.value = Math.min(e.target.value, 1000)
-            }}
-          />
-        </ListGroupItem>
-      );
+    let slots = result.map((element) => {
+      //09:00
+      let start = this.timestampToTime(element.slotStartTime).split(':');
+      let end = this.timestampToTime(element.slotEndTime).split(':');
+
+      return {
+        "start_hours": parseInt(start[0]),
+        "start_minutes": parseInt(start[1]),
+        "end_hours": parseInt(end[0]),
+        "end_minutes": parseInt(end[1]),
+        "maximun_people_allowed": 0,
+      }
     });
-  };
+
+    await this.service.deleteAllSlots(this.props.storeId);
+    this.setState({
+      slots: await this.service.addSlots(slots, this.props.storeId)
+    });
+  }
 
   render() {
     const { toggleAddSlots, openModal, storeId } = this.props;
@@ -205,7 +238,7 @@ export default class AddSlots extends Component {
           <SlotDuration
             slotDuration={slot_duration}
             onDurationChange={async (duration) => {
-              this.setState({ store: await this.service.updateSlotDuration(storeId, duration) });
+              this.onDurationChanged(duration);
             }} />
 
           <p>
