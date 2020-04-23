@@ -14,7 +14,9 @@ function Header({ heading, backPath }) {
   const [open, setOpen] = useState(false);
   const { resetLocation, resetStoreSlotId } = useLocationAndStoreContext();
   function logOut() {
-    localStorage.clear();
+    localStorage.clear(); // is this correct?
+    //  Are we gonna clear all of local storage and potentially
+    //  interfere with othre applications using localstorage?
     resetLocation();
     resetStoreSlotId();
     history.push('/');
@@ -38,7 +40,7 @@ function Header({ heading, backPath }) {
       </Link>
 
       <h2 className="text-center">{heading}</h2>
-      <div ref={node}>
+      <div ref={node} className="mapMenuContainer">
         <Burger open={open} setOpen={setOpen} />
         <Menu
           open={open}

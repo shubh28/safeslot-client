@@ -10,7 +10,7 @@ const Menu = ({ open, displayLogout, logOut }) => {
   return (
     <StyledMenu open={open}>
       {displayLogout ? (
-        <Link open={open} to="#" onClick={logOut}>
+        <Link to="#" onClick={() => logOut()}>
           Logout
         </Link>
       ) : (

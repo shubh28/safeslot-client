@@ -17,6 +17,7 @@ import axios from 'axios';
 import Alerts from '../Alerts';
 import { loadState, saveState } from '../../helpers/LocalStorage';
 import { URL_REFS } from '../../common/consts';
+import Header from '../common/Header';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -179,12 +180,7 @@ export default class OnBoarding extends Component {
     } = this.state;
     return (
       <div className="onboarding">
-        <div className="bookings">
-          <h2 className="text-center">Refer Store</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
+        <Header heading={'Refer Store'} backPath={'/'} />
         <Container>
           <Form>
             <Alerts
