@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { Button, Spinner } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import useCurrentUser from '../../hooks/useCurrentUser';
+import logo from '../../assets/logo.png'
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 import { StyledSplash } from '../../styles/splash';
 import { logout } from '../../actions/user';
 import { useDispatch } from 'react-redux';
-const logo = require('../../assets/logo.png');
 const grocery = require('../../assets/grocery1.png');
 const chemist = require('../../assets/chemist.png');
 
