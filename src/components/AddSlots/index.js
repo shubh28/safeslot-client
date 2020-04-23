@@ -25,7 +25,6 @@ export default class AddSlots extends Component {
       error: {},
       store: {},
       slots: [],
-      slot_duration: 10,
     }
     this.maxPeopleAllowedRef = React.createRef();
   }
@@ -57,16 +56,6 @@ export default class AddSlots extends Component {
       this.setState({ slots });
     } catch (error) {
       this.showError('danger', 'Error in fetching all slots');
-    }
-  };
-
-  deleteSlots = async (slotId) => {
-    this.closeError();
-    try {
-      await this.service.deleteSlots(slotId);
-      this.getSlots();
-    } catch (error) {
-      this.showError('danger', 'Error in deleting slot');
     }
   };
 
@@ -152,11 +141,15 @@ export default class AddSlots extends Component {
   };
 
   onDurationChanged = async (duration) => {
-    this.setState({ store: await this.service.updateSlotDuration(this.props.storeId, duration) });
+    let store = await this.service.updateSlotDuration(this.props.storeId, duration)
+    this.setState({ store });
+    this.generateTimeSlots();
+  }
 
-    const startTime = this.toTimestamp(this.getStartTime());
-    const endTime = this.toTimestamp(this.getEndTime());
-    const interval = duration;
+  generateTimeSlots = async (
+    startTime = this.toTimestamp(this.getStartTime()),
+    endTime = this.toTimestamp(this.getEndTime()),
+    interval = this.state.store.slot_duration) => {
     const timeslots = [startTime];
 
     let tempTime = startTime;
@@ -189,9 +182,8 @@ export default class AddSlots extends Component {
     });
 
     await this.service.deleteAllSlots(this.props.storeId);
-    this.setState({
-      slots: await this.service.addSlots(slots, this.props.storeId)
-    });
+    let newSlots = await this.service.addSlots(slots, this.props.storeId)
+    this.setState({ slots: newSlots });
   }
 
   render() {
@@ -223,15 +215,20 @@ export default class AddSlots extends Component {
             shop_close_minutes={shop_close_minutes}
             onOpenHoursChanged={async (hours) => {
               this.setState({ store: await this.service.updateShopOpenHours(storeId, hours) });
+              this.generateTimeSlots();
+
             }}
             onOpenMinsChanged={async (mins) => {
               this.setState({ store: await this.service.updateShopOpenMins(storeId, mins) });
+              this.generateTimeSlots();
             }}
             onCloseHoursChanged={async (hours) => {
               this.setState({ store: await this.service.updateShopCloseHours(storeId, hours) });
+              this.generateTimeSlots();
             }}
             onCloseMinsChanged={async (mins) => {
               this.setState({ store: await this.service.updateShopCloseMins(storeId, mins) });
+              this.generateTimeSlots();
             }}
           />
 

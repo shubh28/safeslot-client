@@ -13,10 +13,6 @@ export default class AddSlotService {
     await axios.delete(`${API_URL}/stores/${storeId}/stores_slots`);
   }
 
-  deleteSlots = async (slotId) => {
-    await axios.delete(`${API_URL}/stores_slots/${slotId}`);
-  }
-
   addSlots = async (slots, storeId) => {
     let res = await axios.post(`${API_URL}/stores/${storeId}/stores_slots`, slots);
     return res.data;
