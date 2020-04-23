@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Button,
   Form,
   FormGroup,
-  Label,
   Input,
   FormText,
   UncontrolledDropdown,
@@ -13,9 +11,11 @@ import {
   DropdownItem
 } from 'reactstrap';
 import axios from 'axios';
-
 import Alerts from '../Alerts';
+import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -32,6 +32,11 @@ export default class OnBoarding extends Component {
       longitude: '',
       locations: [],
       store_type: '',
+      shop_open_hours: 0,
+      shop_open_minutes: 0,
+      shop_close_hours: 0,
+      shop_close_minutes: 0,
+      slot_duration: 15,
       error: {}
     };
   }
@@ -58,7 +63,12 @@ export default class OnBoarding extends Component {
       city,
       latitude,
       longitude,
-      store_type
+      store_type,
+      shop_open_hours,
+      shop_open_minutes,
+      shop_close_hours,
+      shop_close_minutes,
+      slot_duration
     } = this.state;
     if (
       !name ||
@@ -74,7 +84,7 @@ export default class OnBoarding extends Component {
     if (!latitude || !longitude) {
       this.showError(
         'danger',
-        'Please select locality from drop down to calculated your coordinates'
+        'Please select locality from drop down to calculate your coordinates'
       );
       return;
     }
@@ -91,8 +101,14 @@ export default class OnBoarding extends Component {
         lng: longitude
       },
       store_type,
-      isVerified: true
+      isVerified: true,
+      shop_open_hours,
+      shop_open_minutes,
+      shop_close_hours,
+      shop_close_minutes,
+      slot_duration
     };
+
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
       .then(res => {
@@ -175,15 +191,16 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_type
+      shop_open_hours,
+      shop_open_minutes,
+      shop_close_hours,
+      shop_close_minutes,
+      slot_duration
     } = this.state;
     return (
       <div className="onboarding">
         <div className="bookings">
-          <h2 className="text-center">OnBoarding</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
+          <Header heading="OnBoarding" backPath={'/'} />
         </div>
         <Container>
           <Form>
@@ -241,7 +258,7 @@ export default class OnBoarding extends Component {
               />
               <UncontrolledDropdown
                 isOpen={this.state.locations.length > 0}
-                toggle={() => {}}
+                toggle={() => { }}
               >
                 <DropdownMenu right>
                   {this.state.locations.map(location => {
@@ -301,6 +318,39 @@ export default class OnBoarding extends Component {
                 placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
+            <TimeSelectFormGroup
+              shop_open_hours={shop_open_hours}
+              shop_open_minutes={shop_open_minutes}
+              shop_close_hours={shop_close_hours}
+              shop_close_minutes={shop_close_minutes}
+              onOpenHoursChanged={(hours) => {
+                this.setState({
+                  shop_open_hours: hours
+                })
+              }}
+              onOpenMinsChanged={(mins) => {
+                this.setState({
+                  shop_open_minutes: mins
+                })
+              }}
+              onCloseHoursChanged={(hours) => {
+                this.setState({
+                  shop_close_hours: hours
+                })
+              }}
+              onCloseMinsChanged={(mins) => {
+                this.setState({
+                  shop_close_minutes: mins
+                })
+              }}
+            />
+            <SlotDuration
+              slotDuration={slot_duration}
+              onDurationChange={(duration) => {
+                this.setState({
+                  slot_duration: duration
+                })
+              }} />
             <FormGroup>
               <Button
                 required

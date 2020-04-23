@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import axios from 'axios';
+import useLogin from '../../hooks/useLogin';
 
 import Alerts from '../Alerts';
 
@@ -13,6 +14,10 @@ export default function SignUpForm({ toggleLogin }) {
     isStoreOwner: false
   });
   const [error, setError] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const { loading: loggingIn, login } = useLogin(message =>
+    setError({ type: 'danger', message })
+  );
 
   const showError = (type, message) => setError({ type, message });
   const closeError = () => setError({ type: '', message: '' });
@@ -25,19 +30,34 @@ export default function SignUpForm({ toggleLogin }) {
     }
 
     // make user sign up
+    setLoading(true);
     axios
       .post('https://safeslot-backend.herokuapp.com/api/users', {
-        email,
+        email: email.toLowerCase(),
         password,
         name,
         phone,
         isStoreOwner
       })
       .then(res => {
-        toggleLogin();
+        login(email, password);
       })
-      .catch(err => {
-        showError('danger', 'Error in signing you up');
+      .catch(res => {
+        if (
+          res?.response?.data?.error?.details?.messages?.email?.length &&
+          res.response.data.error.details.messages.email[0] ===
+            'Email already exists'
+        ) {
+          showError(
+            'danger',
+            'Email address already exists, please login instead'
+          );
+        } else {
+          showError('danger', 'Error ocurred while signing you up');
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -117,8 +137,13 @@ export default function SignUpForm({ toggleLogin }) {
           Login
         </a>
       </p>
-      <Button type="submit" color="info" onClick={onSignupClick}>
-        SignUp
+      <Button
+        type="submit"
+        color="info"
+        disabled={loading || loggingIn}
+        onClick={onSignupClick}
+      >
+        {loading || loggingIn ? 'Signing Up' : 'SignUp'}
       </Button>
     </Form>
   );

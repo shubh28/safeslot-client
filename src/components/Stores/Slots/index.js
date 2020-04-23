@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { API_URL, URL_REFS } from '../../../common/consts';
@@ -30,16 +30,36 @@ function Slots({ availableSlots = [], storeId, showError }) {
     const userId = tokenObj && tokenObj.userId;
     if (token && userId) {
       axios
-        .post(`${API_URL}/bookings`, {
-          store_id: bookingStoreId,
-          slot_id: bookingSlotId,
-          user_id: userId
-        })
+        .get(
+          `${API_URL}/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`
+        )
         .then(res => {
-          history.push('/bookings');
+          if (res.data.message === 'Success') {
+            axios
+              .post(`${API_URL}/bookings`, {
+                store_id: bookingStoreId,
+                slot_id: bookingSlotId,
+                user_id: userId
+              })
+              .then(res => {
+                history.push('/bookings');
+              })
+              .catch(err => {
+                showError('danger', 'Error while making booking');
+              });
+          } else {
+            showError(
+              'danger',
+              'Some error while validating slot. Please try again'
+            );
+          }
         })
         .catch(err => {
-          showError('danger', 'Error while making booking');
+          if (err.response && err.response.status === 400) {
+            showError('danger', err.response.data.message);
+          } else {
+            showError('danger', 'Some error occurred.');
+          }
         });
     } else {
       setStoreSlotId({ slotId: bookingSlotId, storeId: bookingStoreId });
@@ -53,10 +73,9 @@ function Slots({ availableSlots = [], storeId, showError }) {
         {availableSlots.length ? (
           availableSlots.map(slot => {
             return (
-              <>
+              <span key={slot.id}>
                 {slot && (
                   <SlotButton
-                    key={slot.id}
                     color="info"
                     outline={
                       !(
@@ -69,10 +88,21 @@ function Slots({ availableSlots = [], storeId, showError }) {
                       setStoreSlotId({ storeId: storeId, slotId: slot.id })
                     }
                   >
-                    {`${slot.start_time} - ${slot.end_time}`}
+                    {`${slot.start_hours
+                      .toString()
+                      .padStart(
+                        2,
+                        '0'
+                      )}:${slot.start_minutes
+                      .toString()
+                      .padStart(2, '0')} - ${slot.end_hours
+                      .toString()
+                      .padStart(2, '0')}:${slot.end_minutes
+                      .toString()
+                      .padStart(2, '0')}`}
                   </SlotButton>
                 )}
-              </>
+              </span>
             );
           })
         ) : (
@@ -80,7 +110,9 @@ function Slots({ availableSlots = [], storeId, showError }) {
         )}
       </SlotWrapper>
       {availableSlots.length ? (
-        <Button onClick={() => makeBooking(storeSlotId)}>Book Slot</Button>
+        <Button color="info" onClick={() => makeBooking(storeSlotId)}>
+          Book Slot
+        </Button>
       ) : null}
     </>
   );

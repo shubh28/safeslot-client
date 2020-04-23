@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  CardSubtitle,
-  CardTitle,
-  Button,
-  ModalBody,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  Badge
-} from 'reactstrap';
-import axios from 'axios';
-
+import { Button } from 'reactstrap';
 import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
-import { saveState, loadState } from '../../helpers/LocalStorage';
+import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
+import formatBookingsList from './formatBookingsList';
+import { Header } from '../common';
+import { Container } from '../../styles';
+import OwnerHomeService from './ownerHomeService';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -38,45 +26,41 @@ export default class OwnerHome extends Component {
     this.setState({ addSlots: !this.state.addSlots });
   };
 
-  componentDidMount() {
-    const { user } = this.state;
-    const userId =
-      loadState('userAuthenticationDetails') &&
-      loadState('userAuthenticationDetails').userId;
+  async componentDidMount() {
+    const userAuthDetails = loadUserAuthenticationDetails();
+    const userId = userAuthDetails && userAuthDetails.userId;
 
-    axios
-      .get(
-        `https://safeslot-backend.herokuapp.com/api/users/${userId}?filter={"include": "stores"}`
-      )
-      .then(res => {
-        const user = res.data;
-        this.setState({ user });
-        if (!user.isStoreOwner) {
-          this.props.history.push('/');
-          return;
-        }
-        if (user.isStoreOwner && !user.storeId) {
-          this.props.history.push('/onboard');
-        } else {
-          const storeId = user && user.storeId;
-          const filter = { where: { store_id: storeId } };
-          axios
-            .get(
-              `https://safeslot-backend.herokuapp.com/api/bookings?filter=${JSON.stringify(
-                filter
-              )}`
-            )
-            .then(res => {
-              this.setState({ bookings: res.data });
-            })
-            .catch(err => {
-              this.showError('danger', 'Some error occurred');
-            });
-        }
-      })
-      .catch(err => {
-        this.showError('danger', 'Some error occurred');
-      });
+    const service = new OwnerHomeService();
+    try {
+      const userRes = await service.fetchUser(userId);
+      const user = userRes.data;
+      this.setState({ user });
+
+      if (!user.isStoreOwner) {
+        this.props.history.push('/');
+        return;
+      }
+
+      if (this.storeOwnerUserHasNoStores(user)) {
+        this.props.history.push('/onboard');
+        return;
+      }
+
+      const storeId = user.storeId;
+      const  bookingsRes = await service.fetchBookings(storeId);
+      const bookings = bookingsRes.data;
+      this.setState({ bookings: formatBookingsList(bookings) });
+
+    } catch (error) {
+      console.log(error);
+      this.showError();
+    }
+
+  }
+
+
+  storeOwnerUserHasNoStores = (user) => {
+    return (user.isStoreOwner && !user.storeId) || !user.stores || Object.keys(user.stores).length === 0;
   }
 
   toggleViewDetails = booking => {
@@ -92,7 +76,7 @@ export default class OwnerHome extends Component {
     this.props.history.push('/');
   };
 
-  showError = (type, message) => {
+  showError = (type = 'danger', message = 'Some error occurred') => {
     this.setState(
       Object.assign({ ...this.state }, { error: { type, message } })
     );
@@ -105,14 +89,9 @@ export default class OwnerHome extends Component {
     const { user } = this.state;
     const store = (user && user.stores) || {};
     return (
-      <div className="owners">
-        <div className="bookings">
-          <h2 className="text-center">Owner Portal</h2>
-          <a href="#" className="logout" onClick={this.logout}>
-            Logout
-          </a>
-        </div>
-        <Container>
+      <div>
+        <Header heading="Owner Portal" backPath={'/'} />
+        <Container className="theme-Container" fluid={true}>
           <Alerts
             type={this.state.error.type}
             message={this.state.error.message}
@@ -132,8 +111,10 @@ export default class OwnerHome extends Component {
                 openModal={this.state.addSlots}
                 user={this.state.user}
                 toggleAddSlots={this.toggleAddSlots}
+                storeId={this.state.user.storeId}
               />
             )}
+
             {this.state.bookings.length === 0 && (
               <h3 className="text-center">No Bookings Found</h3>
             )}

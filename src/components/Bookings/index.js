@@ -21,6 +21,8 @@ import { Link } from 'react-router-dom';
 import Alerts from '../Alerts';
 import { loadState } from '../../helpers/LocalStorage';
 
+import { getSlotTime } from '../../helpers';
+
 import { API_URL } from '../../common/consts';
 import { Header } from '../common';
 
@@ -49,7 +51,11 @@ export default class Bookings extends Component {
       this.props.history.push('/');
       return;
     }
-    const filter = { where: { user_id: userId }, include: 'stores' };
+    const filter = {
+      where: { user_id: userId },
+      include: ['stores', 'stores_slots'],
+      order: 'booking_date DESC'
+    };
     axios
       .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)
       .then(res => {
@@ -135,7 +141,8 @@ export default class Bookings extends Component {
                             {new Date(booking.booking_date).toDateString()}
                           </h6>
                           <h6>
-                            <strong>Your Slot:</strong> {booking.slot_id}
+                            <strong>Your Slot:</strong>{' '}
+                            {getSlotTime(booking.stores_slots)}
                           </h6>
                         </CardTitle>
                         {booking.stores && (
@@ -180,7 +187,9 @@ export default class Bookings extends Component {
                 {selectedbooking.status}
               </Badge>
             </h5>
-            <p>Your visiting slot is {selectedbooking.slot_id}</p>
+            <p>
+              Your visiting slot is {getSlotTime(selectedbooking.stores_slots)}
+            </p>
             <p>
               <strong>Booking Id:</strong>
               {selectedbooking.id}

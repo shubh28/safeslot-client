@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header as StyledHeader } from './../../styles';
 import { Link, useHistory } from 'react-router-dom';
+import Burger from '../BurgerMenu/burger';
+import Menu from '../BurgerMenu';
 
 import { loadState } from '../../helpers/LocalStorage';
 import { DEFAULT_LOCATION } from '../../common/consts';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 function Header({ heading, backPath }) {
   const history = useHistory();
   const [displayLogout, setDisplayLogout] = useState(false);
+  const [open, setOpen] = useState(false);
   const { resetLocation, resetStoreSlotId } = useLocationAndStoreContext();
   function logOut() {
-    localStorage.clear();
+    localStorage.clear(); // is this correct?
+    //  Are we gonna clear all of local storage and potentially
+    //  interfere with othre applications using localstorage?
     resetLocation();
     resetStoreSlotId();
     history.push('/');
   }
-
+  const node = useRef();
+  useOnClickOutside(node, () => setOpen(false));
   useEffect(() => {
     const token =
       loadState('userAuthenticationDetails') &&
@@ -33,13 +40,15 @@ function Header({ heading, backPath }) {
       </Link>
 
       <h2 className="text-center">{heading}</h2>
-      {displayLogout ? (
-        <a href="#" className="logout" onClick={logOut}>
-          Logout
-        </a>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
+      <div ref={node} className="mapMenuContainer">
+        <Burger open={open} setOpen={setOpen} />
+        <Menu
+          open={open}
+          setOpen={setOpen}
+          displayLogout={displayLogout}
+          logOut={logOut}
+        />
+      </div>
     </StyledHeader>
   );
 }

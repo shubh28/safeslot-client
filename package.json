@@ -10,10 +10,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@sentry/browser": "^5.15.4",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "compression": "^1.7.4",
     "express": "^4.17.1",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.3",
