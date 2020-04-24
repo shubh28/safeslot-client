@@ -23,20 +23,17 @@ export default class AddSlots extends Component {
     super(props)
     this.state = {
       error: {},
-      allSlots: [],
-      slot_duration: 15,
-      store: {}
+      store: {},
+      slots: [],
     }
     this.maxPeopleAllowedRef = React.createRef();
   }
 
   async componentDidMount() {
     const storeId = this.props.storeId;
-
     this.setState({
       store: await this.service.getStoreData(storeId)
     });
-
     this.getSlots();
   }
 
@@ -55,110 +52,145 @@ export default class AddSlots extends Component {
   getSlots = async () => {
     const storeId = this.props.storeId;
     try {
-      const slotsRes = await this.service.fetchSlots(storeId);
-      const slots = slotsRes.data;
-      this.setState({ allSlots: slots });
-
+      const slots = await this.service.fetchSlots(storeId);
+      this.setState({ slots });
     } catch (error) {
       this.showError('danger', 'Error in fetching all slots');
     }
   };
 
-  deleteSlots = async (slotId) => {
-    this.closeError();
-    try {
-      await this.service.deleteSlots(slotId);
-      this.getSlots();
-    } catch (error) {
-      this.showError('danger', 'Error in deleting slot');
+  toTimestamp = (str) => {
+    // date requires a date and time. we can't have only time
+    // so this is a dummy date
+    return new Date('01/01/1970 ' + str).getTime();
+  }
+
+  timestampToTime = (timestamp) => {
+    let date = new Date(timestamp);
+    return this.formatHoursAndMinutes(date.getHours(), date.getMinutes());
+  }
+
+  formatHoursAndMinutes = (hours, mins) => {
+    return ((hours.toString().length === 1) ? '0' + hours : hours) + ':' +
+      ((mins.toString().length === 1) ? '0' + mins : mins);
+  }
+
+  addMinutes = (timeInSeconds, minutesToAdd) => {
+    let secondsToAdd = (minutesToAdd * 60000);
+    return timeInSeconds + secondsToAdd
+  }
+
+  pairwise = (arr, func) => {
+    for (let i = 0; i < arr.length - 1; i++) {
+      func(arr[i], arr[i + 1])
     }
-  };
+  }
 
-  addSlots = async (timeString) => {
-    this.closeError();
-    const storeId = this.props.storeId;
-    const timeArray = timeString.split(' - ');
-    const startTime = timeArray && timeArray[0].split(':');
-    const endTime = timeArray && timeArray[1].split(':');
-    const startHours = startTime && startTime[0];
-    const startMinutes = startTime && startTime[1];
-    const endHours = endTime && endTime[0];
-    const endMinutes = endTime && endTime[1];
+  getStartTime = () => {
+    const store = this.state.store;
+    return this.formatHoursAndMinutes(
+      parseInt(store.shop_open_hours || 0),
+      parseInt(store.shop_open_minutes || 0)
+    );
+  }
 
-    const body = {
-      start_minutes: startMinutes,
-      start_hours: startHours,
-      end_hours: endHours,
-      end_minutes: endMinutes,
-      maximun_people_allowed: document.getElementById(timeString).value || 5,
-      storeId: storeId
-    };
-
-    try {
-      await this.service.addSlots(body);
-      this.getSlots();
-    } catch (error) {
-      this.showError('danger', 'Error in adding slot');
-    }
-  };
+  getEndTime = () => {
+    const store = this.state.store;
+    return this.formatHoursAndMinutes(
+      parseInt(store.shop_close_hours || 0),
+      parseInt(store.shop_close_minutes || 0)
+    );
+  }
 
   printAllSlots = () => {
-    const store = this.state.store;
-    const startHour = parseInt(store.shop_open_hours || 0);
-    const endHour = parseInt(store.shop_close_hours || 23);
-    const slotDuration = parseInt(store.slot_duration || 15);
+    return this.state.slots.map((element, index) => {
+      const start = this.formatHoursAndMinutes(element.start_hours, element.start_minutes);
+      const end = this.formatHoursAndMinutes(element.end_hours, element.end_minutes);
 
-    const buttons = [];
+      const timeString = `${start} - ${end}`;
+      return (
+        <ListGroupItem key={timeString} className="slot-listItem">
+          {timeString}
+          <Input
+            type="number"
+            id={timeString}
+            ref={this.maxPeopleAllowedRef}
+            style={{ width: '20%' }}
+            min={0}
+            max={1000}
+            value={element.maximun_people_allowed}
+            onInput={(e) => {
+              e.target.value = Math.min(e.target.value, 1000)
+            }}
+            onChange={async (e) => {
+              let newMax = e.target.value;
+              let slotsCopy = [...this.state.slots];
+              slotsCopy[index].maximun_people_allowed = newMax
+              this.setState({
+                slots: slotsCopy
+              });
+            }}
+          />
+        </ListGroupItem>
+      );
+    });
+  };
 
-    let count = 0;
+  generateTimeSlots = async (
+    startTime = this.toTimestamp(this.getStartTime()),
+    endTime = this.toTimestamp(this.getEndTime()),
+    interval = this.state.store.slot_duration) => {
+    const timeslots = [startTime];
 
-    for (let i = startHour; i <= endHour; i++) {
-      let timeString = '';
-      let minutes = 0;
-      while (minutes <= 45) {
-        timeString = `${i
-          .toString()
-          .padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        minutes += slotDuration;
-        if (minutes >= 60) {
-          minutes = minutes % 60;
-          i++;
-        }
-        timeString = timeString + ' - ';
-        timeString += `${i
-          .toString()
-          .padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        const jsx = (
-          <ListGroupItem key={timeString} className="slot-listItem">
-            {timeString}
-            <Input
-              type="number"
-              id={timeString}
-              ref={this.maxPeopleAllowedRef}
-              style={{ width: '20%' }}
-              defaultValue="0"
-              min={0}
-              max={1000}
-              onInput = {(e) =>{
-                e.target.value = Math.min(e.target.value, 1000)
-              }}
-            />
-            <Button color="link" onClick={this.addSlots.bind(null, timeString)}>
-              Add
-            </Button>
-          </ListGroupItem>
-        );
-        buttons.push(jsx);
-        timeString = '';
-        minutes += slotDuration;
+    let tempTime = startTime;
+    while (tempTime < endTime) {
+      tempTime = this.addMinutes(tempTime, interval);
+      if (tempTime >= endTime) {
+        timeslots.push(endTime);
+      } else {
+        timeslots.push(tempTime);
       }
     }
-    return buttons;
-  };
+
+    let result = [];
+    this.pairwise(timeslots, function (slotStartTime, slotEndTime) {
+      result.push({ slotStartTime, slotEndTime })
+    })
+
+    let slots = result.map((element) => {
+      //09:00
+      let start = this.timestampToTime(element.slotStartTime).split(':');
+      let end = this.timestampToTime(element.slotEndTime).split(':');
+
+      return {
+        "start_hours": parseInt(start[0]),
+        "start_minutes": parseInt(start[1]),
+        "end_hours": parseInt(end[0]),
+        "end_minutes": parseInt(end[1]),
+        "maximun_people_allowed": 0,
+      }
+    });
+
+    this.setState({ slots });
+  }
+
+  handleSave = async () => {
+    const { storeId, toggleAddSlots } = this.props;
+    const { store, slots } = this.state;
+
+    await this.service.updateStore(storeId,
+      store.shop_open_hours,
+      store.shop_open_minutes,
+      store.shop_close_hours,
+      store.shop_close_minutes,
+      store.slot_duration);
+    await this.service.updateSlots(storeId, slots);
+    toggleAddSlots();
+  }
 
   render() {
     const { toggleAddSlots, openModal, storeId } = this.props;
-    const { allSlots, error } = this.state;
+    const { error } = this.state;
 
     const {
       shop_open_hours,
@@ -183,24 +215,34 @@ export default class AddSlots extends Component {
             shop_open_minutes={shop_open_minutes}
             shop_close_hours={shop_close_hours}
             shop_close_minutes={shop_close_minutes}
-            onOpenHoursChanged={async (hours) => {
-              this.setState({ store: await this.service.updateShopOpenHours(storeId, hours) });
+            onOpenHoursChanged={(hours) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_hours = hours
+              this.setState({ store: storeCopy }, this.generateTimeSlots);
             }}
             onOpenMinsChanged={async (mins) => {
-              this.setState({ store: await this.service.updateShopOpenMins(storeId, mins) });
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_minutes = mins
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
             onCloseHoursChanged={async (hours) => {
-              this.setState({ store: await this.service.updateShopCloseHours(storeId, hours) });
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_hours = hours
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
             onCloseMinsChanged={async (mins) => {
-              this.setState({ store: await this.service.updateShopCloseMins(storeId, mins) });
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_minutes = mins
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
           />
 
           <SlotDuration
             slotDuration={slot_duration}
-            onDurationChange={async (duration) => {
-              this.setState({ store: await this.service.updateSlotDuration(storeId, duration) });
+            onDurationChange={(duration) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.slot_duration = duration
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }} />
 
           <p>
@@ -209,40 +251,13 @@ export default class AddSlots extends Component {
           </p>
 
           <ListGroup>{this.printAllSlots()}</ListGroup>
-
-          <br></br>
-          {allSlots.length > 0 && <p>Delete slots.</p>}
-
-          <ListGroup>
-            {allSlots.map(slot => {
-              return (
-                <ListGroupItem key={slot.id} className="slot-listItem">
-                  {(slot.start_hours || slot.start_hours === 0) &&
-                    slot.start_hours.toString().padStart(2, '0')}
-                  :
-                  {(slot.start_minutes || slot.start_minutes === 0) &&
-                    slot.start_minutes.toString().padStart(2, '0')}
-                  &nbsp;-&nbsp;
-                  {(slot.end_hours || slot.end_hours === 0) && slot.end_hours.toString().padStart(2, '0')}:
-                  {(slot.end_minutes || slot.end_minutes === 0) &&
-                    slot.end_minutes.toString().padStart(2, '0')}
-                  <Button
-                    color="link"
-                    onClick={() => {
-                      this.deleteSlots(slot.id);
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
-          <br></br>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer">
           <Button color="info" outline onClick={toggleAddSlots}>
-            Close
+            Cancel
+          </Button>
+          <Button color="info" outline onClick={this.handleSave}>
+            Save
           </Button>
         </ModalFooter>
       </Modal>
