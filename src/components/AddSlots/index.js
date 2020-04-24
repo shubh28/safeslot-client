@@ -252,7 +252,7 @@ export default class AddSlots extends Component {
 
           <ListGroup>{this.printAllSlots()}</ListGroup>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer">
           <Button color="info" outline onClick={toggleAddSlots}>
             Cancel
           </Button>
