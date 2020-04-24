@@ -116,7 +116,6 @@ export default class AddSlots extends Component {
             id={timeString}
             ref={this.maxPeopleAllowedRef}
             style={{ width: '20%' }}
-            defaultValue="0"
             min={0}
             max={1000}
             value={element.maximun_people_allowed}
@@ -125,13 +124,10 @@ export default class AddSlots extends Component {
             }}
             onChange={async (e) => {
               let newMax = e.target.value;
-              let newSlot = await this.service.updateSlotMaxPeopleAllowed(element.id, newMax);
-              this.setState(prevState => {
-                let copy = [...prevState.slots];
-                copy[index].maximun_people_allowed = newSlot.maximun_people_allowed;
-                return {
-                  slots: copy
-                }
+              let slotsCopy = [...this.state.slots];
+              slotsCopy[index].maximun_people_allowed = newMax
+              this.setState({
+                slots: slotsCopy
               });
             }}
           />
@@ -139,12 +135,6 @@ export default class AddSlots extends Component {
       );
     });
   };
-
-  onDurationChanged = async (duration) => {
-    let store = await this.service.updateSlotDuration(this.props.storeId, duration)
-    this.setState({ store });
-    this.generateTimeSlots();
-  }
 
   generateTimeSlots = async (
     startTime = this.toTimestamp(this.getStartTime()),
@@ -181,9 +171,21 @@ export default class AddSlots extends Component {
       }
     });
 
-    await this.service.deleteAllSlots(this.props.storeId);
-    let newSlots = await this.service.addSlots(slots, this.props.storeId)
-    this.setState({ slots: newSlots });
+    this.setState({ slots });
+  }
+
+  handleSave = async () => {
+    const { storeId, toggleAddSlots } = this.props;
+    const { store, slots } = this.state;
+
+    await this.service.updateStore(storeId,
+      store.shop_open_hours,
+      store.shop_open_minutes,
+      store.shop_close_hours,
+      store.shop_close_minutes,
+      store.slot_duration);
+    await this.service.updateSlots(storeId, slots);
+    toggleAddSlots();
   }
 
   render() {
@@ -213,29 +215,34 @@ export default class AddSlots extends Component {
             shop_open_minutes={shop_open_minutes}
             shop_close_hours={shop_close_hours}
             shop_close_minutes={shop_close_minutes}
-            onOpenHoursChanged={async (hours) => {
-              this.setState({ store: await this.service.updateShopOpenHours(storeId, hours) });
-              this.generateTimeSlots();
-
+            onOpenHoursChanged={(hours) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_hours = hours
+              this.setState({ store: storeCopy }, this.generateTimeSlots);
             }}
             onOpenMinsChanged={async (mins) => {
-              this.setState({ store: await this.service.updateShopOpenMins(storeId, mins) });
-              this.generateTimeSlots();
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_minutes = mins
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
             onCloseHoursChanged={async (hours) => {
-              this.setState({ store: await this.service.updateShopCloseHours(storeId, hours) });
-              this.generateTimeSlots();
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_hours = hours
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
             onCloseMinsChanged={async (mins) => {
-              this.setState({ store: await this.service.updateShopCloseMins(storeId, mins) });
-              this.generateTimeSlots();
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_minutes = mins
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }}
           />
 
           <SlotDuration
             slotDuration={slot_duration}
-            onDurationChange={async (duration) => {
-              this.onDurationChanged(duration);
+            onDurationChange={(duration) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.slot_duration = duration
+              this.setState({ store: storeCopy }, this.generateTimeSlots)
             }} />
 
           <p>
@@ -247,7 +254,10 @@ export default class AddSlots extends Component {
         </ModalBody>
         <ModalFooter>
           <Button color="info" outline onClick={toggleAddSlots}>
-            Close
+            Cancel
+          </Button>
+          <Button color="info" outline onClick={this.handleSave}>
+            Save
           </Button>
         </ModalFooter>
       </Modal>
