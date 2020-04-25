@@ -18,7 +18,7 @@ export const StyledMenu = styled.nav`
   transition: visibility: 0.5s ease-in-out;
 
   @media (max-width: 576px) {
-    width: ${({ open }) => (open ? '50%' : '0')};
+    width: ${({ open }) => (open ? '70%' : '0')};
   }
 
   a {

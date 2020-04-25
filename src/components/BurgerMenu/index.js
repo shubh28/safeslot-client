@@ -37,6 +37,7 @@ const Menu = ({ open, displayLogout, logOut }) => {
       <Link open={open} to="/about">
         About Us
       </Link>
+      <div id="google_translate_element"></div>
     </StyledMenu>
   );
 };
