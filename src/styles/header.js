@@ -4,6 +4,7 @@ const Header = styled.div`
   display: grid;
   display: grid;
   grid-template-columns: 10% 1fr min-content;
+  width: 100%;
   grid-gap: 10px;
   background-color: #17a2b8;
 
