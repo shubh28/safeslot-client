@@ -26,6 +26,7 @@ const Card = styled.div`
   margin: 0.1rem;
   padding: 1rem;
   line-height: 0.5rem;
+  font-size: 1.25rem;
 `;
 
 export default SlotCard;

@@ -25,6 +25,7 @@ export const FlexContainer = styled.div`
   width: 100%;
   align-items: center;
   padding: 1rem;
+  text-align: center;
 `;
 
 FlexContainer.defaultProps = {

@@ -35,10 +35,10 @@ const SingleStoreLanding = function() {
       <Header heading={'Store View'} backPath={'/stores'} />
       {loaded ? (
         <FlexContainer direction="column">
+          <h2>{storeData.name}</h2>
           <FlexContainer>
             <img src={grocery} width="50%" />
             <FlexContainer direction="column">
-              <h5>{storeData.name}</h5>
               <h6>{storeData.address}</h6>
               <h6>{storeData.city}</h6>
               <h6>{storeData.locality}</h6>

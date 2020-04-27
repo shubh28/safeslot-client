@@ -104,38 +104,43 @@ function Stores() {
             <>
               {stores.map(store => {
                 return (
-                  <Card key={store.id}>
-                    <CardBody>
-                      <HeaderDataContainer>
-                        <GroceryBack className="logo" />
-                        <CardTitle className="title">
-                          <strong>{store.name}</strong>
-                          {store.isVerified ? (
-                            <Badge className="badge" color="success">
-                              Verified
-                            </Badge>
-                          ) : (
-                            <Badge className="badge" color="warning">
-                              Not Verified
-                            </Badge>
-                          )}
-                        </CardTitle>
-                        <div className="address">
-                          {store.address}, {store.locality}, {store.city}
-                        </div>
-                        <div className="distance">
-                          {store.distance
-                            ? `${Math.floor(store.distance * 100) / 100}kms`
-                            : ''}
-                        </div>
-                      </HeaderDataContainer>
-                      <Slots
-                        availableSlots={store.stores_slots}
-                        storeId={store.id}
-                        showError={showError}
-                      />
-                    </CardBody>
-                  </Card>
+                  <Link
+                    style={{ textDecoration: 'none', color: 'black' }}
+                    to={`/store/${store.id}`}
+                  >
+                    <Card key={store.id}>
+                      <CardBody>
+                        <HeaderDataContainer>
+                          <GroceryBack className="logo" />
+                          <CardTitle className="title">
+                            <strong>{store.name}</strong>
+                            {store.isVerified ? (
+                              <Badge className="badge" color="success">
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Badge className="badge" color="warning">
+                                Not Verified
+                              </Badge>
+                            )}
+                          </CardTitle>
+                          <div className="address">
+                            {store.address}, {store.locality}, {store.city}
+                          </div>
+                          <div className="distance">
+                            {store.distance
+                              ? `${Math.floor(store.distance * 100) / 100}kms`
+                              : ''}
+                          </div>
+                        </HeaderDataContainer>
+                        <Slots
+                          availableSlots={store.stores_slots}
+                          storeId={store.id}
+                          showError={showError}
+                        />
+                      </CardBody>
+                    </Card>
+                  </Link>
                 );
               })}
               <ReferStores />
