@@ -24,8 +24,6 @@ export default class OnBoarding extends Component {
     super(props);
     this.state = {
       name: '',
-      store_size: '',
-      gstin: '',
       billing_counters: '',
       address: '',
       locality: '',
@@ -54,8 +52,6 @@ export default class OnBoarding extends Component {
     e.preventDefault();
     const {
       name,
-      store_size,
-      gstin,
       billing_counters,
       address,
       locality,
@@ -93,8 +89,6 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_size,
-      gstin,
       billing_counters,
       location: {
         lat: latitude,
@@ -169,8 +163,6 @@ export default class OnBoarding extends Component {
   render() {
     const {
       name,
-      store_size,
-      gstin,
       billing_counters,
       address,
       locality,
@@ -296,24 +288,6 @@ export default class OnBoarding extends Component {
                 onChange={this.handleOnChange}
                 name="billing_counters"
                 placeholder="Number of billing counters"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                value={gstin}
-                onChange={this.handleOnChange}
-                name="gstin"
-                placeholder="Your GSTIN number (optional)"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                value={store_size}
-                onChange={this.handleOnChange}
-                name="store_size"
-                placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
             <FormGroup>
