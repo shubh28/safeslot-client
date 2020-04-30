@@ -42,7 +42,7 @@ function Stores() {
     setLoading(true);
 
     axios
-      .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}&time=${new Date().getTime()}`)
+      .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}&time=${new Date().getHours()}`)
       .then(res => {
         setStores(res.data);
       })
