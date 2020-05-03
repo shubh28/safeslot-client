@@ -32,6 +32,7 @@ const SingleStoreLanding = function() {
     async function fetchStoreData() {
       let hours = new Date().getUTCHours() + 5;
       hours %= 24;
+      console.log(hours);
       const filter = JSON.stringify({
         where: {
           isOperating: true,
@@ -53,12 +54,17 @@ const SingleStoreLanding = function() {
       const { data: store } = await axios.get(
         `${API_URL}/stores/findOne?filter=${filter}`
       );
+      // need some error handling if url is incorrect
+      if (store === null) {
+        showError('danger', 'Store not found');
+      }
       setStoreData(store);
     }
     try {
       fetchStoreData().then(() => setLoaded(true));
     } catch (err) {
       console.err(err);
+      setLoaded(true);
     }
   }, []);
 
@@ -68,33 +74,36 @@ const SingleStoreLanding = function() {
       {loaded ? (
         <GridContainer>
           <FlexContainer>
-            <Card key={storeData.id}>
-              <CardBody>
-                <HeaderDataContainer>
-                  <GroceryBack className="logo" />
-                  <CardTitle className="title">
-                    <strong>{storeData.name}</strong>
-                    {storeData.isVerified ? (
-                      <Badge className="badge" color="success">
-                        Verified
-                      </Badge>
-                    ) : (
-                      <Badge className="badge" color="warning">
-                        Not Verified
-                      </Badge>
-                    )}
-                  </CardTitle>
-                  <div className="address">
-                    {storeData.address}, {storeData.locality}, {storeData.city}
-                  </div>
-                  <div className="distance">
-                    {storeData.distance
-                      ? `${Math.floor(storeData.distance * 100) / 100}kms`
-                      : ''}
-                  </div>
-                </HeaderDataContainer>
-              </CardBody>
-            </Card>
+            {storeData !== null ? (
+              <Card key={storeData.id}>
+                <CardBody>
+                  <HeaderDataContainer>
+                    <GroceryBack className="logo" />
+                    <CardTitle className="title">
+                      <strong>{storeData.name}</strong>
+                      {storeData.isVerified ? (
+                        <Badge className="badge" color="success">
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge className="badge" color="warning">
+                          Not Verified
+                        </Badge>
+                      )}
+                    </CardTitle>
+                    <div className="address">
+                      {storeData.address}, {storeData.locality},{' '}
+                      {storeData.city}
+                    </div>
+                    <div className="distance">
+                      {storeData.distance
+                        ? `${Math.floor(storeData.distance * 100) / 100}kms`
+                        : ''}
+                    </div>
+                  </HeaderDataContainer>
+                </CardBody>
+              </Card>
+            ) : null}
             <Alerts
               type={error.type}
               message={error.message}
