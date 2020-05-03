@@ -30,8 +30,28 @@ const SingleStoreLanding = function() {
 
   useEffect(() => {
     async function fetchStoreData() {
+      let hours = new Date().getUTCHours() + 5;
+      hours %= 24;
+      const filter = JSON.stringify({
+        where: {
+          isOperating: true,
+          id: storeid
+        },
+        include: [
+          {
+            relation: 'stores_slots',
+            scope: {
+              where: {
+                start_hours: {
+                  gt: hours
+                }
+              }
+            }
+          }
+        ]
+      });
       const { data: store } = await axios.get(
-        `${API_URL}/stores/findOne?filter[where][id]=${storeid}&filter[include][stores_slots]`
+        `${API_URL}/stores/findOne?filter=${filter}`
       );
       setStoreData(store);
     }
