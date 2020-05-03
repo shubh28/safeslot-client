@@ -95,11 +95,6 @@ const SingleStoreLanding = function() {
                       {storeData.address}, {storeData.locality},{' '}
                       {storeData.city}
                     </div>
-                    <div className="distance">
-                      {storeData.distance
-                        ? `${Math.floor(storeData.distance * 100) / 100}kms`
-                        : ''}
-                    </div>
                   </HeaderDataContainer>
                 </CardBody>
               </Card>
