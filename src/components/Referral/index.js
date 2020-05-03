@@ -104,7 +104,12 @@ export default class OnBoarding extends Component {
       email,
       store_type,
       isVerified: false,
-      referredBy: userId
+      referredBy: userId,
+      shop_open_hours: 9,
+      shop_open_minutes: 0,
+      shop_close_hours: 20,
+      shop_close_minutes: 0,
+      slot_duration:15
     };
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
