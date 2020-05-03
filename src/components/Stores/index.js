@@ -94,13 +94,13 @@ function Stores() {
             <>
               {stores.map(store => {
                 return (
-                  <Link
-                    style={{ textDecoration: 'none', color: 'black' }}
-                    to={`/store/${store.id}`}
-                    key={store.id}
-                  >
-                    <Card key={store.id}>
-                      <CardBody>
+                  <Card key={store.id}>
+                    <CardBody>
+                      <Link
+                        style={{ textDecoration: 'none', color: 'black' }}
+                        to={`/store/${store.id}`}
+                        key={store.id}
+                      >
                         <HeaderDataContainer>
                           <GroceryBack className="logo" />
                           <CardTitle className="title">
@@ -124,14 +124,14 @@ function Stores() {
                               : ''}
                           </div>
                         </HeaderDataContainer>
-                        <Slots
-                          availableSlots={store.stores_slots}
-                          storeId={store.id}
-                          showError={showError}
-                        />
-                      </CardBody>
-                    </Card>
-                  </Link>
+                      </Link>
+                      <Slots
+                        availableSlots={store.stores_slots}
+                        storeId={store.id}
+                        showError={showError}
+                      />
+                    </CardBody>
+                  </Card>
                 );
               })}
               <ReferStores />
