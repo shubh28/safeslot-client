@@ -20,6 +20,8 @@ import {
   formatHoursAndMinutes,
   generateTimeSlots
 } from '../../helpers/timeSlotHelpers';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
 
@@ -41,7 +43,11 @@ export default class OnBoarding extends Component {
       store_type: '',
       email: '',
       phone: '',
-      error: {}
+      error: {},
+      shop_open_hours: 9,
+      shop_open_minutes: 0,
+      shop_close_hours: 17,
+      shop_close_minutes: 0,
     };
   }
 
@@ -69,7 +75,11 @@ export default class OnBoarding extends Component {
         longitude,
         phone,
         email,
-        store_type
+        store_type,
+        shop_open_hours,
+        shop_open_minutes,
+        shop_close_hours,
+        shop_close_minutes
       } = this.state;
       if (
         !name ||
@@ -110,10 +120,10 @@ export default class OnBoarding extends Component {
         store_type,
         isVerified: false,
         referredBy: userId,
-        shop_open_hours: 9,
-        shop_open_minutes: 0,
-        shop_close_hours: 18,
-        shop_close_minutes: 0,
+        shop_open_hours,
+        shop_open_minutes,
+        shop_close_hours,
+        shop_close_minutes,
         slot_duration: 30
       };
 
@@ -342,6 +352,22 @@ export default class OnBoarding extends Component {
                 placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
+            <TimeSelectFormGroup shop_open_hours={this.state.shop_open_hours}
+              shop_open_minutes={this.state.shop_open_minutes}
+              shop_close_hours={this.state.shop_close_hours}
+              shop_close_minutes={this.state.shop_close_minutes}
+              onOpenHoursChanged={(hours) => {
+                this.setState({ shop_open_hours: hours });
+              }}
+              onOpenMinsChanged={async (mins) => {
+                this.setState({ shop_open_minutes: mins })
+              }}
+              onCloseHoursChanged={async (hours) => {
+                this.setState({ shop_close_hours: hours })
+              }}
+              onCloseMinsChanged={async (mins) => {
+                this.setState({ shop_close_minutes: mins })
+              }} />
             <FormGroup>
               <Button
                 required
