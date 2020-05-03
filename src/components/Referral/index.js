@@ -31,8 +31,6 @@ export default class OnBoarding extends Component {
     super(props);
     this.state = {
       name: '',
-      store_size: '',
-      gstin: '',
       billing_counters: '',
       address: '',
       locality: '',
@@ -65,8 +63,6 @@ export default class OnBoarding extends Component {
     try {
       const {
         name,
-        store_size,
-        gstin,
         billing_counters,
         address,
         locality,
@@ -108,8 +104,6 @@ export default class OnBoarding extends Component {
         address,
         locality,
         city,
-        store_size,
-        gstin,
         billing_counters,
         location: {
           lat: latitude,
@@ -200,8 +194,6 @@ export default class OnBoarding extends Component {
   render() {
     const {
       name,
-      store_size,
-      gstin,
       billing_counters,
       address,
       locality,
@@ -263,6 +255,9 @@ export default class OnBoarding extends Component {
                 <option>Select Store type</option>
                 <option value="GROCERY">Groceries</option>
                 <option value="PHARMACY">Pharmacies</option>
+                <option value="BOOK STORE">Book Store</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="OTHERS">Others</option>
               </Input>
             </FormGroup>
             <FormGroup>
@@ -332,24 +327,6 @@ export default class OnBoarding extends Component {
                 }}
                 name="billing_counters"
                 placeholder="Number of billing counters"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                value={gstin}
-                onChange={this.handleOnChange}
-                name="gstin"
-                placeholder="Your GSTIN number (optional)"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                value={store_size}
-                onChange={this.handleOnChange}
-                name="store_size"
-                placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
             <TimeSelectFormGroup shop_open_hours={this.state.shop_open_hours}

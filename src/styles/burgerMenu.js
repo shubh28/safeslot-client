@@ -21,6 +21,10 @@ export const StyledMenu = styled.nav`
     width: ${({ open }) => (open ? '70%' : '0')};
   }
 
+  div {
+    display: ${({ open }) => (open ? 'static' : 'none')};
+  }
+
   a {
     display: ${({ open }) => (open ? 'static' : 'none')};
     font-size: 1 rem;

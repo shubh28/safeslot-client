@@ -233,6 +233,9 @@ export default class OnBoarding extends Component {
                 <option>Select Store type</option>
                 <option value="GROCERY">Groceries</option>
                 <option value="PHARMACY">Pharmacies</option>
+                <option value="BOOK STORE">Book Store</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="OTHERS">Others</option>
               </Input>
             </FormGroup>
 
