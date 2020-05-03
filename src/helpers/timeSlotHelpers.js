@@ -27,17 +27,22 @@ const timestampToTime = (timestamp) => {
   return formatHoursAndMinutes(date.getHours(), date.getMinutes());
 }
 
-const generateTimeSlots = async (startTime, endTime, interval) => {
+const generateTimeSlots = (startTime, endTime, interval) => {
+  startTime = toTimestamp(startTime);
+  endTime = toTimestamp(endTime);
   const timeslots = [startTime];
 
   let tempTime = startTime;
-  while (tempTime < endTime) {
+  let count = 0;
+  while (tempTime < endTime && count < 9999) {
     tempTime = addMinutes(tempTime, interval);
+
     if (tempTime >= endTime) {
       timeslots.push(endTime);
     } else {
       timeslots.push(tempTime);
     }
+    count++;
   }
 
   let result = [];
