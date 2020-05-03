@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button,
-  Row,
-  Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Badge
-} from 'reactstrap';
+import { Card, CardBody, CardTitle, Badge } from 'reactstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Slots from './Slots';
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { Container } from '../../styles';
@@ -42,7 +28,10 @@ function Stores() {
     setLoading(true);
 
     axios
-      .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}&time=${new Date().getHours() - 1}`)
+      .get(
+        `${API_URL}/stores/location?lat=${lat}&lng=${lng}&time=${new Date().getHours() -
+          1}`
+      )
       .then(res => {
         setStores(res.data);
       })
@@ -107,6 +96,7 @@ function Stores() {
                   <Link
                     style={{ textDecoration: 'none', color: 'black' }}
                     to={`/store/${store.id}`}
+                    key={store.id}
                   >
                     <Card key={store.id}>
                       <CardBody>
@@ -133,11 +123,6 @@ function Stores() {
                               : ''}
                           </div>
                         </HeaderDataContainer>
-                        <Slots
-                          availableSlots={store.stores_slots}
-                          storeId={store.id}
-                          showError={showError}
-                        />
                       </CardBody>
                     </Card>
                   </Link>
