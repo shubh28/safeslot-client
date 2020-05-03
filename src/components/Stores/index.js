@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { Container } from '../../styles';
+import Slots from './Slots';
 import { API_URL } from '../../common/consts';
 import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
@@ -123,6 +124,11 @@ function Stores() {
                               : ''}
                           </div>
                         </HeaderDataContainer>
+                        <Slots
+                          availableSlots={store.stores_slots}
+                          storeId={store.id}
+                          showError={showError}
+                        />
                       </CardBody>
                     </Card>
                   </Link>
