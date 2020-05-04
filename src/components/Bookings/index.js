@@ -26,6 +26,9 @@ import { getSlotTime } from '../../helpers';
 import { API_URL } from '../../common/consts';
 import { Header } from '../common';
 
+var CryptoJS = require("crypto-js");
+var crypto=require("crypto")
+
 export default class Bookings extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +38,7 @@ export default class Bookings extends Component {
       selectedbooking: {},
       addDetails: false,
       orderDetails: '',
-      error: {}
+      error: {},
     };
   }
 
@@ -100,7 +103,7 @@ export default class Bookings extends Component {
         this.getBookings();
         this.setState({ addDetails: false, selectedbooking: {} });
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   showError = (type, message) => {
@@ -112,6 +115,28 @@ export default class Bookings extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
+    encryptByDES= (message, key) => {
+      const keyHex = CryptoJS.enc.Utf8.parse(key);
+      const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7
+      })
+      return encrypted.toString();
+    }
+
+  //   decryptByDES=(ciphertext, key)=> {
+  //     var keyHex = CryptoJS.enc.Utf8.parse(key);
+
+  //     // direct decrypt ciphertext
+  //     var decrypted = CryptoJS.DES.decrypt({
+  //         ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
+  //     }, keyHex, {
+  //         mode: CryptoJS.mode.ECB,
+  //         padding: CryptoJS.pad.Pkcs7
+  //     });
+
+  //     return decrypted.toString(CryptoJS.enc.Utf8);
+  // }
   render() {
     const { selectedbooking } = this.state;
     return (
@@ -131,11 +156,20 @@ export default class Bookings extends Component {
             <Row>
               <Col>
                 {this.state.bookings.map(booking => {
+                  var encrypted = this.encryptByDES(booking.id, "12AE0364");
+                  var hash = crypto.createHmac('sha1', "E126AF73").update(encrypted)
+                  hash = hash.digest("base64")
+                  hash = hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
+                  // To add padding back
+                  // if (hash.length % 4 != 0){
+                  //   hash += ('===').slice(0, 4 - (hash.length % 4));
+                  // }
+                  // hash = hash.replace(/-/g, '+').replace(/_/g, '/');
                   return (
                     <Card key={booking.id}>
                       <CardBody>
                         <CardTitle>
-                          <h5>Booking Id: {booking.id}</h5>
+                          <h5>Booking Id: {hash}</h5>   {/*booking.id*/}
                           <h6>
                             <strong>Booking Date:</strong>{' '}
                             {new Date(booking.booking_date).toDateString()}
@@ -156,14 +190,14 @@ export default class Bookings extends Component {
                           onClick={() => this.viewBooking(booking)}
                         >
                           View Details
-                        </Button>
+                          </Button>
                         <Button
                           outline
                           color="info"
                           onClick={() => this.toggleAddDetails(booking)}
                         >
                           Add Order Details
-                        </Button>
+                          </Button>
                       </CardBody>
                     </Card>
                   );
