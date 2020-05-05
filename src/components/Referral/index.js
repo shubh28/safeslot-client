@@ -135,7 +135,8 @@ export default class OnBoarding extends Component {
       );
 
       const slotDuration = store.slot_duration;
-      const slots = generateTimeSlots(startTime, endTime, slotDuration)
+      const isVerified = store.isVerified;
+      const slots = generateTimeSlots(startTime, endTime, slotDuration, isVerified)
       await this.service.updateSlotsForReferredStore(store.id, slots);
 
 

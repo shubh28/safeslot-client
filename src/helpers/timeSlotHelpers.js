@@ -27,10 +27,12 @@ const timestampToTime = (timestamp) => {
   return formatHoursAndMinutes(date.getHours(), date.getMinutes());
 }
 
-const generateTimeSlots = (startTime, endTime, interval) => {
+const generateTimeSlots = (startTime, endTime, interval, isVerified = true) => {
   startTime = toTimestamp(startTime);
   endTime = toTimestamp(endTime);
   const timeslots = [startTime];
+  let maxPeopleAllowed = isVerified ? 0 : 10000;
+
 
   let tempTime = startTime;
   let count = 0;
@@ -59,7 +61,7 @@ const generateTimeSlots = (startTime, endTime, interval) => {
       "start_minutes": parseInt(start[1]),
       "end_hours": parseInt(end[0]),
       "end_minutes": parseInt(end[1]),
-      "maximun_people_allowed": 0,
+      "maximun_people_allowed": maxPeopleAllowed,
     }
   });
 
