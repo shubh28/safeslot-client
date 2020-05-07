@@ -13,6 +13,11 @@ import {
 import Alerts from '../Alerts';
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
 import SlotDuration from '../common/SlotDuration';
+import {
+  formatHoursAndMinutes,
+  generateTimeSlots
+} from '../../helpers/timeSlotHelpers';
+
 
 
 export default class AddSlots extends Component {
@@ -57,38 +62,10 @@ export default class AddSlots extends Component {
     } catch (error) {
       this.showError('danger', 'Error in fetching all slots');
     }
-  };
-
-  toTimestamp = (str) => {
-    // date requires a date and time. we can't have only time
-    // so this is a dummy date
-    return new Date('01/01/1970 ' + str).getTime();
   }
-
-  timestampToTime = (timestamp) => {
-    let date = new Date(timestamp);
-    return this.formatHoursAndMinutes(date.getHours(), date.getMinutes());
-  }
-
-  formatHoursAndMinutes = (hours, mins) => {
-    return ((hours.toString().length === 1) ? '0' + hours : hours) + ':' +
-      ((mins.toString().length === 1) ? '0' + mins : mins);
-  }
-
-  addMinutes = (timeInSeconds, minutesToAdd) => {
-    let secondsToAdd = (minutesToAdd * 60000);
-    return timeInSeconds + secondsToAdd
-  }
-
-  pairwise = (arr, func) => {
-    for (let i = 0; i < arr.length - 1; i++) {
-      func(arr[i], arr[i + 1])
-    }
-  }
-
   getStartTime = () => {
     const store = this.state.store;
-    return this.formatHoursAndMinutes(
+    return formatHoursAndMinutes(
       parseInt(store.shop_open_hours || 0),
       parseInt(store.shop_open_minutes || 0)
     );
@@ -96,7 +73,7 @@ export default class AddSlots extends Component {
 
   getEndTime = () => {
     const store = this.state.store;
-    return this.formatHoursAndMinutes(
+    return formatHoursAndMinutes(
       parseInt(store.shop_close_hours || 0),
       parseInt(store.shop_close_minutes || 0)
     );
@@ -104,8 +81,8 @@ export default class AddSlots extends Component {
 
   printAllSlots = () => {
     return this.state.slots.map((element, index) => {
-      const start = this.formatHoursAndMinutes(element.start_hours, element.start_minutes);
-      const end = this.formatHoursAndMinutes(element.end_hours, element.end_minutes);
+      const start = formatHoursAndMinutes(element.start_hours, element.start_minutes);
+      const end = formatHoursAndMinutes(element.end_hours, element.end_minutes);
 
       const timeString = `${start} - ${end}`;
       return (
@@ -136,43 +113,15 @@ export default class AddSlots extends Component {
     });
   };
 
-  generateTimeSlots = async (
-    startTime = this.toTimestamp(this.getStartTime()),
-    endTime = this.toTimestamp(this.getEndTime()),
+  generateSlots = (
+    startTime = this.getStartTime(),
+    endTime = this.getEndTime(),
     interval = this.state.store.slot_duration) => {
-    const timeslots = [startTime];
 
-    let tempTime = startTime;
-    while (tempTime < endTime) {
-      tempTime = this.addMinutes(tempTime, interval);
-      if (tempTime >= endTime) {
-        timeslots.push(endTime);
-      } else {
-        timeslots.push(tempTime);
-      }
-    }
-
-    let result = [];
-    this.pairwise(timeslots, function (slotStartTime, slotEndTime) {
-      result.push({ slotStartTime, slotEndTime })
-    })
-
-    let slots = result.map((element) => {
-      //09:00
-      let start = this.timestampToTime(element.slotStartTime).split(':');
-      let end = this.timestampToTime(element.slotEndTime).split(':');
-
-      return {
-        "start_hours": parseInt(start[0]),
-        "start_minutes": parseInt(start[1]),
-        "end_hours": parseInt(end[0]),
-        "end_minutes": parseInt(end[1]),
-        "maximun_people_allowed": 0,
-      }
-    });
+    const slots = generateTimeSlots(startTime, endTime, interval)
 
     this.setState({ slots });
-  }
+  };
 
   handleSave = async () => {
     const { storeId, toggleAddSlots } = this.props;
@@ -186,7 +135,7 @@ export default class AddSlots extends Component {
       store.slot_duration);
     await this.service.updateSlots(storeId, slots);
     toggleAddSlots();
-  }
+  };
 
   render() {
     const { toggleAddSlots, openModal, storeId } = this.props;
@@ -218,22 +167,22 @@ export default class AddSlots extends Component {
             onOpenHoursChanged={(hours) => {
               let storeCopy = { ...this.state.store }
               storeCopy.shop_open_hours = hours
-              this.setState({ store: storeCopy }, this.generateTimeSlots);
+              this.setState({ store: storeCopy }, this.generateSlots);
             }}
             onOpenMinsChanged={async (mins) => {
               let storeCopy = { ...this.state.store }
               storeCopy.shop_open_minutes = mins
-              this.setState({ store: storeCopy }, this.generateTimeSlots)
+              this.setState({ store: storeCopy }, this.generateSlots)
             }}
             onCloseHoursChanged={async (hours) => {
               let storeCopy = { ...this.state.store }
               storeCopy.shop_close_hours = hours
-              this.setState({ store: storeCopy }, this.generateTimeSlots)
+              this.setState({ store: storeCopy }, this.generateSlots)
             }}
             onCloseMinsChanged={async (mins) => {
               let storeCopy = { ...this.state.store }
               storeCopy.shop_close_minutes = mins
-              this.setState({ store: storeCopy }, this.generateTimeSlots)
+              this.setState({ store: storeCopy }, this.generateSlots)
             }}
           />
 
@@ -242,7 +191,7 @@ export default class AddSlots extends Component {
             onDurationChange={(duration) => {
               let storeCopy = { ...this.state.store }
               storeCopy.slot_duration = duration
-              this.setState({ store: storeCopy }, this.generateTimeSlots)
+              this.setState({ store: storeCopy }, this.generateSlots)
             }} />
 
           <p>

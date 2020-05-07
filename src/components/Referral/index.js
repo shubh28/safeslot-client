@@ -1,25 +1,32 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Button,
   Form,
   FormGroup,
-  Label,
   Input,
   FormText,
   UncontrolledDropdown,
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
-import axios from 'axios';
-
+import ReferralService from './ReferralService';
+import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import Alerts from '../Alerts';
-import { loadState, saveState } from '../../helpers/LocalStorage';
+import { loadState } from '../../helpers/LocalStorage';
 import { URL_REFS } from '../../common/consts';
 import Header from '../common/Header';
+import {
+  formatHoursAndMinutes,
+  generateTimeSlots
+} from '../../helpers/timeSlotHelpers';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
+
+  service = new ReferralService;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -34,80 +41,110 @@ export default class OnBoarding extends Component {
       store_type: '',
       email: '',
       phone: '',
-      error: {}
+      error: {},
+      shop_open_hours: 9,
+      shop_open_minutes: 0,
+      shop_close_hours: 17,
+      shop_close_minutes: 0,
     };
   }
 
   componentDidMount() {
-    const userId =
-      loadState('userAuthenticationDetails') &&
-      loadState('userAuthenticationDetails').userId;
+    const userAuthDetails = loadUserAuthenticationDetails();
+    const userId = userAuthDetails && userAuthDetails.userId;
     if (!userId) {
       this.props.history.push(`/login?ref=${URL_REFS.referStore}`);
       return;
     }
   }
 
-  onBoardStore = e => {
+  onBoardStore = async e => {
     e.preventDefault();
-    const {
-      name,
-      billing_counters,
-      address,
-      locality,
-      city,
-      latitude,
-      longitude,
-      phone,
-      email,
-      store_type
-    } = this.state;
-    if (
-      !name ||
-      !billing_counters ||
-      !address ||
-      !locality ||
-      !city ||
-      !store_type
-    ) {
-      this.showError('danger', 'All fields are mandatory');
-      return;
-    }
-    if (!latitude || !longitude) {
-      this.showError(
-        'danger',
-        'Please select locality from drop down to calculated your coordinates'
-      );
-      return;
-    }
-    const userId =
-      loadState('userAuthenticationDetails') &&
-      loadState('userAuthenticationDetails').userId;
+    try {
+      const {
+        name,
+        billing_counters,
+        address,
+        locality,
+        city,
+        latitude,
+        longitude,
+        phone,
+        email,
+        store_type,
+        shop_open_hours,
+        shop_open_minutes,
+        shop_close_hours,
+        shop_close_minutes
+      } = this.state;
+      if (
+        !name ||
+        !billing_counters ||
+        !address ||
+        !locality ||
+        !city ||
+        !store_type
+      ) {
+        this.showError('danger', 'Please fill in the fields that are mandatory');
+        return;
+      }
+      if (!latitude || !longitude) {
+        this.showError(
+          'danger',
+          'Please select locality from drop down to calculated your coordinates'
+        );
+        return;
+      }
+      const userId =
+        loadState('userAuthenticationDetails') &&
+        loadState('userAuthenticationDetails').userId;
 
-    const body = {
-      name,
-      address,
-      locality,
-      city,
-      billing_counters,
-      location: {
-        lat: latitude,
-        lng: longitude
-      },
-      phone,
-      email,
-      store_type,
-      isVerified: false,
-      referredBy: userId
-    };
-    axios
-      .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
-      .then(res => {
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        this.showError('danger', 'Some error occurred');
-      });
+      const body = {
+        name,
+        address,
+        locality,
+        city,
+        billing_counters,
+        location: {
+          lat: latitude,
+          lng: longitude
+        },
+        phone,
+        email,
+        store_type,
+        isVerified: false,
+        referredBy: userId,
+        shop_open_hours,
+        shop_open_minutes,
+        shop_close_hours,
+        shop_close_minutes,
+        slot_duration: 30
+      };
+
+      const res = await this.service.postReferredStore(body);
+      let store = res.data;
+
+      const startTime = formatHoursAndMinutes(
+        parseInt(store.shop_open_hours || 0),
+        parseInt(store.shop_open_minutes || 0)
+      );
+
+      const endTime = formatHoursAndMinutes(
+        parseInt(store.shop_close_hours || 0),
+        parseInt(store.shop_close_minutes || 0)
+      );
+
+      const slotDuration = store.slot_duration;
+      const isVerified = store.isVerified;
+      const slots = generateTimeSlots(startTime, endTime, slotDuration, isVerified)
+      await this.service.updateSlotsForReferredStore(store.id, slots);
+
+
+      this.props.history.push('/');
+
+    } catch (error) {
+      this.showError('danger', 'Some error occurred');
+    }
   };
 
   handleOnChange = e => {
@@ -115,25 +152,20 @@ export default class OnBoarding extends Component {
     if (key === 'locality') {
       this.handleLocalitySearch(e);
     }
-
     this.setState(
       Object.assign({ ...this.state }, { [key]: e.target.value, error: {} })
     );
   };
 
-  handleLocalitySearch = e => {
-    this.setState({ term: e.target.value });
-    if (e.target.value.length > 3) {
-      axios
-        .get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.target.value}.json?access_token=pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ&cachebuster=1585165720796&autocomplete=true&limit=8`
-        )
-        .then(res => {
-          this.setState({ locations: (res.data && res.data.features) || [] });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+  handleLocalitySearch = async e => {
+    try {
+      this.setState({ term: e.target.value });
+      if (e.target.value.length > 3) {
+        const res = await this.service.getLocations(e.target.value);
+        this.setState({ locations: (res.data && res.data.features) || [] });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -251,7 +283,7 @@ export default class OnBoarding extends Component {
               />
               <UncontrolledDropdown
                 isOpen={this.state.locations.length > 0}
-                toggle={() => {}}
+                toggle={() => { }}
               >
                 <DropdownMenu right>
                   {this.state.locations.map(location => {
@@ -289,10 +321,31 @@ export default class OnBoarding extends Component {
                 value={billing_counters}
                 required
                 onChange={this.handleOnChange}
+                min={0}
+                max={1000}
+                onInput={(e) => {
+                  e.target.value = Math.min(e.target.value, 1000)
+                }}
                 name="billing_counters"
                 placeholder="Number of billing counters"
               />
             </FormGroup>
+            <TimeSelectFormGroup shop_open_hours={this.state.shop_open_hours}
+              shop_open_minutes={this.state.shop_open_minutes}
+              shop_close_hours={this.state.shop_close_hours}
+              shop_close_minutes={this.state.shop_close_minutes}
+              onOpenHoursChanged={(hours) => {
+                this.setState({ shop_open_hours: hours });
+              }}
+              onOpenMinsChanged={async (mins) => {
+                this.setState({ shop_open_minutes: mins })
+              }}
+              onCloseHoursChanged={async (hours) => {
+                this.setState({ shop_close_hours: hours })
+              }}
+              onCloseMinsChanged={async (mins) => {
+                this.setState({ shop_close_minutes: mins })
+              }} />
             <FormGroup>
               <Button
                 required

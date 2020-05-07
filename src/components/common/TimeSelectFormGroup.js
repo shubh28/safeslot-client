@@ -48,7 +48,7 @@ export default class TimeSelectFormGroup extends Component {
     return (
       <div>
         <TimeSelect
-          label="Shop Opening Time"
+          label="Store Opening Time"
           hours={shop_open_hours}
           minutes={shop_open_minutes}
           onHoursChanged={onOpenHoursChanged}
@@ -57,7 +57,7 @@ export default class TimeSelectFormGroup extends Component {
           minutesList={this.createMinutes("start")}
         />
         <TimeSelect
-          label="Shop Closing Time"
+          label="Store Closing Time"
           hours={shop_close_hours}
           minutes={shop_close_minutes}
           onHoursChanged={onCloseHoursChanged}
