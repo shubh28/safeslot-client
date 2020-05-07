@@ -34,6 +34,9 @@ const Menu = ({ open, displayLogout, logOut }) => {
           owners
         </Link>
       ) : null}
+      <Link open={open} to="/refer">
+        Refer Store
+      </Link>
       <Link open={open} to="/about">
         About Us
       </Link>
