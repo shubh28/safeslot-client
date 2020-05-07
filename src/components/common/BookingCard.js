@@ -18,7 +18,7 @@ export default async function BookingCard({ booking, setSelectedBooking }) {
   var hash = crypto.createHmac('sha1', "E126AF73").update(encrypted)
   hash = hash.digest("base64")
   hash = hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
-  console.log(hash)
+  // console.log(hash)
   return (
   
     <Card key={id}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardBody, CardTitle, CardSubtitle, Button } from 'reactstrap';
-var CryptoJS = require("crypto-js");
-var crypto = require("crypto")
+// var CryptoJS = require("crypto-js");
+// var crypto = require("crypto")
 export default function BookingCardForStore({ booking, setSelectedBooking }) {
   const {
     id,
@@ -9,26 +9,24 @@ export default function BookingCardForStore({ booking, setSelectedBooking }) {
   } = booking;
 
  
-  const encryptByDES = (message, key) => {
-    const keyHex = CryptoJS.enc.Utf8.parse(key);
-    const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
-    })
-    return encrypted.toString();
-  }
+  // const encryptByDES = (message, key) => {
+  //   const keyHex = CryptoJS.enc.Utf8.parse(key);
+  //   const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+  //     mode: CryptoJS.mode.ECB,
+  //     padding: CryptoJS.pad.Pkcs7
+  //   })
+  //   return encrypted.toString();
+  // }
 
-  var encrypted = encryptByDES(id, "12AE0364");
-  var hash = crypto.createHmac('sha1', "E126AF73").update(encrypted)
-  hash = hash.digest("base64")
-  hash = hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
-  console.log(hash)
+  // var encrypted = encryptByDES(id, "12AE0364");
+  // var hash = crypto.createHmac('sha1', "E126AF73").update(encrypted)
+  // hash = hash.digest("base64")
+  // hash = hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
   return (
-
     <Card key={id}>
       <CardBody>
         <CardTitle>
-          <h5>Booking Id: {hash}</h5>
+          <h5>Booking Id: {id}</h5>
           <h6>
             <strong>Name:</strong> {name}
           </h6>

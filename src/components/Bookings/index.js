@@ -45,7 +45,6 @@ export default class Bookings extends Component {
 
   componentDidMount() {
     this.getBookings();
-
   }
 
   getBookings = () => {
