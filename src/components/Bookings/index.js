@@ -27,7 +27,7 @@ import { API_URL } from '../../common/consts';
 import { Header } from '../common';
 
 var CryptoJS = require("crypto-js");
-var crypto=require("crypto")
+var crypto = require("crypto")
 
 export default class Bookings extends Component {
   constructor(props) {
@@ -39,11 +39,13 @@ export default class Bookings extends Component {
       addDetails: false,
       orderDetails: '',
       error: {},
+      hash: {}
     };
   }
 
   componentDidMount() {
     this.getBookings();
+
   }
 
   getBookings = () => {
@@ -115,14 +117,14 @@ export default class Bookings extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-    encryptByDES= (message, key) => {
-      const keyHex = CryptoJS.enc.Utf8.parse(key);
-      const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
-          mode: CryptoJS.mode.ECB,
-          padding: CryptoJS.pad.Pkcs7
-      })
-      return encrypted.toString();
-    }
+  encryptByDES = (message, key) => {
+    const keyHex = CryptoJS.enc.Utf8.parse(key);
+    const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    })
+    return encrypted.toString();
+  }
 
   //   decryptByDES=(ciphertext, key)=> {
   //     var keyHex = CryptoJS.enc.Utf8.parse(key);
@@ -160,6 +162,8 @@ export default class Bookings extends Component {
                   var hash = crypto.createHmac('sha1', "E126AF73").update(encrypted)
                   hash = hash.digest("base64")
                   hash = hash.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
+                  booking.newid=hash
+                  // booking.id = hash
                   // To add padding back
                   // if (hash.length % 4 != 0){
                   //   hash += ('===').slice(0, 4 - (hash.length % 4));
@@ -169,7 +173,7 @@ export default class Bookings extends Component {
                     <Card key={booking.id}>
                       <CardBody>
                         <CardTitle>
-                          <h5>Booking Id: {hash}</h5>   {/*booking.id*/}
+                          <h5>Booking Id: {booking.newid}</h5>   {/*booking.id*/}
                           <h6>
                             <strong>Booking Date:</strong>{' '}
                             {new Date(booking.booking_date).toDateString()}
@@ -226,7 +230,7 @@ export default class Bookings extends Component {
             </p>
             <p>
               <strong>Booking Id:</strong>
-              {selectedbooking.id}
+              { selectedbooking.newid}        {/*   selectedbooking.id */}
             </p>
             <p>
               <strong>Store Name:</strong>
