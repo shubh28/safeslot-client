@@ -21,7 +21,7 @@ function CollapsableWrapper({ children, title, ...others }) {
     <div {...others}>
       <div
         style={{
-          background: '#ccc',
+          background: '#ddd',
           padding: '5px',
           margin: '3px',
           border: '1px solid #000',
