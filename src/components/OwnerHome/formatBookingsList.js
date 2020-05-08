@@ -3,7 +3,8 @@ import { getSlotTime } from '../../helpers';
 
 export default function formatBookingsList(bookings) {
   const result = {
-    today: [],
+    // today will also become an object, grouped by time slot
+    today: {},
     history: {}
   };
 
@@ -13,7 +14,11 @@ export default function formatBookingsList(bookings) {
     const slotString = getSlotTime(booking.stores_slots);
     const bookingDateString = getDateString(booking.booking_date);
     if (today === bookingDate) {
-      result.today.push(booking);
+      // if time slot is already shown, push into that time slot
+      result.today[slotString]
+        ? result.today[slotString].push(booking)
+        : (result.today[slotString] = [booking]);
+      // result.today.push(booking);
     } else {
       if (result.history[bookingDateString]) {
         if (result.history[bookingDateString][slotString]) {
