@@ -8,8 +8,6 @@ import { loadState } from '../../helpers/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 import { FlexContainer, NoSlots } from './styles';
-import { getDateString } from '../../helpers/getDateString';
-import moment from 'moment';
 
 const SlotWrapper = styled.div`
   display: flex;
