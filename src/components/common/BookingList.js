@@ -43,21 +43,34 @@ function BookingListOfADay({
   setSelectedBooking,
   groupByDate = true
 }) {
+  const sortFunction = (a, b) => {
+    const astart = a
+      .slice(0, 6)
+      .replace(':', '')
+      .trim();
+    const bstart = b
+      .slice(0, 6)
+      .replace(':', '')
+      .trim();
+    return astart - bstart;
+  };
   return (
     <>
-      {Object.keys(dateBookings).map(slot => {
-        return (
-          <CollapsableWrapper title={slot} key={slot}>
-            {dateBookings[slot].map(booking => (
-              <BookingCardForStore
-                booking={booking}
-                key={booking.id}
-                setSelectedBooking={setSelectedBooking}
-              />
-            ))}
-          </CollapsableWrapper>
-        );
-      })}
+      {Object.keys(dateBookings)
+        .sort(sortFunction)
+        .map(slot => {
+          return (
+            <CollapsableWrapper title={slot} key={slot}>
+              {dateBookings[slot].map(booking => (
+                <BookingCardForStore
+                  booking={booking}
+                  key={booking.id}
+                  setSelectedBooking={setSelectedBooking}
+                />
+              ))}
+            </CollapsableWrapper>
+          );
+        })}
     </>
   );
 }
