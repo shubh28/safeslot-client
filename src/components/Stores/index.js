@@ -129,6 +129,7 @@ function Stores() {
                         availableSlots={store.stores_slots}
                         storeId={store.id}
                         showError={showError}
+                        isVerified={store.isVerified}
                       />
                     </CardBody>
                   </Card>

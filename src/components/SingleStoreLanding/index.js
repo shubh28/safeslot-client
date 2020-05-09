@@ -32,7 +32,6 @@ const SingleStoreLanding = function() {
     async function fetchStoreData() {
       let hours = new Date().getUTCHours() + 5;
       hours %= 24;
-      console.log(hours);
       const filter = JSON.stringify({
         where: {
           isOperating: true,
@@ -46,7 +45,12 @@ const SingleStoreLanding = function() {
                 start_hours: {
                   gt: hours
                 }
-              }
+              },
+              include: [
+                {
+                  relation: 'bookings'
+                }
+              ]
             }
           }
         ]
@@ -54,7 +58,6 @@ const SingleStoreLanding = function() {
       const { data: store } = await axios.get(
         `${API_URL}/stores/findOne?filter=${filter}`
       );
-      // need some error handling if url is incorrect
       if (store === null) {
         showError('danger', 'Store not found');
       }
@@ -109,6 +112,7 @@ const SingleStoreLanding = function() {
             availableSlots={storeData.stores_slots}
             storeId={storeData.id}
             showError={showError}
+            isVerified={storeData.isVerified}
           />
         </GridContainer>
       ) : (

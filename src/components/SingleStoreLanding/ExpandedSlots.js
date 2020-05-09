@@ -8,6 +8,8 @@ import { loadState } from '../../helpers/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
 import { FlexContainer, NoSlots } from './styles';
+import { getDateString } from '../../helpers/getDateString';
+import moment from 'moment';
 
 const SlotWrapper = styled.div`
   display: flex;
@@ -21,7 +23,7 @@ const SlotWrapper = styled.div`
 
 const SlotButton = styled(Button)`
   width: 80%;
-  padding: 0.175rem 0.8rem;
+  padding: 0.175rem 0.5rem;
 `;
 
 const BookSlotButton = styled(Button)`
@@ -29,9 +31,20 @@ const BookSlotButton = styled(Button)`
   width: 5rem;
 `;
 
-function ExpandedSlots({ availableSlots = [], storeId, showError }) {
+const SlotMsg = styled.div`
+  font-size: 1.5rem;
+  text-transform: capitalize;
+`;
+
+function ExpandedSlots({
+  availableSlots = [],
+  storeId,
+  showError,
+  isVerified
+}) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
+  const [slotsLeftMsg, setSlotsLeftMsg] = React.useState();
 
   function makeBooking({ storeId: bookingStoreId, slotId: bookingSlotId }) {
     const tokenObj = loadState('userAuthenticationDetails');
@@ -40,6 +53,7 @@ function ExpandedSlots({ availableSlots = [], storeId, showError }) {
     if (token && userId) {
       axios
         .get(
+          // add a date string here so we know which day the booking is looking for
           `${API_URL}/booking-slot/status?storeId=${bookingStoreId}&slotId=${bookingSlotId}`
         )
         .then(res => {
@@ -83,8 +97,10 @@ function ExpandedSlots({ availableSlots = [], storeId, showError }) {
         <SlotWrapper>
           {availableSlots.length ? (
             availableSlots
+              .filter(
+                slot => slot.maximun_people_allowed - slot.bookings.length > 0
+              )
               .sort((a, b) => {
-                // sorting in front end for now, as I don't know how to formulate Looback queries with nesting in the url
                 if (a.start_hours > b.start_hours) {
                   return 1;
                 } else if (a.start_hours == b.start_hours) {
@@ -110,9 +126,19 @@ function ExpandedSlots({ availableSlots = [], storeId, showError }) {
                           )
                         }
                         // size="sm"
-                        onClick={() =>
-                          setStoreSlotId({ storeId: storeId, slotId: slot.id })
-                        }
+                        onClick={() => {
+                          setStoreSlotId({ storeId: storeId, slotId: slot.id });
+                          setSlotsLeftMsg(
+                            slot.bookings
+                              ? isVerified
+                                ? `${slot.maximun_people_allowed -
+                                    slot.bookings.length}
+                            slots left`
+                                : `${slot.bookings.length} bookings`
+                              : ''
+                          );
+                          console.log(slot);
+                        }}
                       >
                         {`${slot.start_hours
                           .toString()
@@ -148,6 +174,7 @@ function ExpandedSlots({ availableSlots = [], storeId, showError }) {
             >
               Book Slot
             </BookSlotButton>
+            <SlotMsg>{slotsLeftMsg}</SlotMsg>
           </FlexContainer>
         ) : null}
       </FlexContainer>

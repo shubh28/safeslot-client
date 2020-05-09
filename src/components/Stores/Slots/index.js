@@ -19,13 +19,13 @@ const SlotButton = styled(Button)`
   font-size: 0.8rem;
   padding: 0.175rem 0.8rem;
   .before {
-    display: inline
+    display: inline;
   }
   .after {
-    display: none
+    display: none;
   }
   :hover .before {
-    display: none
+    display: none;
   }
   :hover .after {
     display: inline;
@@ -45,22 +45,22 @@ const NoSlotButton = styled(Button)`
       color: white;
     }
   }
-`
+`;
 
 const MakeBookingWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-`
+`;
 
 const SlotMsg = styled.div`
-  font-size: 1rem
-`
+  font-size: 1rem;
+`;
 
-function Slots({ availableSlots = [], storeId, showError }) {
+function Slots({ availableSlots = [], storeId, showError, isVerified }) {
   const history = useHistory();
   const { storeSlotId, setStoreSlotId } = useLocationAndStoreContext();
-  const [slotsLeftMsg, setSlotsLeftMsg] = React.useState()
+  const [slotsLeftMsg, setSlotsLeftMsg] = React.useState();
 
   function makeBooking({ storeId: bookingStoreId, slotId: bookingSlotId }) {
     const tokenObj = loadState('userAuthenticationDetails');
@@ -109,55 +109,79 @@ function Slots({ availableSlots = [], storeId, showError }) {
     <>
       <SlotWrapper>
         {availableSlots.length ? (
-          availableSlots.filter(slot => ((slot.maximun_people_allowed - slot.bookings.length) > 0)).map(slot => {
-            return (
-              <span key={slot.id}>
-                {slot && (
-                  <SlotButton
-                    color="info"
-                    outline={
-                      !(
-                        slot.id === storeSlotId.slotId &&
-                        storeId === storeSlotId.storeId
-                      )
-                    }
-                    size="sm"
-                    onClick={() => {
-                      setStoreSlotId({ storeId: storeId, slotId: slot.id, slotObj: slot })
-                      setSlotsLeftMsg(`${(slot.maximun_people_allowed - slot.bookings.length)} slots left`)
-                    }
-                    }
-                  >
+          availableSlots
+            .filter(
+              slot => slot.maximun_people_allowed - slot.bookings.length > 0
+            )
+            .map(slot => {
+              return (
+                <span key={slot.id}>
+                  {slot && (
+                    <SlotButton
+                      color="info"
+                      outline={
+                        !(
+                          slot.id === storeSlotId.slotId &&
+                          storeId === storeSlotId.storeId
+                        )
+                      }
+                      size="sm"
+                      onClick={() => {
+                        setStoreSlotId({
+                          storeId: storeId,
+                          slotId: slot.id,
+                          slotObj: slot
+                        });
+                        setSlotsLeftMsg(
+                          isVerified
+                            ? `${slot.maximun_people_allowed -
+                                slot.bookings.length}
+                        slots left`
+                            : `${slot.bookings.length} bookings`
+                        );
+                        console.log(slot);
+                      }}
+                    >
                       <span className="before">
                         {`${slot.start_hours
-                        .toString()
-                        .padStart(
-                          2,
-                          '0'
-                        )}:${slot.start_minutes
-                        .toString()
-                        .padStart(2, '0')} - ${slot.end_hours
-                        .toString()
-                        .padStart(2, '0')}:${slot.end_minutes
-                        .toString()
-                        .padStart(2, '0')}`}
+                          .toString()
+                          .padStart(
+                            2,
+                            '0'
+                          )}:${slot.start_minutes
+                          .toString()
+                          .padStart(
+                            2,
+                            '0'
+                          )} - ${slot.end_hours
+                          .toString()
+                          .padStart(
+                            2,
+                            '0'
+                          )}:${slot.end_minutes.toString().padStart(2, '0')}`}
                       </span>
-                      <span className="after">{(slot.maximun_people_allowed - slot.bookings.length)} slots left</span>
-                  </SlotButton>
-                )}
-              </span>
-            );
-          })
+                      <span className="after">
+                        {isVerified
+                          ? `${slot.maximun_people_allowed -
+                              slot.bookings.length}
+                  slots left`
+                          : `${slot.bookings.length} bookings`}
+                      </span>
+                    </SlotButton>
+                  )}
+                </span>
+              );
+            })
         ) : (
           <NoSlotButton disabled={true}>No Slots Found</NoSlotButton>
         )}
       </SlotWrapper>
       {availableSlots.length ? (
         <MakeBookingWrapper>
-        <Button color="info" onClick={() => makeBooking(storeSlotId)}>
-          Book Slot
-        </Button>
-        <SlotMsg>{slotsLeftMsg}</SlotMsg>
+          <Button color="info" onClick={() => makeBooking(storeSlotId)}>
+            Book Slot
+          </Button>
+          <SlotMsg>{slotsLeftMsg}</SlotMsg>
         </MakeBookingWrapper>
       ) : null}
     </>
