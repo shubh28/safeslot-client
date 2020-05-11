@@ -35,7 +35,9 @@ export default class Bookings extends Component {
       selectedbooking: {},
       addDetails: false,
       orderDetails: '',
-      error: {}
+      error: {},
+      imagesUploaded: [],
+      imagesUploadedPreview: [],
     };
   }
 
@@ -90,6 +92,34 @@ export default class Bookings extends Component {
   handleOrderDetails = e => {
     this.setState({ orderDetails: e.target.value });
   };
+
+  uploadImageOrderDetails = e => {
+    if (e.target.files.length > 2){
+      this.showError('danger', 'A maximum of 2 images can be attached to a booking.');
+    } else {
+      let files = Array.from(e.target.files);
+      files.forEach((file, i) => {
+        let reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState({
+                 imagesUploaded: [...this.state.imagesUploaded, file],
+                 imagesUploadedPreview: [...this.state.imagesUploadedPreview, reader.result]
+            });
+        }
+        reader.readAsDataURL(file);
+      });
+    }
+    e.target.value = null;
+  }
+
+  removeImageUploaded = (key) => {
+    let files = this.state.imagesUploaded.filter((file, i)=> key !== i) || [];
+    let urls = this.state.imagesUploadedPreview.filter((file, i) => key !== i) || [];
+    this.setState({
+      imagesUploaded: files,
+      imagesUploadedPreview: urls
+    });
+  }
 
   addOrderDetails = () => {
     axios
@@ -233,6 +263,28 @@ export default class Bookings extends Component {
               onChange={this.handleOrderDetails}
             />
             <p>*All items are subject to availability</p>
+
+            <div>
+              <label for="orderDetails_image" class="custom_image_uploader">
+                Upload Image
+              </label>
+              <input id="orderDetails_image" type="file" accept="image/*" multiple="true"
+                onChange={this.uploadImageOrderDetails} style={{display:"none"}}
+              />
+              {this.state.imagesUploadedPreview.length ?
+                this.state.imagesUploadedPreview.map((url,i) =>
+                <div key={i}>
+                  <span onClick={ () => this.removeImageUploaded(i) }>X</span>
+                  <img src={url} style={{width: "6em", height: "6em", margin:"1em"}} />
+                </div>
+                ) : ''}
+              <Alerts
+                type={this.state.error.type}
+                message={this.state.error.message}
+                onClose={this.closeError}
+              />
+            </div>
+
           </ModalBody>
           <ModalFooter>
             <Button color="info" outline onClick={this.addOrderDetails}>
