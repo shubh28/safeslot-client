@@ -123,7 +123,7 @@ export default class Bookings extends Component {
 
   addOrderDetails = () => {
     axios
-      .patch(`${API_URL}/bookings/${this.state.selectedbooking.id}`, {
+      .patch(`${API_URL}/booking-slot?slotId=${this.state.selectedbooking.id}`, {
         order_details: this.state.orderDetails
       })
       .then(res => {
