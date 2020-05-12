@@ -94,17 +94,17 @@ export default class Bookings extends Component {
   };
 
   uploadImageOrderDetails = e => {
-    if (e.target.files.length > 2){
+    if (e.target.files.length > 2) {
       this.showError('danger', 'A maximum of 2 images can be attached to a booking.');
     } else {
       let files = Array.from(e.target.files);
       files.forEach((file, i) => {
         let reader = new FileReader();
         reader.onloadend = () => {
-            this.setState({
-                 imagesUploaded: [...this.state.imagesUploaded, file],
-                 imagesUploadedPreview: [...this.state.imagesUploadedPreview, reader.result]
-            });
+          this.setState({
+            imagesUploaded: [...this.state.imagesUploaded, file],
+            imagesUploadedPreview: [...this.state.imagesUploadedPreview, reader.result]
+          });
         }
         reader.readAsDataURL(file);
       });
@@ -113,7 +113,7 @@ export default class Bookings extends Component {
   }
 
   removeImageUploaded = (key) => {
-    let files = this.state.imagesUploaded.filter((file, i)=> key !== i) || [];
+    let files = this.state.imagesUploaded.filter((file, i) => key !== i) || [];
     let urls = this.state.imagesUploadedPreview.filter((file, i) => key !== i) || [];
     this.setState({
       imagesUploaded: files,
@@ -122,15 +122,19 @@ export default class Bookings extends Component {
   }
 
   addOrderDetails = () => {
+    let formData = new FormData();
+    formData.set('order_details', this.state.orderDetails);
+    this.state.imagesUploaded.forEach(eachFile => formData.append('prescriptions', eachFile, eachFile.name));
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
     axios
-      .patch(`${API_URL}/booking-slot?slotId=${this.state.selectedbooking.id}`, {
-        order_details: this.state.orderDetails
-      })
+      .patch(`${API_URL}/booking-slot?slotId=${this.state.selectedbooking.id}`, formData, { headers: { 'content-type': 'multipart/form-data' } })
       .then(res => {
         this.getBookings();
         this.setState({ addDetails: false, selectedbooking: {} });
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   showError = (type, message) => {
@@ -269,14 +273,14 @@ export default class Bookings extends Component {
                 Upload Image
               </label>
               <input id="orderDetails_image" type="file" accept="image/*" multiple="true"
-                onChange={this.uploadImageOrderDetails} style={{display:"none"}}
+                onChange={this.uploadImageOrderDetails} style={{ display: "none" }}
               />
               {this.state.imagesUploadedPreview.length ?
-                this.state.imagesUploadedPreview.map((url,i) =>
-                <div key={i}>
-                  <span onClick={ () => this.removeImageUploaded(i) }>X</span>
-                  <img src={url} style={{width: "6em", height: "6em", margin:"1em"}} />
-                </div>
+                this.state.imagesUploadedPreview.map((url, i) =>
+                  <div key={i}>
+                    <span onClick={() => this.removeImageUploaded(i)}>X</span>
+                    <img src={url} style={{ width: "6em", height: "6em", margin: "1em" }} />
+                  </div>
                 ) : ''}
               <Alerts
                 type={this.state.error.type}
