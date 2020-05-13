@@ -122,8 +122,16 @@ export default class Bookings extends Component {
   }
 
   addOrderDetails = () => {
+    const userId =
+      loadState('userAuthenticationDetails') &&
+      loadState('userAuthenticationDetails').userId;
+    if (!userId) {
+      this.props.history.push('/');
+      return;
+    }
     let formData = new FormData();
     formData.set('order_details', this.state.orderDetails);
+    formData.set('user_id', userId);
     this.state.imagesUploaded.forEach(eachFile => formData.append('prescriptions', eachFile, eachFile.name));
     for (var pair of formData.entries()) {
       console.log(pair[0] + ', ' + pair[1]);
