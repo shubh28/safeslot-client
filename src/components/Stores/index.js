@@ -79,7 +79,6 @@ function Stores() {
   return (
     <>
       <Header heading="Stores nearby" backPath={'/map'} />
-
       <Container className="theme-Container" fluid={true}>
         <Alerts
           type={error.type}
@@ -96,6 +95,7 @@ function Stores() {
                 return (
                   <Card key={store.id}>
                     <CardBody>
+                    
                       <Link
                         style={{ textDecoration: 'none', color: 'black' }}
                         to={`/store/${store.id}`}
