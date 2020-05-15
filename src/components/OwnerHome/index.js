@@ -23,6 +23,7 @@ import { API_URL } from '../../common/consts';
 import formatBookingsList from './formatBookingsList';
 import { Header } from '../common';
 import { Container } from '../../styles';
+import UpdateForm from './UpdateForm';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -33,7 +34,9 @@ export default class OwnerHome extends Component {
       viewDetails: false,
       selectedbooking: {},
       addSlots: false,
-      error: {}
+      error: {},
+      editingDetails: false,
+      updateSuccessful: {}
     };
   }
 
@@ -46,7 +49,7 @@ export default class OwnerHome extends Component {
     const userId =
       loadState('userAuthenticationDetails') &&
       loadState('userAuthenticationDetails').userId;
-
+      
     axios
       .get(
         `https://safeslot-backend.herokuapp.com/api/users/${userId}?filter={"include": "stores"}`
@@ -76,13 +79,11 @@ export default class OwnerHome extends Component {
               this.setState({ bookings: formatBookingsList(res.data) });
             })
             .catch(err => {
-              console.log(err);
               this.showError('danger', 'Some error occurred');
             });
         }
       })
       .catch(err => {
-        console.log(err);
         this.showError('danger', 'Some error occurred');
       });
   }
@@ -94,6 +95,10 @@ export default class OwnerHome extends Component {
       this.setState({ viewDetails: false, selectedbooking: {} });
     }
   };
+  
+  toggleUpdateDetails = () => {
+    this.setState({ editingDetails: !this.state.editingDetails });
+  }
 
   logout = () => {
     localStorage.clear();
@@ -108,6 +113,18 @@ export default class OwnerHome extends Component {
   closeError = () => {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
+  
+  showSuccess = (type, message) => {
+    this.setState(
+      Object.assign({ ...this.state }, { updateSuccessful: { type, message } })
+    )
+  }
+  
+  closeAlert = () => {
+     this.setState(
+      Object.assign({ ...this.state }, { updateSuccessful: {} })
+    )
+  }
 
   render() {
     const { user } = this.state;
@@ -121,7 +138,11 @@ export default class OwnerHome extends Component {
             message={this.state.error.message}
             onClose={this.closeError}
           />
-
+          <Alerts
+            type={this.state.updateSuccessful.type}
+            message={this.state.updateSuccessful.message}
+            onClose={this.closeAlert}
+          />
           <div className="booking-wrapper">
             <h5>{store.name}</h5>
             <h5>{user.phone}</h5>
@@ -130,6 +151,11 @@ export default class OwnerHome extends Component {
             <Button color="info" onClick={this.toggleAddSlots}>
               Edit Slots
             </Button>
+            {store.isVerified && (
+              <Button color="info" onClick={this.toggleUpdateDetails}>
+                Update Store Details
+              </Button>
+            )}
             {this.state.addSlots && (
               <AddSlots
                 openModal={this.state.addSlots}
@@ -145,6 +171,15 @@ export default class OwnerHome extends Component {
               bookings={this.state.bookings}
               style={{ margin: '10px 0' }}
             />
+
+            {this.state.editingDetails && (
+              <UpdateForm
+                openModal={this.state.editingDetails}
+                user={this.state.user}
+                toggleUpdateDetails={this.toggleUpdateDetails}
+                showSuccess={this.showSuccess}
+              />
+            )}
           </div>
         </Container>
       </>

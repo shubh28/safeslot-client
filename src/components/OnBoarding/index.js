@@ -17,6 +17,7 @@ import axios from 'axios';
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
+import { createHours, createMinutes } from '../../helpers/index'
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -185,58 +186,6 @@ export default class OnBoarding extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-  createHours = type => {
-    const options = [];
-    const { shop_open_hours, shop_close_hours } = this.state;
-    if (type === 'start') {
-      const endTime = shop_close_hours !== 0 ? parseInt(shop_close_hours) : 23;
-      for (let i = 0; i <= endTime; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    } else {
-      const startTime = shop_open_hours !== 0 ? parseInt(shop_open_hours) : 0;
-      for (let i = startTime; i <= 23; i++) {
-        options.push(
-          <option key={i} value={i.toString().padStart(2, '0')}>
-            {i.toString().padStart(2, '0')}
-          </option>
-        );
-      }
-    }
-    return options;
-  };
-
-  createMinutes = type => {
-    const options = [];
-    const { shop_close_minutes, shop_open_minutes } = this.state;
-    // if (type === "start") {
-    // const endTime = shop_close_minutes !== 0 ? parseInt(shop_close_minutes) : 55;
-    for (let i = 0; i <= 45; i += 15) {
-      options.push(
-        <option key={i} value={i.toString().padStart(2, '0')}>
-          {i.toString().padStart(2, '0')}
-        </option>
-      );
-    }
-    // }
-
-    // else {
-    //   const startTime = shop_open_minutes !== 0 ? parseInt(shop_open_minutes) : 0;
-    //   for(let i=startTime; i<=55; i+=15){
-    //     options.push(
-    //       <option key={i} value={i.toString().padStart(2, '0')}>
-    //         {i.toString().padStart(2, '0')}
-    //       </option>
-    //     );
-    //   }
-    // }
-    return options;
-  };
-
   render() {
     const {
       name,
@@ -389,7 +338,7 @@ export default class OnBoarding extends Component {
                 name="shop_open_hours"
                 onChange={this.handleOnChange}
               >
-                {this.createHours('start')}
+                {createHours('start', shop_open_hours, shop_close_hours)}
               </Input>
               &nbsp;:&nbsp;
               <Input
@@ -399,7 +348,7 @@ export default class OnBoarding extends Component {
                 name="shop_open_minutes"
                 onChange={this.handleOnChange}
               >
-                {this.createMinutes('start')}
+                {createMinutes('start')}
               </Input>
             </FormGroup>
             <FormGroup
@@ -409,7 +358,7 @@ export default class OnBoarding extends Component {
                 justifyContent: 'space-between'
               }}
             >
-              <label style={{ width: '50%' }}>Shop Cloing Time</label>
+              <label style={{ width: '50%' }}>Shop Closing Time</label>
               <Input
                 type="select"
                 style={{ width: '20%' }}
@@ -417,7 +366,7 @@ export default class OnBoarding extends Component {
                 name="shop_close_hours"
                 onChange={this.handleOnChange}
               >
-                {this.createHours('end')}
+                {createHours('end', shop_open_hours, shop_close_hours)}
               </Input>
               &nbsp;:&nbsp;
               <Input
@@ -427,7 +376,7 @@ export default class OnBoarding extends Component {
                 name="shop_close_minutes"
                 onChange={this.handleOnChange}
               >
-                {this.createMinutes('end')}
+                {createMinutes('end')}
               </Input>
             </FormGroup>
             <FormGroup>
