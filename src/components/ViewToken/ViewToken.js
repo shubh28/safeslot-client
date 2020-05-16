@@ -36,7 +36,7 @@ export default (props) => {
             })
 
         //search for current token
-        const tokenFilter = { "where": { "store_id": storeid }}
+        const tokenFilter = { "where": {"and": [{ "store_id": storeid }, {date: {gte: date}}]} }
         axios
             .get(`${API_URL}/tokens?filter=${JSON.stringify(tokenFilter)}`)
             .then(res => {
