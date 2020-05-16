@@ -17,6 +17,7 @@ import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
 import Referral from '../components/Referral';
 import Splash from '../components/Splash';
+import GenerateToken from '../components/GenerateToken';
 
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
@@ -83,6 +84,16 @@ export default class RouteWrapper extends Component {
                   exact
                   path="/store/:storeid"
                   component={SingleStoreLanding}
+                />
+                <Route
+                  exact
+                  path="/store/:storeid/token"
+                  component={GenerateToken}
+                />
+                <Route
+                  exact
+                  path="/store/:storeid/token/status/:phone"
+                  component={GenerateToken}
                 />
                 <Route exact path="/onboard" component={OnBoarding} />
                 <Route exact path="/owners" component={OwnerHome} />
