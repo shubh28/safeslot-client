@@ -122,7 +122,6 @@ export default (props) => {
 					<img src={storesvg} style={{ margin: "auto", display: "block" }} />
 					<h2 >Take your token of</h2>
 					<div style={{background: "#eee", padding: "4px"}} > <h3>{store.name}</h3></div>
-					<h4>Current Token Number is <strong>{token.current_token || 0}</strong></h4>
 				</CardBody>
 			</Card>
 			<br></br>
