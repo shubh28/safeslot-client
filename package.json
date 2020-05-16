@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-circular-progressbar": "^2.0.3",
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.3",
     "react-map-gl-geocoder": "^2.0.11",
