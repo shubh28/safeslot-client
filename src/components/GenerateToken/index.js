@@ -19,33 +19,91 @@ export default (props) => {
 			.then(res => {
 				setStore(res.data);
 			});
-		getTokenNumber();
+		getTokenNumber().then(res => {
+			setToken(res.data[0] || {});
+		});
 		setInterval(() => {
-			getTokenNumber();
+			getTokenNumber().then(res => {
+				setToken(res.data[0] || {});
+			});
 		}, 30000);
 	}, []);
 
 	const getTokenNumber = () => {
 		const date = new Date();
-		date.setHours = 0;
-		date.setMinutes = 0;
-		date.setSeconds = 0;
-		date.setMilliseconds = 0;
+		date.setHours(0)
+		date.setMinutes(0)
+		date.setSeconds(0)
+		date.setMilliseconds(0)
+
 		const filter = {
-			store_id: storeId,
-			date: {
-				gt: date
+			"where": {
+				"and": [{ "store_id": storeId }, {
+					date: {
+						gte: date
+					}
+				}]
 			}
-		};
-		axios
-			.get(`${API_URL}/tokens?filter=${JSON.stringify(filter)}`)
-			.then(res => {
-				setToken(res.data[0] || {});
-			})
+		}
+		return axios.get(`${API_URL}/tokens?filter=${JSON.stringify(filter)}`)
 	}
 
 	const generateToken = () => {
-		
+
+		if (!mobile) {
+			alert("Please enter mobile number");
+			return;
+		}
+		const date = new Date();
+		date.setHours(0);
+		date.setMinutes(0);
+		date.setSeconds(0);
+		date.setMilliseconds(0);
+		const filter = { "where": { "and": [{ "store_id": storeId }, { "mobile": mobile }, {date: {gte: date}}] } }
+		axios.get(`${API_URL}/tokenBookings?filter=${JSON.stringify(filter)}`)
+			.then(res => {
+				if (res.data.length > 0) {
+					props.history.push(`/store/${storeId}/token/status/${mobile}`);
+				} else {
+					getTokenNumber().then(res => {
+						const tokenInfo = res.data[0] || {};
+						const body = {
+							store_id: storeId,
+							mobile,
+							token_number: tokenInfo.next_assign_token + 1 || 1,
+							date
+						};
+						axios.post(`${API_URL}/tokenBookings`, {...body}).then(res => {
+							if (!tokenInfo.id) {
+
+								const body = {
+									date,
+									next_assign_token: 1,
+									current_token: 1,
+									store_id: storeId
+								}
+								axios.post(`${API_URL}/tokens`, {...body})
+									.then(r => {
+										props.history.push(`/store/${storeId}/token/status/${mobile}`);
+									}).catch(err => {
+										alert("Some error occurred. Please try again");
+									})
+							} else {
+								axios.patch(`${API_URL}/tokens/${tokenInfo.id}`, { next_assign_token: tokenInfo.next_assign_token + 1 })
+								.then(res => {
+									props.history.push(`/store/${storeId}/token/status/${mobile}`);	
+								}).catch(err => {
+									alert("Some error occurred. Please try again");
+								})
+
+							}
+						}).catch(err => {
+							alert("Some error occurred. Please try again");
+						});
+					})
+
+				}
+			})
 	}
 
 	const viewToken = () => {
