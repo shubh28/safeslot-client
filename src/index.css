@@ -279,6 +279,8 @@ a:hover {
    * https://github.com/kevinsqi/react-circular-progressbar/issues/94
    */
   vertical-align: middle;
+  display: block;
+  margin: auto;
 }
 
 .CircularProgressbar .CircularProgressbar-path {

@@ -20,7 +20,6 @@ export default (props) => {
 			.get(`${API_URL}/stores/${storeid}`)
 			.then(res => {
                 setStore(res.data);
-                console.log(store)
             });
 
         //search for token booking
@@ -46,43 +45,28 @@ export default (props) => {
             
 	}, []);
 
+	console.log(currentToken, userToken);
+
 	return(
 		<>
 			<img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
 			<Card>
 				<CardBody className="text-center">
-                <img src={storesvg} style={{  display: "block" }} />
+                <img src={storesvg} style={{ margin: "auto", display: "block" }} />
                 <div style={{background: "#eee", padding: "4px" }} > <h3>{store.name}</h3></div>
 				</CardBody>
 			</Card>
 			<br></br>
-            <CircularProgressbar value={currentToken} text={userToken} minValue={0} maxValue={currentToken} />
-			{/* <FormGroup>
-				<Input 
-					type="tel" 
-					placeholder="Enter Mobile Number" 
-					onChange={(e) => setMobile(e.target.value)}
-					value={mobile}
-				/>
-			</FormGroup>
-			<FormGroup>
-				<div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-					<Button
-						color="info"
-						style={{width: "50%"}}
-						onClick={generateToken}
-					>
-						Generate token
-	               	</Button>
-					<Button
-						color="info"
-						style={{ width: "50%" }}
-						onClick={viewToken}
-					>
-						View your token
-	               	</Button>
-				</div>
-			</FormGroup> */}
+			<div style={{margin: "auto"}}>
+				{
+					currentToken > 0 && userToken > 0 && 
+						<CircularProgressbar background value={currentToken} text={currentToken} maxValue={userToken} />
+				}
+	            
+    	        <h4 className="text-center">Current Token</h4>
+    	        <br></br>
+            </div>
+            <h2>Your Token: {userToken}</h2>
 		</>
 	)
 }
