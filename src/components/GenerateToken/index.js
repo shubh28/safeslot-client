@@ -59,10 +59,16 @@ export default (props) => {
 		date.setMinutes(0);
 		date.setSeconds(0);
 		date.setMilliseconds(0);
-		const filter = { "where": { "and": [{ "store_id": storeId }, { "mobile": mobile }, {date: {gte: date}}] } }
+		const filter = { 
+			"where": { 
+				"and": [{ "store_id": storeId }, { "mobile": mobile }, {date: {gte: date}}]
+			},
+			"order": "token_number DESC"
+		}
 		axios.get(`${API_URL}/tokenBookings?filter=${JSON.stringify(filter)}`)
 			.then(res => {
-				if (res.data.length > 0) {
+				const booking = res.data[0] || {};
+				if (res.data.length > 0 && booking.token_number >= token.current_token) {
 					props.history.push(`/store/${storeId}/token/status/${mobile}`);
 				} else {
 					getTokenNumber().then(res => {

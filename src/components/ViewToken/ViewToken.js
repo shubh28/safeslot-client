@@ -28,7 +28,12 @@ export default (props) => {
 		date.setMinutes(0);
 		date.setSeconds(0);
 		date.setMilliseconds(0);
-		const tokenBookingFilter = { "where": { "and": [{ "store_id": storeid }, { "mobile": phone }, {date: {gte: date}}] } }
+		const tokenBookingFilter = { 
+			"where": { 
+				"and": [{ "store_id": storeid }, { "mobile": phone }, {date: {gte: date}}]
+			},
+			"order": "token_number DESC"
+		}
         axios
             .get(`${API_URL}/tokenBookings?filter=${JSON.stringify(tokenBookingFilter)}`)
             .then(res => {
