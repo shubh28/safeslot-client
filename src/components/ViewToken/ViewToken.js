@@ -38,17 +38,30 @@ export default (props) => {
             .get(`${API_URL}/tokenBookings?filter=${JSON.stringify(tokenBookingFilter)}`)
             .then(res => {
                 res.data && res.data.length>0 && updateUserToken(res.data[0].token_number)
-            })
-
-        //search for current token
-        const tokenFilter = { "where": {"and": [{ "store_id": storeid }, {date: {gte: date}}]} }
-        axios
-            .get(`${API_URL}/tokens?filter=${JSON.stringify(tokenFilter)}`)
-            .then(res => {
-                res.data && res.data.length>0  && updateCurrentToken(res.data[0].current_token)
-            })
-            
+            })            
+		getTokenNumber();
+		setInterval(() => {
+			getTokenNumber();
+		}, 30000)
 	}, []);
+
+	const getTokenNumber = () => {
+		const date = new Date();
+		date.setHours(0);
+		date.setMinutes(0);
+		date.setSeconds(0);
+		date.setMilliseconds(0);
+		
+		//search for current token
+
+		const tokenFilter = { "where": { "and": [{ "store_id": storeid }, { date: { gte: date } }] } }
+		axios
+			.get(`${API_URL}/tokens?filter=${JSON.stringify(tokenFilter)}`)
+			.then(res => {
+				res.data && res.data.length > 0 && updateCurrentToken(res.data[0].current_token)
+			})
+
+	};
 
 	return(
 		<>
