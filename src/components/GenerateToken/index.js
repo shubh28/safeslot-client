@@ -11,7 +11,8 @@ import storesvg from '../../assets/storesvg.svg';
 export default (props) => {
 	const [store, setStore] = useState({});
 	const [mobile, setMobile] = useState('');
-	const [token, setToken] = useState({});
+  const [token, setToken] = useState({});
+  const [tokenNumber, setTokenNumber] = useState("");
 	const storeId = props.match.params.storeid;
 	useEffect(() => {
 		axios
@@ -80,6 +81,7 @@ export default (props) => {
 							date
 						};
 						axios.post(`${API_URL}/tokenBookings`, {...body}).then(res => {
+              setTokenNumber(`Token Number ${res.data.token_number} generated for ${res.data.mobile}`);
 							if (!tokenInfo.id) {
 
 								const body = {
@@ -126,8 +128,7 @@ export default (props) => {
 			<Card>
 				<CardBody className="text-center">
 					<img src={storesvg} style={{ margin: "auto", display: "block" }} />
-					<h2 >Take your token of</h2>
-					<div style={{background: "#eee", padding: "4px"}} > <h3>{store.name}</h3></div>
+					<h2 >Create a Token for {store.name}</h2>
 				</CardBody>
 			</Card>
 			<br></br>
@@ -165,6 +166,7 @@ export default (props) => {
 						View your token
 	               	</Button>
 				</div>
+        {tokenNumber}
 			</FormGroup>
 		</>
 	)
