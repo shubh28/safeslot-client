@@ -158,13 +158,13 @@ export default (props) => {
 					>
 						Generate token
 	               	</Button>
-					<Button
+					{/* <Button
 						color="info"
 						style={{ width: "50%" }}
 						onClick={viewToken}
 					>
 						View your token
-	               	</Button>
+	               	</Button> */}
 				</div>
         {tokenNumber}
 			</FormGroup>
