@@ -18,6 +18,8 @@ export default class OwnerHome extends Component {
       viewDetails: false,
       selectedbooking: {},
       addSlots: false,
+      tokens: {},
+      currentToken: 0,
       error: {}
     };
   }
@@ -51,6 +53,11 @@ export default class OwnerHome extends Component {
       const bookings = bookingsRes.data;
       this.setState({ bookings: formatBookingsList(bookings) });
 
+      // Token Section
+      const tokens = await service.fetchTokens(storeId);
+      console.log("tokens", storeId);
+      console.log(tokens[Object.keys(tokens)[0]]);
+      this.setState({ tokens: tokens, currentToken: tokens[Object.keys(tokens)[0]].current_token });
     } catch (error) {
       console.log(error);
       this.showError();
@@ -85,6 +92,14 @@ export default class OwnerHome extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
+  prevToken = () => {
+    this.setState({ currentToken: this.state.currentToken - 1 });
+  };
+
+  nextToken = () => {
+    this.setState({ currentToken: this.state.currentToken + 1 });
+  };
+
   render() {
     const { user } = this.state;
     const store = (user && user.stores) || {};
@@ -105,6 +120,13 @@ export default class OwnerHome extends Component {
             <h6>{store.locality}</h6>
             <Button color="info" onClick={this.toggleAddSlots}>
               Edit Slots
+            </Button>
+            <Button color="info" onClick={this.prevToken}>
+              Previous
+            </Button>
+            {this.state.currentToken}
+            <Button color="info" onClick={this.nextToken}>
+              Next
             </Button>
             {this.state.addSlots && (
               <AddSlots
