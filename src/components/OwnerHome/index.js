@@ -6,7 +6,7 @@ import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import formatBookingsList from './formatBookingsList';
 import { Header } from '../common';
-import { Container } from '../../styles';
+import { Container, TokenStatusContainer } from '../../styles';
 import OwnerHomeService from './ownerHomeService';
 
 export default class OwnerHome extends Component {
@@ -142,13 +142,16 @@ export default class OwnerHome extends Component {
             <h5>{user.phone}</h5>
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
-            <Button color="info" onClick={this.updateToken.bind(null, 'previous')} disabled={this.state.prevDisable}>
-              Previous
-            </Button>
-            {this.state.currentToken}
-            <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
-              Next
-            </Button>
+            <TokenStatusContainer>
+              Live Token Status
+              <Button color="info" onClick={this.updateToken.bind(null, 'previous')} disabled={this.state.prevDisable}>
+                Previous
+              </Button>
+              {this.state.currentToken}
+              <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
+                Next
+              </Button>
+            </TokenStatusContainer>
             <br />
             <Button color="info" onClick={this.toggleAddSlots}>
               Edit Slots
