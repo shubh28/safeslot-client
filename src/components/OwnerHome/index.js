@@ -134,7 +134,7 @@ export default class OwnerHome extends Component {
     const store = (user && user.stores) || {};
     let generateToken = "";
     if (this.state.match && this.state.match.params && this.state.match.params.storeid)
-      generateToken = <GenerateToken history={this.state.tokenHistory} match={this.state.match} />
+      generateToken = <GenerateToken history={this.state.tokenHistory} match={this.state.match} fromOwnerPage={true} />
 
 
     return (

@@ -120,9 +120,9 @@ export default (props) => {
 		props.history.push(`/store/${storeId}/token/status/${mobile}`);
 	}
 
-	return(
-		<>
-			<img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
+  let standalone = (
+    <div>
+      <img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
 			<Card>
 				<CardBody className="text-center">
 					<img src={storesvg} style={{ margin: "auto", display: "block" }} />
@@ -131,6 +131,15 @@ export default (props) => {
 				</CardBody>
 			</Card>
 			<br></br>
+    </div>
+  );
+
+  if (props.fromOwnerPage)
+    standalone = "";
+
+	return(
+		<>
+			{standalone}
 			<FormGroup>
 				<Input 
 					type="tel" 
