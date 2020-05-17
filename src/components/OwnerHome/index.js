@@ -8,6 +8,7 @@ import formatBookingsList from './formatBookingsList';
 import { Header } from '../common';
 import { Container, TokenStatusContainer } from '../../styles';
 import OwnerHomeService from './ownerHomeService';
+import GenerateToken from '../GenerateToken';
 
 export default class OwnerHome extends Component {
   constructor(props) {
@@ -22,6 +23,10 @@ export default class OwnerHome extends Component {
       currentToken: 0,
       nextDisable: false,
       prevDisable: false,
+      tokenHistory: [],
+      match: {
+        params: {}
+      },
       error: {}
     };
   }
@@ -58,7 +63,7 @@ export default class OwnerHome extends Component {
       // Token Section
       const token = await service.fetchTokens(storeId);
       console.log(token);
-      this.setState({ token: token, currentToken: token.current_token });
+      this.setState({ token: token, currentToken: token.current_token, match: { params: { storeid: storeId } } });
       this.checkDisable();
     } catch (error) {
       console.log(error);
@@ -127,6 +132,11 @@ export default class OwnerHome extends Component {
   render() {
     const { user } = this.state;
     const store = (user && user.stores) || {};
+    let generateToken = "";
+    if (this.state.match && this.state.match.params && this.state.match.params.storeid)
+      generateToken = <GenerateToken history={this.state.tokenHistory} match={this.state.match} />
+
+
     return (
       <div>
         <Header heading="Owner Portal" backPath={'/'} />
@@ -151,6 +161,7 @@ export default class OwnerHome extends Component {
               <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
                 Next
               </Button>
+              {generateToken}
             </TokenStatusContainer>
             <br />
             <Button color="info" onClick={this.toggleAddSlots}>
