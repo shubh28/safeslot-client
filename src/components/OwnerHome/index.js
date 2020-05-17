@@ -18,7 +18,7 @@ export default class OwnerHome extends Component {
       viewDetails: false,
       selectedbooking: {},
       addSlots: false,
-      tokens: {},
+      token: {},
       currentToken: 0,
       nextDisable: false,
       prevDisable: false,
@@ -56,10 +56,10 @@ export default class OwnerHome extends Component {
       this.setState({ bookings: formatBookingsList(bookings) });
 
       // Token Section
-      const tokens = await service.fetchTokens(storeId);
-      console.log("tokens", storeId);
-      console.log(tokens[Object.keys(tokens)[0]]);
-      this.setState({ tokens: tokens, currentToken: tokens[Object.keys(tokens)[0]].current_token });
+      const token = await service.fetchTokens(storeId);
+      console.log(token);
+      this.setState({ token: token, currentToken: token.current_token });
+      this.checkDisable();
     } catch (error) {
       console.log(error);
       this.showError();
@@ -94,36 +94,34 @@ export default class OwnerHome extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-  prevToken = () => {
+  updateToken = (operation) => {
     const service = new OwnerHomeService();
-    let tokenToUpdate = this.state.currentToken - 1;
-    service.updateToken(this.state.tokens[tokenToUpdate].id, this.state.tokens[tokenToUpdate])
-      .then(result => {
-        this.setState({ currentToken: this.state.currentToken - 1 });
-        this.checkDisable();
-      });
-  };
+    let tokenToUpdate;
+    if (operation === 'previous')
+      tokenToUpdate = this.state.currentToken - 1;
+    else if (operation === 'next')
+      tokenToUpdate = this.state.currentToken + 1;
 
-  nextToken = () => {
-    const service = new OwnerHomeService();
-    let tokenToUpdate = this.state.currentToken + 1;
-    service.updateToken(this.state.tokens[tokenToUpdate].id, this.state.tokens[tokenToUpdate])
+    let tokenData = this.state.token;
+    tokenData.current_token = tokenToUpdate;
+    service.updateToken(tokenData.id, tokenData)
       .then(result => {
         this.setState({ currentToken: tokenToUpdate });
         this.checkDisable();
       });
-  };
+  }
 
   checkDisable = () => {
-    if (!this.state.tokens[this.state.currentToken + 1])
-      this.setState({ nextDisable: true });
-    else
+    let currentToken = this.state.currentToken;
+    if (currentToken < this.state.token.next_assign_token)
       this.setState({ nextDisable: false });
-
-    if (!this.state.tokens[this.state.currentToken - 1])
-      this.setState({ prevDisable: true });
     else
+      this.setState({ nextDisable: true });
+
+    if (currentToken > 0)
       this.setState({ prevDisable: false });
+    else
+      this.setState({ prevDisable: true });
   }
 
   render() {
@@ -144,11 +142,11 @@ export default class OwnerHome extends Component {
             <h5>{user.phone}</h5>
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
-            <Button color="info" onClick={this.prevToken} disabled={this.state.prevDisable}>
+            <Button color="info" onClick={this.updateToken.bind(null, 'previous')} disabled={this.state.prevDisable}>
               Previous
             </Button>
             {this.state.currentToken}
-            <Button color="info" onClick={this.nextToken} disabled={this.state.nextDisable}>
+            <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
               Next
             </Button>
             <br />

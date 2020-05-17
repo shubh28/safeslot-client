@@ -37,9 +37,7 @@ export default class OwnerHomeService {
     };
     
     const response = await axios.get(`${API_URL}/tokens?filter=${JSON.stringify(filter)}`);
-    let data = {};
-    response.data.forEach(e => data[e.current_token] = e);
-    return data;
+    return response.data[0] || [];
   }
 
   updateToken = async (tokenId, tokenData) => {
