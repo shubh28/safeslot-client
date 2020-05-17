@@ -20,6 +20,8 @@ export default class OwnerHome extends Component {
       addSlots: false,
       tokens: {},
       currentToken: 0,
+      nextDisable: false,
+      prevDisable: false,
       error: {}
     };
   }
@@ -49,7 +51,7 @@ export default class OwnerHome extends Component {
       }
 
       const storeId = user.storeId;
-      const  bookingsRes = await service.fetchBookings(storeId);
+      const bookingsRes = await service.fetchBookings(storeId);
       const bookings = bookingsRes.data;
       this.setState({ bookings: formatBookingsList(bookings) });
 
@@ -93,12 +95,36 @@ export default class OwnerHome extends Component {
   };
 
   prevToken = () => {
-    this.setState({ currentToken: this.state.currentToken - 1 });
+    const service = new OwnerHomeService();
+    let tokenToUpdate = this.state.currentToken - 1;
+    service.updateToken(this.state.tokens[tokenToUpdate].id, this.state.tokens[tokenToUpdate])
+      .then(result => {
+        this.setState({ currentToken: this.state.currentToken - 1 });
+        this.checkDisable();
+      });
   };
 
   nextToken = () => {
-    this.setState({ currentToken: this.state.currentToken + 1 });
+    const service = new OwnerHomeService();
+    let tokenToUpdate = this.state.currentToken + 1;
+    service.updateToken(this.state.tokens[tokenToUpdate].id, this.state.tokens[tokenToUpdate])
+      .then(result => {
+        this.setState({ currentToken: tokenToUpdate });
+        this.checkDisable();
+      });
   };
+
+  checkDisable = () => {
+    if (!this.state.tokens[this.state.currentToken + 1])
+      this.setState({ nextDisable: true });
+    else
+      this.setState({ nextDisable: false });
+
+    if (!this.state.tokens[this.state.currentToken - 1])
+      this.setState({ prevDisable: true });
+    else
+      this.setState({ prevDisable: false });
+  }
 
   render() {
     const { user } = this.state;
@@ -118,15 +144,16 @@ export default class OwnerHome extends Component {
             <h5>{user.phone}</h5>
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
-            <Button color="info" onClick={this.toggleAddSlots}>
-              Edit Slots
-            </Button>
-            <Button color="info" onClick={this.prevToken}>
+            <Button color="info" onClick={this.prevToken} disabled={this.state.prevDisable}>
               Previous
             </Button>
             {this.state.currentToken}
-            <Button color="info" onClick={this.nextToken}>
+            <Button color="info" onClick={this.nextToken} disabled={this.state.nextDisable}>
               Next
+            </Button>
+            <br />
+            <Button color="info" onClick={this.toggleAddSlots}>
+              Edit Slots
             </Button>
             {this.state.addSlots && (
               <AddSlots

@@ -41,4 +41,9 @@ export default class OwnerHomeService {
     response.data.forEach(e => data[e.current_token] = e);
     return data;
   }
+
+  updateToken = async (tokenId, tokenData) => {
+    const response = await axios.put(`${API_URL}/tokens/${tokenId}`, {...tokenData});
+    return response;
+  }
 }
