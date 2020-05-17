@@ -81,7 +81,7 @@ export default (props) => {
 							date
 						};
 						axios.post(`${API_URL}/tokenBookings`, {...body}).then(res => {
-              setTokenNumber(`Token Number ${res.data.token_number} generated for ${res.data.mobile}`);
+              setTokenNumber(`Token Number ${res.data.token_number} generated for Mobile:${res.data.mobile}`);
 							if (!tokenInfo.id) {
 
 								const body = {
