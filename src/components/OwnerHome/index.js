@@ -118,7 +118,7 @@ export default class OwnerHome extends Component {
     else
       this.setState({ nextDisable: true });
 
-    if (currentToken > 0)
+    if (currentToken > 1)
       this.setState({ prevDisable: false });
     else
       this.setState({ prevDisable: true });
