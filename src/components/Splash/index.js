@@ -46,6 +46,9 @@ export default function Splash() {
               <Link to={'/owners'}>
                 <Button>Manage Stores</Button>
               </Link>
+              <Link to={'/managebookings'}>
+                <Button>Manage Bookings</Button>
+              </Link>
             </>
           ) : (
             <>
