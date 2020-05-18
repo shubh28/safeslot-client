@@ -83,6 +83,11 @@ export default (props) => {
     	        <br></br>
             </div>
             <h2>Your Token: {userToken}</h2>
+	    <br></br>
+	    <br></br>
+	    <br></br>
+	    <br></br>
+
 		</>
 	)
 }
