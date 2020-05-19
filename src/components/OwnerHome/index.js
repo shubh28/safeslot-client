@@ -6,7 +6,7 @@ import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import formatBookingsList from './formatBookingsList';
 import { Header } from '../common';
-import { Container, TokenStatusContainer } from '../../styles';
+import { Container } from '../../styles';
 import OwnerHomeService from './ownerHomeService';
 
 export default class OwnerHome extends Component {
@@ -18,11 +18,6 @@ export default class OwnerHome extends Component {
       viewDetails: false,
       selectedbooking: {},
       addSlots: false,
-      token: {},
-      currentToken: 0,
-      nextDisable: false,
-      prevDisable: false,
-      tokenHistory: [],
       error: {}
     };
   }
@@ -52,15 +47,10 @@ export default class OwnerHome extends Component {
       }
 
       const storeId = user.storeId;
-      const bookingsRes = await service.fetchBookings(storeId);
+      const  bookingsRes = await service.fetchBookings(storeId);
       const bookings = bookingsRes.data;
       this.setState({ bookings: formatBookingsList(bookings) });
 
-      // Token Section
-      const token = await service.fetchTokens(storeId);
-      console.log(token);
-      this.setState({ token: token, currentToken: token.current_token });
-      this.checkDisable();
     } catch (error) {
       console.log(error);
       this.showError();
@@ -95,40 +85,9 @@ export default class OwnerHome extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-  updateToken = (operation) => {
-    const service = new OwnerHomeService();
-    let tokenToUpdate;
-    if (operation === 'previous')
-      tokenToUpdate = this.state.currentToken - 1;
-    else if (operation === 'next')
-      tokenToUpdate = this.state.currentToken + 1;
-
-    let tokenData = this.state.token;
-    tokenData.current_token = tokenToUpdate;
-    service.updateToken(tokenData.id, tokenData)
-      .then(result => {
-        this.setState({ currentToken: tokenToUpdate });
-        this.checkDisable();
-      });
-  }
-
-  checkDisable = () => {
-    let currentToken = this.state.currentToken;
-    if (currentToken < this.state.token.next_assign_token)
-      this.setState({ nextDisable: false });
-    else
-      this.setState({ nextDisable: true });
-
-    if (currentToken > 1)
-      this.setState({ prevDisable: false });
-    else
-      this.setState({ prevDisable: true });
-  }
-
   render() {
     const { user } = this.state;
     const store = (user && user.stores) || {};
-
     return (
       <div>
         <Header heading="Owner Portal" backPath={'/'} />
@@ -144,17 +103,6 @@ export default class OwnerHome extends Component {
             <h5>{user.phone}</h5>
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
-            <TokenStatusContainer>
-              Live Token Status
-              <Button color="info" onClick={this.updateToken.bind(null, 'previous')} disabled={this.state.prevDisable}>
-                Previous
-              </Button>
-              {this.state.currentToken}
-              <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
-                Next
-              </Button>
-            </TokenStatusContainer>
-            <br />
             <Button color="info" onClick={this.toggleAddSlots}>
               Edit Slots
             </Button>

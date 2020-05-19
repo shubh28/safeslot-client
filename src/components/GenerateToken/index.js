@@ -11,8 +11,7 @@ import storesvg from '../../assets/storesvg.svg';
 export default (props) => {
 	const [store, setStore] = useState({});
 	const [mobile, setMobile] = useState('');
-  const [token, setToken] = useState({});
-  const [tokenNumber, setTokenNumber] = useState("");
+	const [token, setToken] = useState({});
 	const storeId = props.match.params.storeid;
 	useEffect(() => {
 		axios
@@ -81,7 +80,6 @@ export default (props) => {
 							date
 						};
 						axios.post(`${API_URL}/tokenBookings`, {...body}).then(res => {
-              setTokenNumber(`Token Number ${res.data.token_number} generated for Mobile:${res.data.mobile}`);
 							if (!tokenInfo.id) {
 
 								const body = {
@@ -122,25 +120,17 @@ export default (props) => {
 		props.history.push(`/store/${storeId}/token/status/${mobile}`);
 	}
 
-  let standalone = (
-    <div>
-      <img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
+	return(
+		<>
+			<img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
 			<Card>
 				<CardBody className="text-center">
 					<img src={storesvg} style={{ margin: "auto", display: "block" }} />
-					<h2 >Create a Token for {store.name}</h2>
+					<h2 >Take your token of</h2>
+					<div style={{background: "#eee", padding: "4px"}} > <h3>{store.name}</h3></div>
 				</CardBody>
 			</Card>
 			<br></br>
-    </div>
-  );
-
-  if (props.fromOwnerPage)
-    standalone = "";
-
-	return(
-		<>
-			{standalone}
 			<FormGroup>
 				<Input 
 					type="tel" 
@@ -158,15 +148,14 @@ export default (props) => {
 					>
 						Generate token
 	               	</Button>
-					{/* <Button
+					<Button
 						color="info"
 						style={{ width: "50%" }}
 						onClick={viewToken}
 					>
 						View your token
-	               	</Button> */}
+	               	</Button>
 				</div>
-        {tokenNumber}
 			</FormGroup>
 			<br></br>
 			<br></br>
