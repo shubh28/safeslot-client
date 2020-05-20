@@ -113,7 +113,7 @@ export default class OwnerHome extends Component {
 
   checkDisable = () => {
     let currentToken = this.state.currentToken;
-    if (currentToken < this.state.token.next_assign_token)
+    if (currentToken <= this.state.token.next_assign_token)
       this.setState({ nextDisable: false });
     else
       this.setState({ nextDisable: true });
