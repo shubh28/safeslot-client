@@ -1,5 +1,7 @@
 // Types for action types
 // export const API_URL = "http://theanswerme.com:8000/api/v1";
+// export const SERVICE_URL = 'https://safeslot.in';
+export const SERVICE_URL = 'http://10.0.0.16:3000';
 export const API_URL = 'https://safeslot-backend.herokuapp.com/api';
 export const DEFAULT_LOCATION = {
   latitude: 28.63298099999998,

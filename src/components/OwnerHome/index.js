@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
 import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
 import StoreBooking from './StoreBooking';
 import formatBookingsList from './formatBookingsList';
 import { Header } from '../common';
-import { Container, TokenStatusContainer } from '../../styles';
+import {
+  Container,
+  TokenStatusContainer,
+  SmsInputContainer
+} from '../../styles';
 import OwnerHomeService from './ownerHomeService';
+import 'intl-tel-input/build/css/intlTelInput.css';
+import ReactIntlTelInput from 'react-intl-tel-input-v2';
 
 export default class OwnerHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      service: new OwnerHomeService(),
       user: {},
       bookings: [],
       viewDetails: false,
@@ -22,7 +29,11 @@ export default class OwnerHome extends Component {
       currentToken: 0,
       nextDisable: false,
       prevDisable: false,
-      error: {}
+      error: {},
+      numberInput: { iso2: 'in', dialCode: '91', phone: '' },
+      generatedToken: null,
+      smsString: '',
+      smsSendDisabled: true
     };
   }
 
@@ -34,7 +45,7 @@ export default class OwnerHome extends Component {
     const userAuthDetails = loadUserAuthenticationDetails();
     const userId = userAuthDetails && userAuthDetails.userId;
 
-    const service = new OwnerHomeService();
+    const service = this.state.service;
     try {
       const userRes = await service.fetchUser(userId);
       const user = userRes.data;
@@ -64,13 +75,15 @@ export default class OwnerHome extends Component {
       console.log(error);
       this.showError();
     }
-
   }
 
-
-  storeOwnerUserHasNoStores = (user) => {
-    return (user.isStoreOwner && !user.storeId) || !user.stores || Object.keys(user.stores).length === 0;
-  }
+  storeOwnerUserHasNoStores = user => {
+    return (
+      (user.isStoreOwner && !user.storeId) ||
+      !user.stores ||
+      Object.keys(user.stores).length === 0
+    );
+  };
 
   toggleViewDetails = booking => {
     if (booking.id) {
@@ -94,38 +107,77 @@ export default class OwnerHome extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
-  updateToken = (operation) => {
-    const service = new OwnerHomeService();
+  updateToken = operation => {
+    const service = this.state.service;
     let tokenToUpdate;
-    if (operation === 'previous')
-      tokenToUpdate = this.state.currentToken - 1;
-    else if (operation === 'next')
-      tokenToUpdate = this.state.currentToken + 1;
+    if (operation === 'previous') tokenToUpdate = this.state.currentToken - 1;
+    else if (operation === 'next') tokenToUpdate = this.state.currentToken + 1;
 
     let tokenData = this.state.token;
     tokenData.current_token = tokenToUpdate;
-    service.updateToken(tokenData.id, tokenData)
-      .then(result => {
-        this.setState({ currentToken: tokenToUpdate });
-        this.checkDisable();
-      });
-  }
+    service.updateToken(tokenData.id, tokenData).then(result => {
+      this.setState({ currentToken: tokenToUpdate });
+      this.checkDisable();
+    });
+  };
 
   checkDisable = () => {
     let currentToken = this.state.currentToken;
     if (currentToken < this.state.token.next_assign_token)
       this.setState({ nextDisable: false });
-    else
-      this.setState({ nextDisable: true });
+    else this.setState({ nextDisable: true });
 
-    if (currentToken > 1)
-      this.setState({ prevDisable: false });
-    else
-      this.setState({ prevDisable: true });
-  }
+    if (currentToken > 1) this.setState({ prevDisable: false });
+    else this.setState({ prevDisable: true });
+  };
+
+  handleNumberInputChange = object => {
+    this.setState({ numberInput: object });
+  };
+
+  generateManualToken = async mobile => {
+    // do generate token things
+    const service = this.state.service;
+    try {
+      const tokenRes = await service.generateToken(
+        mobile,
+        this.state.user.storeId
+      );
+      const smsMsg = service.generateSMSurl(
+        mobile,
+        tokenRes,
+        this.state.currentToken
+      );
+      this.setState({
+        generatedToken: tokenRes,
+        smsSendDisabled: false,
+        smsString: smsMsg
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ generatedToken: 'error' });
+    }
+  };
+
+  resetTokenfields = () => {
+    if (!this.state.smsSendDisabled) {
+      // resets Input number, resets stored token value, disables SMS button
+      this.setState({
+        numberInput: { iso2: 'in', dialCode: '91', phone: '' },
+        generatedToken: null,
+        smsSendDisabled: true
+      });
+    }
+  };
 
   render() {
-    const { user } = this.state;
+    const {
+      user,
+      numberInput,
+      smsString,
+      smsSendDisabled,
+      generatedToken
+    } = this.state;
     const store = (user && user.stores) || {};
     return (
       <div>
@@ -143,15 +195,61 @@ export default class OwnerHome extends Component {
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
             <TokenStatusContainer>
-              Live Token Status
-              <Button color="info" onClick={this.updateToken.bind(null, 'previous')} disabled={this.state.prevDisable}>
+              Current Line Token
+              <Button
+                color="info"
+                onClick={this.updateToken.bind(null, 'previous')}
+                disabled={this.state.prevDisable}
+              >
                 Previous
               </Button>
-              {this.state.currentToken}
-              <Button color="info" onClick={this.updateToken.bind(null, 'next')} disabled={this.state.nextDisable}>
+              <Button
+                color="info"
+                onClick={this.updateToken.bind(null, 'next')}
+              >
+                {this.state.currentToken}
+              </Button>
+              <Button
+                color="info"
+                onClick={this.updateToken.bind(null, 'next')}
+                disabled={this.state.nextDisable}
+              >
                 Next
               </Button>
             </TokenStatusContainer>
+            <SmsInputContainer>
+              <div>
+                <p>Generate Token</p>
+                <ReactIntlTelInput
+                  inputProps={{ placeholder: 'Enter a phone number' }}
+                  intlTelOpts={{ prefferedCountries: ['in'] }}
+                  value={numberInput}
+                  onChange={e => this.handleNumberInputChange(e)}
+                />
+              </div>
+              <div>
+                <Button
+                  color="info"
+                  onClick={() =>
+                    this.generateManualToken(
+                      this.state.numberInput.dialCode +
+                        this.state.numberInput.phone
+                    )
+                  }
+                >
+                  Get Token
+                </Button>
+                <div hidden={!generatedToken}>#{generatedToken}</div>
+                <Button
+                  color="info"
+                  onClick={this.resetTokenfields}
+                  href={smsString}
+                  disabled={smsSendDisabled}
+                >
+                  Send SMS
+                </Button>
+              </div>
+            </SmsInputContainer>
             <br />
             <Button color="info" onClick={this.toggleAddSlots}>
               Edit Slots
