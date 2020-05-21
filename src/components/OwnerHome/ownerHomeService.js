@@ -89,7 +89,7 @@ export default class OwnerHomeService {
       const body = {
         store_id: storeId,
         mobile,
-        token_number: assignNumber,
+        token_number: assignNumber + 1,
         date
       };
 
