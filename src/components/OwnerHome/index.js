@@ -204,7 +204,6 @@ export default class OwnerHome extends Component {
               </Button>
               <Button
                 color="info"
-                onClick={this.updateToken.bind(null, 'next')}
               >
                 {this.state.currentToken}
               </Button>
