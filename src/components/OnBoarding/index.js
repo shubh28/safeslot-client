@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Button,
   Form,
   FormGroup,
-  Label,
   Input,
   FormText,
   UncontrolledDropdown,
@@ -13,11 +11,12 @@ import {
   DropdownItem
 } from 'reactstrap';
 import axios from 'axios';
-
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
 import { createHours, createMinutes } from '../../helpers/index'
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
 
 export default class OnBoarding extends Component {
   constructor(props) {
@@ -86,7 +85,7 @@ export default class OnBoarding extends Component {
     if (!latitude || !longitude) {
       this.showError(
         'danger',
-        'Please select locality from drop down to calculated your coordinates'
+        'Please select locality from drop down to calculate your coordinates'
       );
       return;
     }
@@ -110,8 +109,6 @@ export default class OnBoarding extends Component {
       shop_close_minutes,
       slot_duration
     };
-
-    console.log(body);
 
     axios
       .post('https://safeslot-backend.herokuapp.com/api/stores', { ...body })
@@ -195,7 +192,6 @@ export default class OnBoarding extends Component {
       address,
       locality,
       city,
-      store_type,
       shop_open_hours,
       shop_open_minutes,
       shop_close_hours,
@@ -238,6 +234,9 @@ export default class OnBoarding extends Component {
                 <option>Select Store type</option>
                 <option value="GROCERY">Groceries</option>
                 <option value="PHARMACY">Pharmacies</option>
+                <option value="BOOK STORE">Book Store</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="OTHERS">Others</option>
               </Input>
             </FormGroup>
 
@@ -263,7 +262,7 @@ export default class OnBoarding extends Component {
               />
               <UncontrolledDropdown
                 isOpen={this.state.locations.length > 0}
-                toggle={() => {}}
+                toggle={() => { }}
               >
                 <DropdownMenu right>
                   {this.state.locations.map(location => {
@@ -323,11 +322,15 @@ export default class OnBoarding extends Component {
                 placeholder="Your store size (in sq.ft)"
               />
             </FormGroup>
-            <FormGroup
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+            <TimeSelectFormGroup
+              shop_open_hours={shop_open_hours}
+              shop_open_minutes={shop_open_minutes}
+              shop_close_hours={shop_close_hours}
+              shop_close_minutes={shop_close_minutes}
+              onOpenHoursChanged={(hours) => {
+                this.setState({
+                  shop_open_hours: hours
+                })
               }}
             >
               <label style={{ width: '50%' }}>Shop Opening Time</label>
@@ -391,6 +394,31 @@ export default class OnBoarding extends Component {
                 <option value="30">30 minutes</option>
               </Input>
             </FormGroup>
+
+              onOpenMinsChanged={(mins) => {
+                this.setState({
+                  shop_open_minutes: mins
+                })
+              }}
+              onCloseHoursChanged={(hours) => {
+                this.setState({
+                  shop_close_hours: hours
+                })
+              }}
+              onCloseMinsChanged={(mins) => {
+                this.setState({
+                  shop_close_minutes: mins
+                })
+              }}
+            />
+            <SlotDuration
+              slotDuration={slot_duration}
+              onDurationChange={(duration) => {
+                this.setState({
+                  slot_duration: duration
+                })
+              }} />
+
             <FormGroup>
               <Button
                 required

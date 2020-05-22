@@ -21,7 +21,7 @@ function CollapsableWrapper({ children, title, ...others }) {
     <div {...others}>
       <div
         style={{
-          background: '#ccc',
+          background: '#ddd',
           padding: '5px',
           margin: '3px',
           border: '1px solid #000',
@@ -43,52 +43,37 @@ function BookingListOfADay({
   setSelectedBooking,
   groupByDate = true
 }) {
+  const sortFunction = (a, b) => {
+    const astart = a
+      .slice(0, 6)
+      .replace(':', '')
+      .trim();
+    const bstart = b
+      .slice(0, 6)
+      .replace(':', '')
+      .trim();
+    return astart - bstart;
+  };
   return (
     <>
-      {groupByDate
-        ? Object.keys(dateBookings).map(slot => {
-            return (
-              <CollapsableWrapper title={slot} key={slot}>
-                {dateBookings[slot].map(booking => (
-                  <BookingCardForStore
-                    booking={booking}
-                    key={booking.id}
-                    setSelectedBooking={setSelectedBooking}
-                  />
-                ))}
-              </CollapsableWrapper>
-            );
-          })
-        : dateBookings.map(booking => (
-            <BookingCardForStore
-              booking={booking}
-              key={booking.id}
-              setSelectedBooking={setSelectedBooking}
-            />
-          ))}
+      {Object.keys(dateBookings)
+        .sort(sortFunction)
+        .map(slot => {
+          return (
+            <CollapsableWrapper title={slot} key={slot}>
+              {dateBookings[slot].map(booking => (
+                <BookingCardForStore
+                  booking={booking}
+                  key={booking.id}
+                  setSelectedBooking={setSelectedBooking}
+                />
+              ))}
+            </CollapsableWrapper>
+          );
+        })}
     </>
   );
 }
-
-// <>
-//   {dateBooking.slots.length ? (
-//     dateBooking.slots.map(slot => (
-//       <CollapsableWrapper title={slot.slotString} key={slot.slotString}>
-//         {slot.slotBookings.length
-//           ? slot.slotBookings.map(booking => (
-//               <BookingCardForStore
-//                 booking={booking}
-//                 key={booking.id}
-//                 setSelectedBooking={setSelectedBooking}
-//               />
-//             ))
-//           : null}
-//       </CollapsableWrapper>
-//     ))
-//   ) : (
-//     <div>No records found</div>
-//   )}
-// </>
 
 export default function BookingList({
   bookings: dateBookings = [],
@@ -109,13 +94,13 @@ export default function BookingList({
                 />
               </CollapsableWrapper>
             ))
-          ) : dateBookings.length ? (
+          ) : (
             <BookingListOfADay
               dateBookings={dateBookings}
               setSelectedBooking={setSelectedBooking}
               groupByDate={groupByDate}
             />
-          ) : null}
+          )}
         </Col>
       </Row>
       {selectedBooking && (

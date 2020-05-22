@@ -17,6 +17,8 @@ import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
 import Referral from '../components/Referral';
 import Splash from '../components/Splash';
+import GenerateToken from '../components/GenerateToken';
+import ViewToken from './ViewToken/ViewToken';
 
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
@@ -25,6 +27,7 @@ import Stores from './Stores';
 import { LocationAndStoreProvider } from '../contexts/location-and-store-context';
 import fetchMiddleware from '../helpers/fetchMiddleware';
 import StoreLanding from './StoreLanding';
+import SingleStoreLanding from './SingleStoreLanding';
 
 const enhancers = compose(
   applyMiddleware(thunk, fetchMiddleware),
@@ -78,6 +81,21 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/bookings" component={Bookings} />
                 <Route exact path="/stores" component={Stores} />
+                <Route
+                  exact
+                  path="/store/:storeid"
+                  component={SingleStoreLanding}
+                />
+                <Route
+                  exact
+                  path="/store/:storeid/token"
+                  component={GenerateToken}
+                />
+                <Route
+                  exact
+                  path="/store/:storeid/token/status/:phone"
+                  component={ViewToken}
+                />
                 <Route exact path="/onboard" component={OnBoarding} />
                 <Route exact path="/owners" component={OwnerHome} />
                 <Route exact path="/refer" component={Referral} />

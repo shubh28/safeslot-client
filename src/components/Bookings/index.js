@@ -53,7 +53,8 @@ export default class Bookings extends Component {
     }
     const filter = {
       where: { user_id: userId },
-      include: ['stores', 'stores_slots']
+      include: ['stores', 'stores_slots'],
+      order: 'booking_date DESC'
     };
     axios
       .get(`${API_URL}/bookings?filter=${JSON.stringify(filter)}`)

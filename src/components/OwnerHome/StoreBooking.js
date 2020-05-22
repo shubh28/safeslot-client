@@ -26,17 +26,37 @@ export default function StoreBooking({ bookings = [], ...others }) {
       return true;
     }
   }
+
+  function filterOrderDetails(bookings){
+    let { today } = bookings; 
+    let timeObj = {};
+    if (today) {
+      let objKeys = Object.keys(today);
+      objKeys.forEach(slot => {
+        today[slot].forEach(booking => {
+        if (booking.order_details && timeObj[slot]) {
+          timeObj[slot].push(booking);
+        } else if (booking.order_details) {
+          timeObj[slot] = [booking]
+        }
+      })})
+      return timeObj; 
+    }
+  }
+
+  const filtered = filterOrderDetails(bookings);
+
   return (
     <>
       <Nav tabs {...others}>
-        <NavItem>
+      <NavItem>
           <NavLink
             className={activeTab === '1' ? 'active' : ''}
             onClick={() => {
               toggle('1');
             }}
           >
-            Today
+            Orders to Fulfill Today
           </NavLink>
         </NavItem>
         <NavItem>
@@ -46,18 +66,32 @@ export default function StoreBooking({ bookings = [], ...others }) {
               toggle('2');
             }}
           >
+            All Bookings Today
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={activeTab === '3' ? 'active' : ''}
+            onClick={() => {
+              toggle('3');
+            }}
+          >
             History
           </NavLink>
         </NavItem>
+   
       </Nav>
       <TabContent activeTab={activeTab}>
-        <TabPane tabId="1">
-          <BookingList bookings={bookings.today} groupByDate={false} />
+      <TabPane tabId="1">
+          <BookingList bookings={filtered} groupByDate={false}/>
         </TabPane>
         <TabPane tabId="2">
+          <BookingList bookings={bookings.today} groupByDate={false} />
+        </TabPane>
+        <TabPane tabId="3">
           <BookingList bookings={bookings.history} />
         </TabPane>
       </TabContent>
     </>
-  );
-}
+  )
+          }

@@ -33,7 +33,7 @@ export default class Stores extends Component {
     const location = selectedLocation && selectedLocation.split(',')[0];
     axios
       .get(
-        `https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}`
+        `https://safeslot-backend.herokuapp.com/api/stores/location?location=${location}&time=${new Date().getTime()}`
       )
       .then(res => {
         this.setState({ stores: res.data });

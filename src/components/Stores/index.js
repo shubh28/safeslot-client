@@ -1,30 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button,
-  Row,
-  Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Badge
-} from 'reactstrap';
+import { Card, CardBody, CardTitle, Badge } from 'reactstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Slots from './Slots';
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { Container } from '../../styles';
+import Slots from './Slots';
 import { API_URL } from '../../common/consts';
 import { ReactComponent as GroceryBack } from '../../assets/grocery.svg';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
-import NoStores from './NoStores';
+import ReferStores from './ReferStores';
 
 function Stores() {
   const [stores, setStores] = useState();
@@ -42,19 +29,15 @@ function Stores() {
     setLoading(true);
 
     axios
-      .get(`${API_URL}/stores/location?lat=${lat}&lng=${lng}`)
+      .get(
+        `${API_URL}/stores/location?lat=${lat}&lng=${lng}&time=${new Date().getHours() -
+          1}`
+      )
       .then(res => {
-        const stores = res.data.map(store => {
-          const { stores_slots_count, ...others } = store;
-          const slots = stores_slots_count.map(store_slot => store_slot.slots);
-          return {
-            ...others,
-            slots
-          };
-        });
-        setStores(stores);
+        setStores(res.data);
       })
       .catch(err => {
+        console.log(err);
         showError('danger', 'Some error while fetching stores');
       })
       .finally(() => {
@@ -96,7 +79,6 @@ function Stores() {
   return (
     <>
       <Header heading="Stores nearby" backPath={'/map'} />
-
       <Container className="theme-Container" fluid={true}>
         <Alerts
           type={error.type}
@@ -113,41 +95,50 @@ function Stores() {
                 return (
                   <Card key={store.id}>
                     <CardBody>
-                      <HeaderDataContainer>
-                        <GroceryBack className="logo" />
-                        <CardTitle className="title">
-                          <strong>{store.name}</strong>
-                          {store.isVerified ? (
-                            <Badge className="badge" color="success">
-                              Verified
-                            </Badge>
-                          ) : (
-                            <Badge className="badge" color="warning">
-                              Not Verified
-                            </Badge>
-                          )}
-                        </CardTitle>
-                        <div className="address">
-                          {store.address}, {store.locality}, {store.city}
-                        </div>
-                        <div className="distance">
-                          {store.distance
-                            ? `${Math.floor(store.distance * 100) / 100}kms`
-                            : ''}
-                        </div>
-                      </HeaderDataContainer>
+                    
+                      <Link
+                        style={{ textDecoration: 'none', color: 'black' }}
+                        to={`/store/${store.id}`}
+                        key={store.id}
+                      >
+                        <HeaderDataContainer>
+                          <GroceryBack className="logo" />
+                          <CardTitle className="title">
+                            <strong>{store.name}</strong>
+                            {store.isVerified ? (
+                              <Badge className="badge" color="success">
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Badge className="badge" color="warning">
+                                Not Verified
+                              </Badge>
+                            )}
+                          </CardTitle>
+                          <div className="address">
+                            {store.address}, {store.locality}, {store.city}
+                          </div>
+                          <div className="distance">
+                            {store.distance
+                              ? `${Math.floor(store.distance * 100) / 100}kms`
+                              : ''}
+                          </div>
+                        </HeaderDataContainer>
+                      </Link>
                       <Slots
                         availableSlots={store.stores_slots}
                         storeId={store.id}
                         showError={showError}
+                        isVerified={store.isVerified}
                       />
                     </CardBody>
                   </Card>
                 );
               })}
+              <ReferStores />
             </>
           ) : (
-            <NoStores />
+            <ReferStores nostores={true} />
           )}
         </div>
       </Container>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AddSlotService from './addSlotService';
 import {
   Button,
   ModalBody,
@@ -6,157 +7,206 @@ import {
   ModalHeader,
   ModalFooter,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Input,
 } from 'reactstrap';
-import axios from 'axios';
-
 import Alerts from '../Alerts';
+import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
+import SlotDuration from '../common/SlotDuration';
+import {
+  formatHoursAndMinutes,
+  generateTimeSlots
+} from '../../helpers/timeSlotHelpers';
+
+
 
 export default class AddSlots extends Component {
+
+  service = new AddSlotService;
+
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      allSlots: [],
-      mySlots: {},
-      error: {}
-    };
+      error: {},
+      store: {},
+      slots: [],
+    }
+    this.maxPeopleAllowedRef = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const storeId = this.props.storeId;
+    this.setState({
+      store: await this.service.getStoreData(storeId)
+    });
     this.getSlots();
   }
 
-  getSlots = () => {
-    this.closeError();
-    const { user } = this.props;
-    const storeId = user && user.stores && user.stores.id;
-    const filter = { where: { storesId: storeId }, include: 'slots' };
-    const mySlots = {};
-    axios
-      .get(
-        `https://safeslot-backend.herokuapp.com/api/stores_slots_counts?filter=${JSON.stringify(
-          filter
-        )}`
-      )
-      .then(res => {
-        res.data.forEach(slot => {
-          mySlots[slot.slotsId] = slot;
-        });
-        this.setState({ mySlots });
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in fetching slots');
-      });
-
-    axios
-      .get(`https://safeslot-backend.herokuapp.com/api/slots`)
-      .then(res => {
-        this.setState({
-          allSlots: res.data
-        });
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in fetching all slots');
-      });
-  };
-
-  addSlots = slot => {
-    this.closeError();
-    const { user } = this.props;
-    const storeId = user && user.stores && user.stores.id;
-    console.log(slot);
-    const body = {
-      slot_count: 5,
-      slotsId: slot.id,
-      storesId: storeId
-    };
-
-    axios
-      .post(`https://safeslot-backend.herokuapp.com/api/stores_slots_counts`, {
-        ...body
-      })
-      .then(res => {
-        this.getSlots();
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in adding slot');
-      });
-  };
-
-  deleteSlots = slot => {
-    this.closeError();
-    axios
-      .delete(
-        `https://safeslot-backend.herokuapp.com/api/stores_slots_counts/${slot.id}`
-      )
-      .then(res => {
-        this.getSlots();
-      })
-      .catch(err => {
-        this.showError('danger', 'Error in deleting slot');
-      });
-  };
-
   showError = (type, message) => {
-    this.setState(
-      Object.assign({ ...this.state }, { error: { type, message } })
-    );
+    this.setState({
+      error: { type, message }
+    });
   };
+
   closeError = () => {
-    this.setState(Object.assign({ ...this.state }, { error: {} }));
+    this.setState({
+      error: { type: '', message: '' }
+    })
+  };
+
+  getSlots = async () => {
+    const storeId = this.props.storeId;
+    try {
+      const slots = await this.service.fetchSlots(storeId);
+      this.setState({ slots });
+    } catch (error) {
+      this.showError('danger', 'Error in fetching all slots');
+    }
+  }
+  getStartTime = () => {
+    const store = this.state.store;
+    return formatHoursAndMinutes(
+      parseInt(store.shop_open_hours || 0),
+      parseInt(store.shop_open_minutes || 0)
+    );
+  }
+
+  getEndTime = () => {
+    const store = this.state.store;
+    return formatHoursAndMinutes(
+      parseInt(store.shop_close_hours || 0),
+      parseInt(store.shop_close_minutes || 0)
+    );
+  }
+
+  printAllSlots = () => {
+    return this.state.slots.map((element, index) => {
+      const start = formatHoursAndMinutes(element.start_hours, element.start_minutes);
+      const end = formatHoursAndMinutes(element.end_hours, element.end_minutes);
+
+      const timeString = `${start} - ${end}`;
+      return (
+        <ListGroupItem key={timeString} className="slot-listItem">
+          {timeString}
+          <Input
+            type="number"
+            id={timeString}
+            ref={this.maxPeopleAllowedRef}
+            style={{ width: '20%' }}
+            min={0}
+            max={1000}
+            value={element.maximun_people_allowed}
+            onInput={(e) => {
+              e.target.value = Math.min(e.target.value, 1000)
+            }}
+            onChange={async (e) => {
+              let newMax = e.target.value;
+              let slotsCopy = [...this.state.slots];
+              slotsCopy[index].maximun_people_allowed = newMax
+              this.setState({
+                slots: slotsCopy
+              });
+            }}
+          />
+        </ListGroupItem>
+      );
+    });
+  };
+
+  generateSlots = (
+    startTime = this.getStartTime(),
+    endTime = this.getEndTime(),
+    interval = this.state.store.slot_duration) => {
+
+    const slots = generateTimeSlots(startTime, endTime, interval)
+
+    this.setState({ slots });
+  };
+
+  handleSave = async () => {
+    const { storeId, toggleAddSlots } = this.props;
+    const { store, slots } = this.state;
+
+    await this.service.updateStore(storeId,
+      store.shop_open_hours,
+      store.shop_open_minutes,
+      store.shop_close_hours,
+      store.shop_close_minutes,
+      store.slot_duration);
+    await this.service.updateSlots(storeId, slots);
+    toggleAddSlots();
   };
 
   render() {
-    const { toggleAddSlots, user, openModal } = this.props;
-    const { mySlots, allSlots } = this.state;
+    const { toggleAddSlots, openModal, storeId } = this.props;
+    const { error } = this.state;
+
+    const {
+      shop_open_hours,
+      shop_open_minutes,
+      shop_close_hours,
+      shop_close_minutes,
+      slot_duration,
+    } = this.state.store;
+
     return (
       <Modal isOpen={openModal} toggle={toggleAddSlots}>
         <ModalHeader toggle={toggleAddSlots}>Your Slots</ModalHeader>
         <ModalBody>
           <Alerts
-            type={this.state.error.type}
-            message={this.state.error.message}
+            type={error.type}
+            message={error.message}
             onClose={this.closeError}
           />
 
-          <p>Please add/remove your slots.</p>
-          <ListGroup>
-            {Object.keys(mySlots).map(slot => {
-              return (
-                <ListGroupItem key={slot} className="slot-listItem">
-                  {mySlots[slot] &&
-                    `${mySlots[slot].slots.start_time} - ${mySlots[slot].slots.end_time}`}
-                  <Button
-                    color="link"
-                    onClick={() => {
-                      this.deleteSlots(mySlots[slot]);
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
-          <br></br>
-          <ListGroup>
-            {allSlots.map(slot => {
-              if (!mySlots[slot.id]) {
-                return (
-                  <ListGroupItem key={slot.id} className="slot-listItem">
-                    {slot.start_time} - {slot.end_time}
-                    <Button color="link" onClick={() => this.addSlots(slot)}>
-                      Add
-                    </Button>
-                  </ListGroupItem>
-                );
-              }
-            })}
-          </ListGroup>
+          <TimeSelectFormGroup
+            shop_open_hours={shop_open_hours}
+            shop_open_minutes={shop_open_minutes}
+            shop_close_hours={shop_close_hours}
+            shop_close_minutes={shop_close_minutes}
+            onOpenHoursChanged={(hours) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_hours = hours
+              this.setState({ store: storeCopy }, this.generateSlots);
+            }}
+            onOpenMinsChanged={async (mins) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_open_minutes = mins
+              this.setState({ store: storeCopy }, this.generateSlots)
+            }}
+            onCloseHoursChanged={async (hours) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_hours = hours
+              this.setState({ store: storeCopy }, this.generateSlots)
+            }}
+            onCloseMinsChanged={async (mins) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.shop_close_minutes = mins
+              this.setState({ store: storeCopy }, this.generateSlots)
+            }}
+          />
+
+          <SlotDuration
+            slotDuration={slot_duration}
+            onDurationChange={(duration) => {
+              let storeCopy = { ...this.state.store }
+              storeCopy.slot_duration = duration
+              this.setState({ store: storeCopy }, this.generateSlots)
+            }} />
+
+          <p>
+            Please add your slots. Enter maximum people allowed in the blank space
+            for each slot.
+          </p>
+
+          <ListGroup>{this.printAllSlots()}</ListGroup>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="modal-footer">
           <Button color="info" outline onClick={toggleAddSlots}>
-            Close
+            Cancel
+          </Button>
+          <Button color="info" outline onClick={this.handleSave}>
+            Save
           </Button>
         </ModalFooter>
       </Modal>
