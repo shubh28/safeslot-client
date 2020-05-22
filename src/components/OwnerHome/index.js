@@ -68,7 +68,6 @@ export default class OwnerHome extends Component {
 
       // Token Section
       const token = await service.fetchTokens(storeId);
-      console.log(token);
       this.setState({ token: token, currentToken: token.current_token });
       this.checkDisable();
     } catch (error) {

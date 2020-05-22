@@ -6,7 +6,6 @@ export default class OwnerHomeService {
     const res = await axios.get(
       `${API_URL}/users/${userId}?filter={"include": "stores"}`
     );
-    console.log(res.data);
     return res;
   };
 
@@ -63,7 +62,6 @@ export default class OwnerHomeService {
   };
 
   generateToken = async (mobile, storeId) => {
-    console.log(mobile);
     if (!mobile) {
       alert('Please enter mobile number');
       return;
@@ -85,14 +83,12 @@ export default class OwnerHomeService {
       );
       const token = data[0];
       const assignNumber = token ? token.next_assign_token : 1;
-
       const body = {
         store_id: storeId,
         mobile,
         token_number: assignNumber + 1,
         date
       };
-
       const bookingResponse = await axios.post(
         `${API_URL}/tokenBookings`,
         body
@@ -113,7 +109,7 @@ export default class OwnerHomeService {
       }
       if (bookingResponse.status === 200) {
         // make sure this is the right code
-        return assignNumber;
+        return assignNumber + 1;
       }
     } catch (err) {
       console.error(err);
