@@ -14,6 +14,7 @@ import axios from 'axios';
 import Alerts from '../Alerts';
 import { Header } from '../common';
 import { loadState, saveState } from '../../helpers/LocalStorage';
+import { createHours, createMinutes } from '../../helpers/index'
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
 import SlotDuration from '../common/SlotDuration';
 
@@ -331,6 +332,69 @@ export default class OnBoarding extends Component {
                   shop_open_hours: hours
                 })
               }}
+            >
+              <label style={{ width: '50%' }}>Shop Opening Time</label>
+              <Input
+                type="select"
+                style={{ width: '20%' }}
+                value={shop_open_hours}
+                name="shop_open_hours"
+                onChange={this.handleOnChange}
+              >
+                {createHours('start', shop_open_hours, shop_close_hours)}
+              </Input>
+              &nbsp;:&nbsp;
+              <Input
+                type="select"
+                style={{ width: '20%' }}
+                value={shop_open_minutes}
+                name="shop_open_minutes"
+                onChange={this.handleOnChange}
+              >
+                {createMinutes('start')}
+              </Input>
+            </FormGroup>
+            <FormGroup
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <label style={{ width: '50%' }}>Shop Closing Time</label>
+              <Input
+                type="select"
+                style={{ width: '20%' }}
+                value={shop_close_hours}
+                name="shop_close_hours"
+                onChange={this.handleOnChange}
+              >
+                {createHours('end', shop_open_hours, shop_close_hours)}
+              </Input>
+              &nbsp;:&nbsp;
+              <Input
+                type="select"
+                style={{ width: '20%' }}
+                value={shop_close_minutes}
+                name="shop_close_minutes"
+                onChange={this.handleOnChange}
+              >
+                {createMinutes('end')}
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <label>Duration of each slot</label>
+              <Input
+                type="select"
+                value={slot_duration}
+                name="slot_duration"
+                onChange={this.handleOnChange}
+              >
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+              </Input>
+            </FormGroup>
+
               onOpenMinsChanged={(mins) => {
                 this.setState({
                   shop_open_minutes: mins
@@ -354,6 +418,7 @@ export default class OnBoarding extends Component {
                   slot_duration: duration
                 })
               }} />
+
             <FormGroup>
               <Button
                 required
