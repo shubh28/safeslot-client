@@ -67,13 +67,24 @@ export default class OwnerHome extends Component {
       this.setState({ bookings: formatBookingsList(bookings) });
 
       // Token Section
-      const token = await service.fetchTokens(storeId);
-      this.setState({ token: token, currentToken: token.current_token });
-      this.checkDisable();
+      this.fetchTokensInterval(storeId);
+      setInterval(() => {
+        this.fetchTokensInterval(storeId);
+      }, 30000)
+      // const token = await service.fetchTokens(storeId);
+      // this.setState({ token: token, currentToken: token.current_token });
+      // this.checkDisable();
     } catch (error) {
       console.log(error);
       this.showError();
     }
+  }
+
+  fetchTokensInterval = async (storeId) => {
+    const service = this.state.service;
+    const token = await service.fetchTokens(storeId);
+    this.setState({ token: token, currentToken: token.current_token });
+    this.checkDisable();
   }
 
   storeOwnerUserHasNoStores = user => {
@@ -147,6 +158,7 @@ export default class OwnerHome extends Component {
         tokenRes,
         this.state.currentToken
       );
+      this.fetchTokensInterval(this.state.user.storeId);
       this.setState({
         generatedToken: tokenRes,
         smsSendDisabled: false,
