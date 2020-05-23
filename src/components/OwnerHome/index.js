@@ -123,9 +123,9 @@ export default class OwnerHome extends Component {
     if (operation === 'previous') tokenToUpdate = this.state.currentToken - 1;
     else if (operation === 'next') tokenToUpdate = this.state.currentToken + 1;
 
-    let tokenData = this.state.token;
+    let tokenData = {};
     tokenData.current_token = tokenToUpdate;
-    service.updateToken(tokenData.id, tokenData).then(result => {
+    service.updateToken(this.state.token.id, tokenData).then(result => {
       this.setState({ currentToken: tokenToUpdate });
       this.checkDisable();
     });
