@@ -42,7 +42,7 @@ export default (props) => {
 		getTokenNumber();
 		setInterval(() => {
 			getTokenNumber();
-		}, 30000)
+		}, 20000)
 	}, []);
 
 	const getTokenNumber = () => {
