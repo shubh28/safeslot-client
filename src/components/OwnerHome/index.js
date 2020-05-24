@@ -125,10 +125,12 @@ export default class OwnerHome extends Component {
 
     let tokenData = {};
     tokenData.current_token = tokenToUpdate;
-    service.updateToken(this.state.token.id, tokenData).then(result => {
-      this.setState({ currentToken: tokenToUpdate });
-      this.checkDisable();
-    });
+    service.updateToken(this.state.token.id, tokenData)
+      .then(result => service.updateRealtizationTime(tokenToUpdate, this.state.user.storeId))
+      .then(result => {
+        this.setState({ currentToken: tokenToUpdate });
+        this.checkDisable();
+      });
   };
 
   checkDisable = () => {
@@ -243,7 +245,7 @@ export default class OwnerHome extends Component {
                   onClick={() =>
                     this.generateManualToken(
                       this.state.numberInput.dialCode +
-                        this.state.numberInput.phone
+                      this.state.numberInput.phone
                     )
                   }
                 >
