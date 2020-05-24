@@ -251,7 +251,7 @@ export default class OwnerHome extends Component {
                 >
                   Get Token
                 </Button>
-                <div hidden={!generatedToken}>#{generatedToken}</div>
+                <div hidden={!generatedToken} style={{ fontSize: '20px' }}>#{generatedToken}</div>
                 <Button
                   color="info"
                   onClick={this.resetTokenfields}
