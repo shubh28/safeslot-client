@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import AddSlotService from './addSlotService';
 import {
   Button,
+  FormGroup,
+  Input,
   ModalBody,
   Modal,
   ModalHeader,
   ModalFooter,
+  Label,
   ListGroup,
   ListGroupItem,
-  Input,
 } from 'reactstrap';
 import Alerts from '../Alerts';
 import TimeSelectFormGroup from '../common/TimeSelectFormGroup';
@@ -17,8 +19,6 @@ import {
   formatHoursAndMinutes,
   generateTimeSlots
 } from '../../helpers/timeSlotHelpers';
-
-
 
 export default class AddSlots extends Component {
 
@@ -30,6 +30,7 @@ export default class AddSlots extends Component {
       error: {},
       store: {},
       slots: [],
+      defaultSlotCapacity: 5,
     }
     this.maxPeopleAllowedRef = React.createRef();
   }
@@ -116,9 +117,9 @@ export default class AddSlots extends Component {
   generateSlots = (
     startTime = this.getStartTime(),
     endTime = this.getEndTime(),
-    interval = this.state.store.slot_duration) => {
-
-    const slots = generateTimeSlots(startTime, endTime, interval)
+    interval = this.state.store.slot_duration,
+    defaultCapacity = this.state.defaultSlotCapacity) => {
+    const slots = generateTimeSlots({ startTime, endTime, interval, defaultCapacity })
 
     this.setState({ slots });
   };
@@ -138,8 +139,8 @@ export default class AddSlots extends Component {
   };
 
   render() {
-    const { toggleAddSlots, openModal, storeId } = this.props;
-    const { error } = this.state;
+    const { toggleAddSlots, openModal } = this.props;
+    const { error, defaultSlotCapacity } = this.state;
 
     const {
       shop_open_hours,
@@ -194,8 +195,18 @@ export default class AddSlots extends Component {
               this.setState({ store: storeCopy }, this.generateSlots)
             }} />
 
+          <FormGroup>
+            <Label for="exampleEmail">Default Slot Capacity</Label>
+            <Input type="number" name="defaultSlotCapacity" value={defaultSlotCapacity} onChange={(e) => {
+              this.setState({
+                defaultSlotCapacity: e.target.value
+              });
+
+            }} />
+          </FormGroup>
+
           <p>
-            Please add your slots. Enter maximum people allowed in the blank space
+            Please add your slots. Enter maximum people allowed in the space
             for each slot.
           </p>
 
