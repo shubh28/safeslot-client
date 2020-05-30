@@ -4,8 +4,8 @@
 export const SERVICE_URL = 'http://10.0.0.16:3000';
 export const API_URL = 'https://safeslot-backend.herokuapp.com/api';
 export const DEFAULT_LOCATION = {
-  latitude: 28.63298099999998,
-  longitude: 77.21928800000002
+	latitude: 28.802723,
+	longitude: 76.1045824
 };
 
 export const URL_REFS = {
