@@ -180,6 +180,7 @@ export default function StoreLanding() {
 
 
       <div class="fb-customerchat"
+        attribution="setup_tool" 
         page_id="109936757343364">
       </div>
 
