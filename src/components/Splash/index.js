@@ -38,6 +38,7 @@ export default function Splash() {
         <img src={logo} onLoad={e => setLoadCount(loadCount + 1)} />
         <span>access services safely during crisis</span>
       </div>
+      <div id="google_translate_element"></div>
       {user ? (
         <div className="splashBody">
           {user.isStoreOwner ? (
