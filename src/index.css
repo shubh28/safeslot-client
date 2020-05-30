@@ -264,7 +264,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
 }
-iframe {
+iframe, #goog-gt-tt {
   display: none;
 }
 /*
