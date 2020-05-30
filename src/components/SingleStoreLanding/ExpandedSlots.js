@@ -91,7 +91,7 @@ function ExpandedSlots({
   return (
     <FlexContainer direction="column" alignItems="center">
       <Link to={`/store/${storeId}/token`}>
-        <Button color="info" size="lg">
+        <Button size="lg" color="success">
           Generate Token
         </Button>
       </Link>        

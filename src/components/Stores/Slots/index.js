@@ -187,7 +187,7 @@ function Slots({ availableSlots = [], storeId, showError, isVerified }) {
           </MakeBookingWrapper>
         ) : null}
         <Link to={`/store/${storeId}/token`}>
-          <Button color="info">
+          <Button color="success">
             Generate Token
         </Button>
         </Link>        
