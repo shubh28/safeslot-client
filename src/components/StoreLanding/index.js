@@ -176,12 +176,13 @@ export default function StoreLanding() {
         <h5>
           Phone : <a href="tel:+919873378665">+91 9873378665</a>{' '}
         </h5>
-    
-
 
       <div class="fb-customerchat"
-        attribution="setup_tool" 
-        page_id="109936757343364">
+        attribution="setup_tool"
+        page_id="109936757343364"
+  theme_color="#13cf13"
+  logged_in_greeting="Hi! How can we help you?"
+  logged_out_greeting="Hi! How can we help you?">
       </div>
 
         <p>
