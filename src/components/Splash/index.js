@@ -103,6 +103,7 @@ export default function Splash() {
           />
         </Link>
       </div>
+      <div id="google_translate_element"></div>
     </StyledSplash>
   );
 }
