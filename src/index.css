@@ -265,7 +265,7 @@ a:hover {
   justify-content: space-between;
 }
 iframe, #goog-gt-tt {
-  display: none;
+  display: none !important;
 }
 /*
  * react-circular-progressbar styles
