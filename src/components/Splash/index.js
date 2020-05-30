@@ -36,7 +36,7 @@ export default function Splash() {
       ) : null}
       <div>
         <img src={logo} onLoad={e => setLoadCount(loadCount + 1)} />
-        <span>getting essentials safely during crisis</span>
+        <span>access services safely during crisis</span>
       </div>
       {user ? (
         <div className="splashBody">
@@ -74,7 +74,7 @@ export default function Splash() {
         </div>
       ) : (
         <div className="splashBody">
-          <h5>Buy Essentials</h5>
+          <h5>I'm a customer</h5>
           <Link to={'/login'}>
             <Button> Login/Register</Button>
           </Link>
