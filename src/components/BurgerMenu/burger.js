@@ -5,6 +5,7 @@ import { bool, func } from 'prop-types';
 const Burger = ({ open, setOpen }) => {
   return (
     <StyledBurger
+      class=”notranslate”
       open={open}
       onClick={() => {
         setOpen(!open);
