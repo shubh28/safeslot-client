@@ -54,6 +54,33 @@ export default class OwnerHomeService {
     return response;
   };
 
+  updateRealizationTime = async (tokenNumber, storeId) => {
+    let startDate = new Date();
+    startDate.setHours(0);
+    startDate.setMinutes(0);
+    startDate.setSeconds(0);
+    startDate.setMilliseconds(0);
+
+    let currentTime = new Date();
+
+    let filter = {
+      where: {
+        and: [
+          { store_id: storeId },
+          { token_number: tokenNumber },
+          { date: { gte: startDate } }
+        ]
+      }
+    };
+
+    const tokens = await axios.get(`${API_URL}/tokenBookings?filter=${JSON.stringify(filter)}`);
+
+    await Promise.all(tokens.data.map(async (eachToken) => {
+      const response = await axios.patch(`${API_URL}/tokenBookings?filter=${JSON.stringify({ id: eachToken.id })}`, { ...eachToken, realization_date: currentTime });
+      return response;
+    }));
+  }
+
   generateSMSurl = (number, token, cs) => {
     const c = cs ? `currently%20serving%20${cs}` : '';
     const body = `Your%20token%20is%20${token}.%20${c}`;
