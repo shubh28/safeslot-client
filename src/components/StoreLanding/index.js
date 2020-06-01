@@ -140,6 +140,16 @@ export default function StoreLanding() {
           <Col sm="12">
             <div className="feature">
               <img
+                src={crowdManagement}
+                alt="Better Crowd Management"
+                className="feature-img"
+              />
+              <h3 className="feature-title"> Give Digital Tokens</h3>
+            </div>
+          </Col>
+              <Col sm="12">
+            <div className="feature">
+              <img
                 src={correctTiming}
                 alt="display correct timings"
                 className="feature-img"
@@ -147,17 +157,7 @@ export default function StoreLanding() {
               <h3 className="feature-title"> Display Correct Timings</h3>
             </div>
           </Col>
-
-          <Col sm="12">
-            <div className="feature">
-              <img
-                src={crowdManagement}
-                alt="Better Crowd Management"
-                className="feature-img"
-              />
-              <h3 className="feature-title"> Better Crowd Management</h3>
-            </div>
-          </Col>
+    
         </Row>
 
         <Link to="/login">
@@ -168,14 +168,22 @@ export default function StoreLanding() {
       <hr />
 
       <section>
-        <h3>For Help, please call us</h3>
+        <h3>For Help, please contact us</h3>
 
         <h5>
-          Abhilash : <a href="tel:+919034432424">+91 9034432424</a>{' '}
+          Mail : <a href="mailto:safeSlotInitiative@gmail.com">safeSlotInitiative@gmail</a>{' '}
         </h5>
         <h5>
-          Hardik : <a href="tel:+919873378665">+91 9873378665</a>{' '}
+          Phone : <a href="tel:+919873378665">+91 9873378665</a>{' '}
         </h5>
+
+  /*    <div class="fb-customerchat"
+        attribution="setup_tool"
+        page_id="109936757343364"
+  theme_color="#13cf13"
+  logged_in_greeting="Hi! How can we help you?"
+  logged_out_greeting="Hi! How can we help you?">
+      </div> */
 
         <p>
           <strong> Let's fight against #corona a.k.a. #covid19 together</strong>

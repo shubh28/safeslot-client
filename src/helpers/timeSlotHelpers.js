@@ -27,15 +27,17 @@ const timestampToTime = (timestamp) => {
   return formatHoursAndMinutes(date.getHours(), date.getMinutes());
 }
 
-const generateTimeSlots = (startTime, endTime, interval, isVerified = true) => {
+const generateTimeSlots = ({ startTime, endTime, interval, isVerified = true, defaultCapacity = 0 }) => {
   startTime = toTimestamp(startTime);
   endTime = toTimestamp(endTime);
   const timeslots = [startTime];
-  let maxPeopleAllowed = isVerified ? 0 : 10000;
+  let maxPeopleAllowed = isVerified ? defaultCapacity : 10000;
 
 
   let tempTime = startTime;
   let count = 0;
+
+  // prevent infinite loops by adding a max iteration count
   while (tempTime < endTime && count < 9999) {
     tempTime = addMinutes(tempTime, interval);
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { API_URL, URL_REFS } from '../../../common/consts';
 import { Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import { loadState } from '../../../helpers/LocalStorage';
 import { useHistory } from 'react-router-dom';
@@ -176,14 +177,21 @@ function Slots({ availableSlots = [], storeId, showError, isVerified }) {
           <NoSlotButton disabled={true}>No Slots Found</NoSlotButton>
         )}
       </SlotWrapper>
-      {availableSlots.length ? (
-        <MakeBookingWrapper>
-          <Button color="info" onClick={() => makeBooking(storeSlotId)}>
-            Book Slot
+      <div style={{display: 'flex', alignItems: 'center', 'justifyContent': 'space-between'}}>
+        {availableSlots.length ? (
+          <MakeBookingWrapper>
+            <Button color="info" onClick={() => makeBooking(storeSlotId)}>
+              Book This Slot
           </Button>
-          <SlotMsg>{slotsLeftMsg}</SlotMsg>
-        </MakeBookingWrapper>
-      ) : null}
+            <SlotMsg>{slotsLeftMsg}</SlotMsg>
+          </MakeBookingWrapper>
+        ) : null}
+        <Link to={`/store/${storeId}/token`}>
+          <Button color="success">
+            Generate Token
+        </Button>
+        </Link>        
+      </div>
     </>
   );
 }

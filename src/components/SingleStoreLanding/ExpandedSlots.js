@@ -3,7 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { API_URL, URL_REFS } from '../../common/consts';
 import { Button } from 'reactstrap';
-
+import { Link } from 'react-router-dom';
 import { loadState } from '../../helpers/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import { useLocationAndStoreContext } from '../../contexts/location-and-store-context';
@@ -90,7 +90,12 @@ function ExpandedSlots({
 
   return (
     <FlexContainer direction="column" alignItems="center">
-      <h4 style={{ textAlign: 'center' }}>Available Times</h4>
+      <Link to={`/store/${storeId}/token`}>
+        <Button size="lg" color="success">
+          Generate Token
+        </Button>
+      </Link>        
+      <h4 style={{ textAlign: 'center', 'marginTop': '18px' }}>Available Times</h4>
       <FlexContainer direction="row">
         <SlotWrapper>
           {availableSlots.length ? (
@@ -170,7 +175,7 @@ function ExpandedSlots({
               color="info"
               onClick={() => makeBooking(storeSlotId)}
             >
-              Book Slot
+              Book This Slot
             </BookSlotButton>
             <SlotMsg>{slotsLeftMsg}</SlotMsg>
           </FlexContainer>

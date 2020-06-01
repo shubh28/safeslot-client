@@ -256,12 +256,16 @@ a:hover {
   font-family: Nunito, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  width: 72%;
+  width: 49%;
   font-weight: bold;
+  margin: auto !important;
 }
 .modal-footer{
   display: flex;
   justify-content: space-between;
+}
+iframe, #goog-gt-tt {
+  display: none !important;
 }
 /*
  * react-circular-progressbar styles
