@@ -1,6 +1,6 @@
 import React, {useState, useEffect}  from 'react';
 import { Card, CardBody, FormGroup, Input, Button, Container, Row, Col } from 'reactstrap';
-import { CircularProgressbar, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import { CircularProgressbar } from 'react-circular-progressbar';
 import axios from 'axios';
 
 import { Header } from '../common';
@@ -8,7 +8,6 @@ import { API_URL } from '../../common/consts';
 
 import safeslot from '../../assets/safeslot.png';
 import storesvg from '../../assets/storesvg.svg';
-import safeslotLogo from '../../assets/logo.png';
 
 export default (props) => {
     const { storeid, phone } = props.match.params;
@@ -64,14 +63,6 @@ export default (props) => {
 
 	};
 
-  let circularProgressBar;
-  if (currentToken < userToken) {
-    circularProgressBar = (<CircularProgressbar background value={currentToken} text={currentToken} maxValue={userToken} />);
-  } else {
-    circularProgressBar = (<CircularProgressbarWithChildren background value={currentToken} maxValue={userToken}>
-                            <img src={safeslotLogo} style={{position: "absolute", marginTop: "50%", height: "50%", width: "35%"}} />
-                          </CircularProgressbarWithChildren>);
-  }
 	return(
 		<>
 			<img src={safeslot} width="100%" style={{marginBottom: "18px"}} />
@@ -84,16 +75,19 @@ export default (props) => {
 			<br></br>
 			<div style={{margin: "auto"}}>
 				{
-          currentToken > 0 && userToken > 0 && circularProgressBar
-				} 
-      <h4 className="text-center">Current Token</h4>
-      <br></br>
-      </div>
-      <h2>Your Token: {userToken}</h2>
+					currentToken > 0 && userToken > 0 && 
+						<CircularProgressbar background value={currentToken} text={currentToken} maxValue={userToken} />
+				}
+	            
+    	        <h4 className="text-center">Current Token</h4>
+    	        <br></br>
+            </div>
+            <h2>Your Token: {userToken}</h2>
 	    <br></br>
 	    <br></br>
 	    <br></br>
 	    <br></br>
+
 		</>
 	)
 }
