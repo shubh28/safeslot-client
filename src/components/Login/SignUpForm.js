@@ -128,7 +128,7 @@ export default function SignUpForm({ toggleLogin }) {
           onChange={handleChange}
           name="isStoreOwner"
         />{' '}
-        Are you a store owner?
+        <span style={{fontSize: '2rem'}}>Are you a store owner?</span>
       </FormGroup>
 
       <p>
