@@ -70,6 +70,9 @@ export default class OnBoarding extends Component {
       shop_close_minutes,
       slot_duration
     } = this.state;
+    if (!locality) {
+      this.showError('danger', 'Please select a locality or click locate me to proceed.');
+    }
     if (
       !name ||
       !billing_counters ||
@@ -84,7 +87,7 @@ export default class OnBoarding extends Component {
     if (!latitude || !longitude) {
       this.showError(
         'danger',
-        'Please select locality from drop down to calculate your coordinates'
+        'Please select locality from drop down to calculate your coordinates or click locate me allowing location permissions'
       );
       return;
     }
@@ -182,6 +185,14 @@ export default class OnBoarding extends Component {
     this.setState(Object.assign({ ...this.state }, { error: {} }));
   };
 
+  getLocation = () => {
+    if (window.navigator && window.navigator.geolocation) {
+      window.navigator.geolocation.getCurrentPosition((position) => {
+        this.handleLocationSelect(`${position.coords.latitude},${position.coords.longitude}`, [position.coords.longitude, position.coords.latitude]);
+      });
+    }
+  }
+
   render() {
     const {
       name,
@@ -249,16 +260,20 @@ export default class OnBoarding extends Component {
                 placeholder="Your store address"
               />
             </FormGroup>
-            <FormGroup>
-              <Input
-                type="search"
-                autoComplete="off"
-                required
-                value={locality}
-                onChange={this.handleOnChange}
-                name="locality"
-                placeholder="Locality"
-              />
+            <FormGroup >
+              <div style={{ display: 'flex' }}>
+                <Input
+                  type="search"
+                  autoComplete="off"
+                  required
+                  value={locality}
+                  onChange={this.handleOnChange}
+                  name="locality"
+                  placeholder="Locality"
+                  style={{width: "60%"}}
+                />
+                <Button color="info" onClick={this.getLocation}>Locate Me</Button>
+              </div>
               <UncontrolledDropdown
                 isOpen={this.state.locations.length > 0}
                 toggle={() => { }}
