@@ -54,7 +54,7 @@ export default class OwnerHomeService {
     return response;
   };
 
-  updateRealtizationTime = async (tokenNumber, storeId) => {
+  updateRealizationTime = async (tokenNumber, storeId) => {
     let startDate = new Date();
     startDate.setHours(0);
     startDate.setMinutes(0);

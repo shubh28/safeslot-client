@@ -181,7 +181,7 @@ function Slots({ availableSlots = [], storeId, showError, isVerified }) {
         {availableSlots.length ? (
           <MakeBookingWrapper>
             <Button color="info" onClick={() => makeBooking(storeSlotId)}>
-              Book Slot
+              Book This Slot
           </Button>
             <SlotMsg>{slotsLeftMsg}</SlotMsg>
           </MakeBookingWrapper>

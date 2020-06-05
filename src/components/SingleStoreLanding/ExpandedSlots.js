@@ -175,7 +175,7 @@ function ExpandedSlots({
               color="info"
               onClick={() => makeBooking(storeSlotId)}
             >
-              Book Slot
+              Book This Slot
             </BookSlotButton>
             <SlotMsg>{slotsLeftMsg}</SlotMsg>
           </FlexContainer>

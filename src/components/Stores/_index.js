@@ -119,7 +119,7 @@ export default class Stores extends Component {
 												<h3>{store.name}</h3>
 											</CardTitle>
 										<CardSubtitle>{store.address}, {store.locality}, {store.city}</CardSubtitle>
-										<Button outline color="info" onClick={() => this.toggleModal(store.id)}>Book Slot</Button>
+										<Button outline color="info" onClick={() => this.toggleModal(store.id)}>Book This Slot</Button>
 										</CardBody>
 									</Card>
 								);
