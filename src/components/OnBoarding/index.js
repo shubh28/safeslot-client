@@ -188,7 +188,14 @@ export default class OnBoarding extends Component {
   getLocation = () => {
     if (window.navigator && window.navigator.geolocation) {
       window.navigator.geolocation.getCurrentPosition((position) => {
-        this.handleLocationSelect(`${position.coords.latitude},${position.coords.longitude}`, [position.coords.longitude, position.coords.latitude]);
+        const longitude = position.coords.longitude;
+        const latitude = position.coords.latitude;
+        axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=pk.eyJ1Ijoic2h1YmgyOCIsImEiOiJjazhidHQ1Z2QwZm11M2lxcGd0Y21uMnR4In0.pkJ2tMkAcfeI6PC7gHIIwQ&types=locality`)
+          .then(res => {
+            const localities = res.data && res.data.features && res.data.features[0];
+            const locality = localities && localities.place_name;
+            this.handleLocationSelect(locality, [longitude, latitude]);
+          })
       });
     }
   }
