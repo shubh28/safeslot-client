@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import useLogin from '../../hooks/useLogin';
 
 import Alerts from '../Alerts';
 
-export default function SignUpForm({ toggleLogin }) {
+export default function SignUpForm({ isStorePage }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -124,7 +125,7 @@ export default function SignUpForm({ toggleLogin }) {
       <FormGroup>
         <Input
           type="checkbox"
-          checked={isStoreOwner}
+          checked={isStoreOwner || isStorePage}
           onChange={handleChange}
           name="isStoreOwner"
           style={{
@@ -138,9 +139,9 @@ export default function SignUpForm({ toggleLogin }) {
 
       <p>
         Already have account?{' '}
-        <a href="#" onClick={toggleLogin}>
+        <Link to="/login">
           Login
-        </a>
+        </Link>
       </p>
       <Button
         type="submit"

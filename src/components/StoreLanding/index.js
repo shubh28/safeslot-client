@@ -92,7 +92,7 @@ export default function StoreLanding() {
         <Link to="/">
           <img src={logo} alt="logo" className="logo" />
         </Link>
-        <Link to="/login">
+        <Link to="/login?store=true">
           <Button>Login</Button>
         </Link>
       </div>
@@ -114,7 +114,7 @@ export default function StoreLanding() {
                 Store
               </strong>
             </div>
-            <Link to="/login">
+            <Link to="/signup?store=true">
               <Button className="register-button slider-register-button">
                 {' '}
                 Register Now

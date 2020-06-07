@@ -12,6 +12,7 @@ import { throttle } from 'lodash';
 
 import Home from '../components/Home';
 import Login from '../components/Login';
+import Signup from '../components/Login/Signup';
 import Bookings from '../components/Bookings';
 import OwnerHome from '../components/OwnerHome';
 import OnBoarding from '../components/OnBoarding';
@@ -80,6 +81,7 @@ export default class RouteWrapper extends Component {
                 />
                 <Route exact path="/map" component={Home} />
                 <Route exact path="/login" component={Login} />
+                <Route exact path="/signup" component={Signup} />
                 <Route exact path="/bookings" component={Bookings} />
                 <Route exact path="/stores" component={Stores} />
                 <Route

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Form, FormGroup, Input, Button } from 'reactstrap';
 import { useHistory, useLocation } from 'react-router-dom';
 import Alerts from '../Alerts';
@@ -69,9 +70,9 @@ export default function LoginForm({ toggleLogin }) {
       </FormGroup>
       <p>
         Don't have account?{' '}
-        <a href="#" onClick={toggleLogin}>
+        <Link to="/signup">
           Sign Up
-        </a>
+        </Link>
       </p>
       <Button
         type="submit"
