@@ -19,6 +19,7 @@ import Referral from '../components/Referral';
 import Splash from '../components/Splash';
 import GenerateToken from '../components/GenerateToken';
 import ViewToken from './ViewToken/ViewToken';
+import Download from '../components/Download';
 
 import reducers from '../reducers';
 import { loadState, saveState } from '../helpers/LocalStorage';
@@ -101,6 +102,7 @@ export default class RouteWrapper extends Component {
                 <Route exact path="/refer" component={Referral} />
                 <Route exact path="/registermystore" component={Referral} />
                 <Route exact path="/register-my-store" component={Referral} />
+                <Route exact path="/download" component={Download} />
                 <Route render={() => <Redirect to="/" />} />
               </Switch>
               {/*<div className="footer">
