@@ -248,28 +248,26 @@ export default class OwnerHome extends Component {
                 />
               </ReactContainer>
               <ReactContainer>
-                <Row>
-                  <Button
-                    color="info"
-                    onClick={() =>
-                      this.generateManualToken(
-                        this.state.numberInput.dialCode +
-                        this.state.numberInput.phone
-                      )
-                    }
-                  >
-                    Get Token
+                <Button
+                  color="info"
+                  onClick={() =>
+                    this.generateManualToken(
+                      this.state.numberInput.dialCode +
+                      this.state.numberInput.phone
+                    )
+                  }
+                >
+                  Get Token
                 </Button>
-                  <div hidden={!generatedToken}>#{generatedToken}</div>
-                  <Button
-                    color="info"
-                    onClick={this.resetTokenfields}
-                    href={smsString}
-                    disabled={smsSendDisabled}
-                  >
-                    Send SMS
+                <div hidden={!generatedToken}>#{generatedToken}</div>
+                <Button
+                  color="info"
+                  onClick={this.resetTokenfields}
+                  href={smsString}
+                  disabled={smsSendDisabled}
+                >
+                  Send SMS
                 </Button>
-                </Row>
               </ReactContainer>
             </SmsInputContainer>
             <br />
