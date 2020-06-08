@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Container as ReactContainer, Row } from 'reactstrap';
 import Alerts from '../Alerts';
 import AddSlots from '../AddSlots';
 import { loadUserAuthenticationDetails } from '../../helpers/LocalStorage';
@@ -208,59 +208,69 @@ export default class OwnerHome extends Component {
             <h6>{store.address}</h6>
             <h6>{store.locality}</h6>
             <TokenStatusContainer>
-              Current Line Token
-              <Button
-                color="info"
-                onClick={this.updateToken.bind(null, 'previous')}
-                disabled={this.state.prevDisable}
-              >
-                Previous
-              </Button>
-              <Button
-                color="info"
-              >
-                {this.state.currentToken}
-              </Button>
-              <Button
-                color="info"
-                onClick={this.updateToken.bind(null, 'next')}
-                disabled={this.state.nextDisable}
-              >
-                Next
-              </Button>
+              <ReactContainer>
+                <Row>
+                  Current Line Token
+                </Row>
+                <Row>
+                  <Button
+                    color="info"
+                    onClick={this.updateToken.bind(null, 'previous')}
+                    disabled={this.state.prevDisable}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    color="info"
+                  >
+                    {this.state.currentToken}
+                  </Button>
+                  <Button
+                    color="info"
+                    onClick={this.updateToken.bind(null, 'next')}
+                    disabled={this.state.nextDisable}
+                  >
+                    Next
+                  </Button>
+                </Row>
+              </ReactContainer>
             </TokenStatusContainer>
             <SmsInputContainer>
-              <div>
-                <p>Generate Token</p>
+              <ReactContainer>
+                Generate Token
+              </ReactContainer>
+              <ReactContainer>
                 <ReactIntlTelInput
-                  inputProps={{ placeholder: 'Enter a phone number' }}
+                  inputProps={{ placeholder: 'Enter a phone number', style: { width: '100%' } }}
                   intlTelOpts={{ prefferedCountries: ['in'] }}
                   value={numberInput}
                   onChange={e => this.handleNumberInputChange(e)}
                 />
-              </div>
-              <div>
-                <Button
-                  color="info"
-                  onClick={() =>
-                    this.generateManualToken(
-                      this.state.numberInput.dialCode +
-                      this.state.numberInput.phone
-                    )
-                  }
-                >
-                  Get Token
+              </ReactContainer>
+              <ReactContainer>
+                <Row>
+                  <Button
+                    color="info"
+                    onClick={() =>
+                      this.generateManualToken(
+                        this.state.numberInput.dialCode +
+                        this.state.numberInput.phone
+                      )
+                    }
+                  >
+                    Get Token
                 </Button>
-                <div hidden={!generatedToken}>#{generatedToken}</div>
-                <Button
-                  color="info"
-                  onClick={this.resetTokenfields}
-                  href={smsString}
-                  disabled={smsSendDisabled}
-                >
-                  Send SMS
+                  <div hidden={!generatedToken}>#{generatedToken}</div>
+                  <Button
+                    color="info"
+                    onClick={this.resetTokenfields}
+                    href={smsString}
+                    disabled={smsSendDisabled}
+                  >
+                    Send SMS
                 </Button>
-              </div>
+                </Row>
+              </ReactContainer>
             </SmsInputContainer>
             <br />
             <Button color="info" onClick={this.toggleAddSlots}>
