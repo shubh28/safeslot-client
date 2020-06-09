@@ -301,7 +301,7 @@ iframe, #goog-gt-tt {
 
 .CircularProgressbar .CircularProgressbar-text {
   fill: #77b300;
-  font-size: 20px;
+  font-size: 50px;
   dominant-baseline: middle;
   text-anchor: middle;
 }
